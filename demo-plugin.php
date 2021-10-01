@@ -74,7 +74,7 @@ register_deactivation_hook( __FILE__, 'deactivate_demo_plugin' );
  */
 function run_demo_plugin() {
 
-	$plugin = new Learndash_Lesson_Access();
+	$plugin = new Demo_Plugin();
 	$plugin->run();
 
 }
