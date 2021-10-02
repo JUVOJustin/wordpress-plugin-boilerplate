@@ -70,7 +70,7 @@ echo ---
 
 
 # Install Dependencies
-composer update
+composer install
 
 echo ---
 echo "Dependencies installed. Make final tests"

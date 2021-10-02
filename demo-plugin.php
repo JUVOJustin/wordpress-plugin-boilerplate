@@ -13,7 +13,7 @@
  * @package           Demo_Plugin
  *
  * @wordpress-plugin
- * Plugin Name:       LearnDash Lesson Access
+ * Plugin Name:       Demo Plugin
  * Plugin URI:        https://juvo-design.de
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
  * Version:           1.0.0
