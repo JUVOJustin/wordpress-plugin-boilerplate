@@ -47,9 +47,9 @@ fi
 shift $((OPTIND - 1))
 
 # Special Renamings
-sed -i "s/DEMO_PLUGIN/$namespace^/g" demo-plugin.php;
-sed -i "s/demo_plugin/$namespace,,/g" demo-plugin.php;
-sed -i "s/demo_plugin/$namespace,,/g" includes/i18n.php;
+sed -i "s/DEMO_PLUGIN/${namespace^}/g" demo-plugin.php;
+sed -i "s/demo_plugin/${namespace,,}/g" demo-plugin.php;
+sed -i "s/demo_plugin/${namespace,,}/g" includes/i18n.php;
 
 # Rename files with "-" separation
 for filename in $(find . -name 'demo-plugin*'); do echo mv \"$filename\" \"${filename//demo-plugin/$filename_minus}\"; done | /bin/bash
