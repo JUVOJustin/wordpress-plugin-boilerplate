@@ -1,0 +1,16 @@
+parameters:
+    level: 5
+    inferPrivatePropertyTypeFromConstructor: true
+    paths:
+        - src/
+    ignoreErrors:
+        # Uses func_get_args()
+        - '#^Function apply_filters(_ref_array)? invoked with [34567] parameters, 2 required\.$#'
+    scanFiles:
+        - %rootDir%/../../lipemat/phpstan-wordpress/stubs/cmb2/cmb2-2.9.php
+        - %rootDir%/../../lipemat/phpstan-wordpress/stubs/genesis/genesis-3.3.php
+        - %rootDir%/../../lipemat/phpstan-wordpress/stubs/woocommerce-subscriptions/woocommerce-subscriptions-3.0.php
+        - %rootDir%/../../lipemat/phpstan-wordpress/stubs/vip.php
+        - %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-stubs.php
+        - %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-commands-stubs.php
+        - %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-i18n-stubs.php
