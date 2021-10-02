@@ -25,4 +25,4 @@ jobs:
         run: composer install --prefer-dist --no-progress --dev
 
       - name: PHPSTAN
-        run: vendor/bin/phpstan analyse src
+        run: composer run static-analyse
