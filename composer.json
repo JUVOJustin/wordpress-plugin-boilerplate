@@ -23,6 +23,6 @@
     }
   },
   "scripts": {
-    "static-analyse": "@php ./vendor/bin/phpstan analyse src"
+    "static-analyse": "@php ./vendor/bin/phpstan analyse"
   }
 }
