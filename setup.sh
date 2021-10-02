@@ -48,12 +48,25 @@ shift $((OPTIND - 1))
 
 # Rename files with "-" separation
 for filename in $(find . -name 'demo-plugin*'); do echo mv \"$filename\" \"${filename//demo-plugin/$filename_minus}\"; done | /bin/bash
-
 # Rename files with "_" separation -> most likely php classes
 for filename in $(find . -name 'demo_plugin*'); do echo mv \"$filename\" \"${filename//demo-plugin/$filename}\"; done | /bin/bash
-
 # Rename Main Class
 for filename in $(find ./includes -name 'Demo_Plugin*'); do echo mv \"$filename\" \"${filename//Demo_Plugin/$namespace}\"; done | /bin/bash
 
+echo "Successfully renamed all demo files."
+echo ---
+
 # Replace Namespace in all Files
 find ./ -type f -name '*.php' -exec sed -i "s/Demo_Plugin/$namespace/g" {} \;
+sed -i "s/Demo_Plugin/$namespace/g" composer.json;
+
+echo "Successfully renamed all namespaces."
+echo ---
+
+# Install Dependencies
+composer update
+
+echo ---
+echo "Dependencies installed. Make final tests"
+echo ---
+composer run static-analyse
