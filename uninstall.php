@@ -22,7 +22,7 @@
  * @link       https://juvo-design.de
  * @since      1.0.0
  *
- * @package    Learndash_Lesson_Access
+ * @package    Demo_Plugin
  */
 
 // If uninstall not called from WordPress, then exit.

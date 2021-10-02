@@ -1,22 +1,9 @@
 <?php
 
-/**
- * The file that defines the core plugin class
- *
- * A class definition that includes attributes and functions used across both the
- * public-facing side of the site and the admin area.
- *
- * @link       https://juvo-design.de
- * @since      1.0.0
- *
- * @package    Learndash_Lesson_Access
- * @subpackage Learndash_Lesson_Access/includes
- */
+namespace Demo_Plugin;
 
 use Demo_Plugin\Frontend\Frontend;
 use Demo_Plugin\Admin\Admin;
-use Demo_Plugin\i18n;
-use Demo_Plugin\Loader;
 
 /**
  * The core plugin class.
@@ -28,8 +15,8 @@ use Demo_Plugin\Loader;
  * version of the plugin.
  *
  * @since      1.0.0
- * @package    Learndash_Lesson_Access
- * @subpackage Learndash_Lesson_Access/includes
+ * @package    Demo_Plugin
+ * @subpackage Demo_Plugin/includes
  * @author     Justin Vogt <mail@juvo-design.de>
  */
 class Demo_Plugin {

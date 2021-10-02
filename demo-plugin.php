@@ -10,7 +10,7 @@
  *
  * @link              https://juvo-design.de
  * @since             1.0.0
- * @package           Learndash_Lesson_Access
+ * @package           Demo_Plugin
  *
  * @wordpress-plugin
  * Plugin Name:       LearnDash Lesson Access
@@ -21,13 +21,14 @@
  * Author URI:        https://juvo-design.de
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       learndash-lesson-access
+ * Text Domain:       demo-plugin
  * Domain Path:       /languages
  */
 
 // If this file is called directly, abort.
 use Demo_Plugin\Activator;
 use Demo_Plugin\Deactivator;
+use Demo_Plugin\Demo_Plugin;
 
 if ( ! defined( 'WPINC' ) ) {
 	die;
@@ -46,7 +47,6 @@ require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
 /**
  * The code that runs during plugin activation.
- * This action is documented in includes/class-learndash-lesson-access-activator.php
  */
 function activate_demo_plugin() {
     Activator::activate();
@@ -54,7 +54,6 @@ function activate_demo_plugin() {
 
 /**
  * The code that runs during plugin deactivation.
- * This action is documented in includes/class-learndash-lesson-access-deactivator.php
  */
 function deactivate_demo_plugin() {
     Deactivator::deactivate();
