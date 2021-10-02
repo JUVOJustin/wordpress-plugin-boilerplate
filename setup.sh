@@ -47,7 +47,7 @@ fi
 shift $((OPTIND - 1))
 
 # Special Renamings
-sed -i "s/DEMO_PLUGIN/${namespace^}/g" demo-plugin.php;
+sed -i "s/DEMO_PLUGIN/${namespace^^}/g" demo-plugin.php;
 sed -i "s/demo_plugin/${namespace,,}/g" demo-plugin.php;
 sed -i "s/demo_plugin/${namespace,,}/g" includes/i18n.php;
 
