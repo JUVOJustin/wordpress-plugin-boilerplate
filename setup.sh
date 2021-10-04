@@ -46,10 +46,26 @@ fi
 
 shift $((OPTIND - 1))
 
-# Special Renamings
+# Rename Constants
 sed -i "s/DEMO_PLUGIN/${namespace^^}/g" demo-plugin.php;
+echo "Renamed Constants"
+echo ---
+
+# Rename activate/deactivate functions
 sed -i "s/demo_plugin/${namespace,,}/g" demo-plugin.php;
-sed -i "s/demo_plugin/${namespace,,}/g" includes/i18n.php;
+echo "Renamed activate/deactivate functions."
+echo ---
+
+# Replace lowercase minus separated filename for strings like text-domain
+find ./ -type f -name '*.php' -exec sed -i "s/demo-plugin/$filename_minus/g" {} \;
+echo "Successfully replaced lowercase minus separated filename string like text-domain."
+echo ---
+
+# Replace Namespace in all Files
+find ./ -type f -name '*.php' -exec sed -i "s/Demo_Plugin/$namespace/g" {} \;
+sed -i "s/Demo_Plugin/$namespace/g" composer.json;
+echo "Successfully renamed all namespaces."
+echo ---
 
 # Rename files with "-" separation
 for filename in $(find . -name 'demo-plugin*'); do echo mv \"$filename\" \"${filename//demo-plugin/$filename_minus}\"; done | /bin/bash
@@ -59,13 +75,6 @@ for filename in $(find . -name 'demo_plugin*'); do echo mv \"$filename\" \"${fil
 for filename in $(find ./includes -name 'Demo_Plugin*'); do echo mv \"$filename\" \"${filename//Demo_Plugin/$namespace}\"; done | /bin/bash
 
 echo "Successfully renamed all demo files."
-echo ---
-
-# Replace Namespace in all Files
-find ./ -type f -name '*.php' -exec sed -i "s/Demo_Plugin/$namespace/g" {} \;
-sed -i "s/Demo_Plugin/$namespace/g" composer.json;
-
-echo "Successfully renamed all namespaces."
 echo ---
 
 
