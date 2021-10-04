@@ -48,14 +48,28 @@ class Demo_Plugin {
 	 */
 	public function __construct() {
 
-        $this->plugin_name = 'demo-plugin';
+		$this->plugin_name = 'demo-plugin';
 
-        $this->loader = new Loader();
+		$this->load_dependencies();
+		$this->set_locale();
+		$this->define_admin_hooks();
+		$this->define_public_hooks();
+	
+	}
 
-        $this->set_locale();
-        $this->define_admin_hooks();
-        $this->define_public_hooks();
-
+	/**
+	 * Load the required dependencies for this plugin.
+	 *
+	 * Create an instance of the loader which will be used to register the hooks
+	 * with WordPress.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function load_dependencies() {
+		
+		$this->loader = new Loader();
+		
 	}
 
 	/**
