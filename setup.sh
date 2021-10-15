@@ -82,11 +82,21 @@ for filename in $(find ./includes -name 'Demo_Plugin*'); do echo mv \"$filename\
 echo "Successfully renamed all demo files."
 echo ---
 
+npm install
+echo ---
+echo "Node Dependencies installed."
+echo ---
 
 # Install Dependencies
 composer install
 
 echo ---
-echo "Dependencies installed. Make final tests"
+echo "PHP Dependencies installed. Make final tests"
 echo ---
 composer run static-analyse
+
+
+echo ---
+echo "Build assets"
+echo ---
+npm run development
