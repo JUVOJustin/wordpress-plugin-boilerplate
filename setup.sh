@@ -61,6 +61,11 @@ find ./ -type f -name '*.php' -exec sed -i "s/demo-plugin/$filename_minus/g" {} 
 echo "Successfully replaced lowercase minus separated filename string like text-domain."
 echo ---
 
+# Replace lowercase minus separated filename in javascripts
+find ./ -type f -name '*.js' -exec sed -i "s/demo-plugin/$filename_minus/g" {} \;
+echo "Successfully replaced lowercase minus separated filename in javascripts."
+echo ---
+
 # Replace Namespace in all Files
 find ./ -type f -name '*.php' -exec sed -i "s/Demo_Plugin/$namespace/g" {} \;
 sed -i "s/Demo_Plugin/$namespace/g" composer.json;
