@@ -17,7 +17,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Demo_Plugin\\": "includes/",
+      "Demo_Plugin\\": "src/",
       "Demo_Plugin\\Admin\\": "admin/",
       "Demo_Plugin\\Frontend\\": "frontend/"
     }

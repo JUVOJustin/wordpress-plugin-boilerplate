@@ -76,7 +76,7 @@ for filename in $(find . -name 'demo-plugin*'); do echo mv \"$filename\" \"${fil
 # Rename files with "_" separation -> most likely php classes
 for filename in $(find . -name 'demo_plugin*'); do echo mv \"$filename\" \"${filename//demo-plugin/$filename}\"; done | /bin/bash
 # Rename Main Class
-for filename in $(find ./includes -name 'Demo_Plugin*'); do echo mv \"$filename\" \"${filename//Demo_Plugin/$namespace}\"; done | /bin/bash
+for filename in $(find ./src -name 'Demo_Plugin*'); do echo mv \"$filename\" \"${filename//Demo_Plugin/$namespace}\"; done | /bin/bash
 
 echo "Successfully renamed all demo files."
 echo ---
