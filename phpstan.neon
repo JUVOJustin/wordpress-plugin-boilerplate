@@ -2,7 +2,7 @@ parameters:
     level: 5
     inferPrivatePropertyTypeFromConstructor: true
     paths:
-        - includes/
+        - src/
         - admin/
         - frontend/
     ignoreErrors:
