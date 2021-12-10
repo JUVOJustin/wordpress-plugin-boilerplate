@@ -1,6 +1,5 @@
 # !/bin/bash
-usage()
-{
+usage() {
     echo "Usage:
             -h  show this help text
             -f  filename in snake_case e.g.: 'demo_plugin'. Will be used for assets
