@@ -78,7 +78,7 @@ class Loader {
      * @since    1.0.0
      */
     public function add_shortcode( string $hook, object $component, string $callback ) {
-        $this->shortcodes = $this->add( $this->actions, $hook, $component, $callback );
+        $this->shortcodes = $this->add( $this->shortcodes, $hook, $component, $callback );
     }
 
     /**
