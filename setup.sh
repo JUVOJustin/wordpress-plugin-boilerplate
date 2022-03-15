@@ -45,13 +45,14 @@ fi
 shift $((OPTIND - 1))
 
 # Rename Constants
-sed -i.bak "s/DEMO_PLUGIN/${namespace^^}/g" demo-plugin.php;
+sed -i.bak "s/DEMO_PLUGIN/$(tr '[:lower:]' '[:upper:]' <<< "$namespace")/g" demo-plugin.php;
 echo "Renamed Constants"
 echo ---
 
 # Rename activate/deactivate functions
-sed -i.bak "s/demo_plugin/${namespace,,}/g" demo-plugin.php;
+sed -i.bak "s/demo_plugin/$(tr '[:upper:]' '[:lower:]' <<< "$namespace")/g" demo-plugin.php;
 echo "Renamed activate/deactivate functions."
+exit 1;
 echo ---
 
 # Replace lowercase minus separated filename for strings like text-domain
@@ -78,6 +79,10 @@ for filename in $(find . -name 'demo_plugin*'); do echo mv \"$filename\" \"${fil
 for filename in $(find ./src -name 'Demo_Plugin*'); do echo mv \"$filename\" \"${filename//Demo_Plugin/$namespace}\"; done | /bin/bash
 
 echo "Successfully renamed all demo files."
+echo ---
+
+find ./ -type f -name '*.bak' -exec rm -rf {} \;
+echo "Removed .bak files"
 echo ---
 
 npm update
