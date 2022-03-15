@@ -52,7 +52,6 @@ echo ---
 # Rename activate/deactivate functions
 sed -i.bak "s/demo_plugin/$(tr '[:upper:]' '[:lower:]' <<< "$namespace")/g" demo-plugin.php;
 echo "Renamed activate/deactivate functions."
-exit 1;
 echo ---
 
 # Replace lowercase minus separated filename for strings like text-domain
