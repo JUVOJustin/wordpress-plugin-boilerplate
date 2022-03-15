@@ -24,5 +24,12 @@
   },
   "scripts": {
     "static-analyse": "@php ./vendor/bin/phpstan analyse"
+  },
+  "extra": {
+    "installer-paths": {
+      "vendor/{$vendor}/{$name}/": [
+        "type:wordpress-plugin"
+      ]
+    }
   }
 }
