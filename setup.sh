@@ -45,28 +45,28 @@ fi
 shift $((OPTIND - 1))
 
 # Rename Constants
-sed -i "s/DEMO_PLUGIN/${namespace^^}/g" demo-plugin.php;
+sed -i.bak "s/DEMO_PLUGIN/${namespace^^}/g" demo-plugin.php;
 echo "Renamed Constants"
 echo ---
 
 # Rename activate/deactivate functions
-sed -i "s/demo_plugin/${namespace,,}/g" demo-plugin.php;
+sed -i.bak "s/demo_plugin/${namespace,,}/g" demo-plugin.php;
 echo "Renamed activate/deactivate functions."
 echo ---
 
 # Replace lowercase minus separated filename for strings like text-domain
-find ./ -type f -name '*.php' -exec sed -i "s/demo-plugin/$filename_minus/g" {} \;
+find ./ -type f -name '*.php' -exec sed -i.bak "s/demo-plugin/$filename_minus/g" {} \;
 echo "Successfully replaced lowercase minus separated filename string like text-domain."
 echo ---
 
 # Replace lowercase minus separated filename in javascripts
-find ./ -type f -name '*.js' -exec sed -i "s/demo-plugin/$filename_minus/g" {} \;
+find ./ -type f -name '*.js' -exec sed -i.bak "s/demo-plugin/$filename_minus/g" {} \;
 echo "Successfully replaced lowercase minus separated filename in javascripts."
 echo ---
 
 # Replace Namespace in all Files
-find ./ -type f -name '*.php' -exec sed -i "s/Demo_Plugin/$namespace/g" {} \;
-sed -i "s/Demo_Plugin/$namespace/g" composer.json;
+find ./ -type f -name '*.php' -exec sed -i.bak "s/Demo_Plugin/$namespace/g" {} \;
+sed -i.bak "s/Demo_Plugin/$namespace/g" composer.json;
 echo "Successfully renamed all namespaces."
 echo ---
 
@@ -80,13 +80,13 @@ for filename in $(find ./src -name 'Demo_Plugin*'); do echo mv \"$filename\" \"$
 echo "Successfully renamed all demo files."
 echo ---
 
-npm install
+npm update
 echo ---
 echo "Node Dependencies installed."
 echo ---
 
 # Install Dependencies
-composer install
+composer update
 
 echo ---
 echo "PHP Dependencies installed. Make final tests"
