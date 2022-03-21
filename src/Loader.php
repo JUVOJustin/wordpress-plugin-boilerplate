@@ -20,7 +20,7 @@ class Loader {
      * @access   protected
      * @var      array $actions The actions registered with WordPress to fire when the plugin loads.
      */
-    protected array $actions;
+    protected $actions;
 
     /**
      * The array of filters registered with WordPress.
@@ -29,7 +29,7 @@ class Loader {
      * @access   protected
      * @var      array $filters The filters registered with WordPress to fire when the plugin loads.
      */
-    protected array $filters;
+    protected $filters;
 
     /**
      * The array of shortcodes registered with WordPress.
@@ -38,7 +38,7 @@ class Loader {
      * @access   protected
      * @var      array $shortcodes The shortcodes registered with WordPress to load when the plugin loads.
      */
-    protected array $shortcodes;
+    protected $shortcodes;
 
     /**
      * Initialize the collections used to maintain the actions and filters.
