@@ -2,3 +2,5 @@
 /node_modules/
 setup.sh
 .idea
+/frontend/dist/
+/admin/dist/
