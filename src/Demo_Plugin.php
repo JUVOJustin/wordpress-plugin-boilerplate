@@ -46,9 +46,10 @@ class Demo_Plugin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function __construct() {
+	public function __construct(string $version) {
 
 		$this->plugin_name = 'demo-plugin';
+		$this->version = $version;
 
 		$this->load_dependencies();
 		$this->set_locale();
