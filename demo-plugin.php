@@ -73,7 +73,8 @@ register_deactivation_hook( __FILE__, 'deactivate_demo_plugin' );
  */
 function run_demo_plugin() {
 
-	$plugin = new Demo_Plugin();
+	$version = "1.0.0";
+	$plugin = new Demo_Plugin($version);
 	$plugin->run();
 
 }
