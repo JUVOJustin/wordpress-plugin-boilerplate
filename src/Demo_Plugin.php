@@ -24,16 +24,22 @@ class Demo_Plugin {
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
 	 * the plugin
+	 *
+	 * @var Loader
 	 */
 	protected $loader;
 
 	/**
 	 * The unique identifier of this plugin.
+	 *
+	 * @var string
 	 */
 	protected $plugin_name;
 
 	/**
 	 * The current version of the plugin.
+	 *
+	 * @var string
 	 */
 	protected $version;
 
