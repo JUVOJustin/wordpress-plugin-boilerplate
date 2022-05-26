@@ -15,4 +15,4 @@ parameters:
         - %rootDir%/../../php-stubs/woocommerce-stubs/woocommerce-stubs.php
         - %rootDir%/../../php-stubs/acf-pro-stubs/acf-pro-stubs.php
     bootstrapFiles:
-            - constants.php
+        - constants.php
