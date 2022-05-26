@@ -46,6 +46,7 @@ shift $((OPTIND - 1))
 
 # Rename Constants
 sed -i.bak "s/DEMO_PLUGIN/$(tr '[:lower:]' '[:upper:]' <<< "$namespace")/g" demo-plugin.php;
+sed -i.bak "s/DEMO_PLUGIN/$(tr '[:lower:]' '[:upper:]' <<< "$namespace")/g" constants.php;
 echo "Renamed Constants"
 echo ---
 
