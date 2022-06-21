@@ -1,15 +1,14 @@
 {
   "devDependencies": {
     "laravel-mix": "^6.0.34",
-    "laravel-mix-merge-manifest": "^2.0.0",
     "laravel-mix-purgecss": "^6.0.0",
     "resolve-url-loader": "^4.0.0",
     "sass": "^1.43.2",
     "sass-loader": "^12.2.0"
   },
   "scripts": {
-    "development": "npx mix --mix-config=admin/webpack.mix.js && npx mix --mix-config=frontend/webpack.mix.js",
-    "watch": "npx mix watch --mix-config=admin/webpack.mix.js && npx mix watch --mix-config=frontend/webpack.mix.js",
-    "production": "npx mix --production --mix-config=admin/webpack.mix.js && npx mix --production --mix-config=frontend/webpack.mix.js"
+    "development": "npx mix",
+    "watch": "npx mix watch",
+    "production": "npx mix --production"
   }
 }
