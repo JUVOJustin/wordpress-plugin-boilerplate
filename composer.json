@@ -38,5 +38,5 @@
       "phpstan/extension-installer": true,
       "composer/installers": true
     }
-  },
+  }
 }
