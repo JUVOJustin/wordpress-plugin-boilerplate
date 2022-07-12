@@ -32,5 +32,11 @@
         "type:wordpress-plugin"
       ]
     }
-  }
+  },
+  "config": {
+    "allow-plugins": {
+      "phpstan/extension-installer": true,
+      "composer/installers": true
+    }
+  },
 }
