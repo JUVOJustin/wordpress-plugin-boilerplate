@@ -28,7 +28,7 @@ jobs:
 
       # Composer Install
       - name: Install dependencies
-        run: composer install --no-dev --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
+        run: composer install --no-dev --prefer-dist --no-progress --ignore-platform-reqs
 
       # Node Install
       - name: Node install Dependencies
