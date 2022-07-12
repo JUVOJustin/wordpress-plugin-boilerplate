@@ -22,7 +22,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-php-dev-
       - name: Install dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress --no-suggest --dev
+        run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: PHPSTAN
         run: composer run static-analyse
