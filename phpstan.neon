@@ -1,6 +1,5 @@
 parameters:
     level: 5
-    inferPrivatePropertyTypeFromConstructor: true
     reportUnmatchedIgnoredErrors: false
     paths:
         - src/
@@ -11,8 +10,6 @@ parameters:
         - '#^Function apply_filters(_ref_array)? invoked with [34567] parameters, 2 required\.$#'
         - '#.*class Frm.*#'
     scanFiles:
-        - %rootDir%/../../php-stubs/wordpress-stubs/wordpress-stubs.php
-        - %rootDir%/../../php-stubs/woocommerce-stubs/woocommerce-stubs.php
         - %rootDir%/../../php-stubs/acf-pro-stubs/acf-pro-stubs.php
     bootstrapFiles:
         - constants.php
