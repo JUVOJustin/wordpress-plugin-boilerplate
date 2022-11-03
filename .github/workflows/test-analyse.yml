@@ -1,28 +1,49 @@
-name: PHP Test/Analyse
+name: Test/Analyse
 
 on: [push, pull_request]
 
 jobs:
-  phpstan:
+  test:
 
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+
+      - name: Checkout
+        uses: actions/checkout@v2
 
       - name: Validate composer.json and composer.lock
         run: composer validate --strict
 
       - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v2
+        id: cache-composer
+        uses: actions/cache@v3
         with:
           path: vendor
-          key: ${{ runner.os }}-php-dev-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-dev-
+          key: composer-dev-${{ hashFiles('composer.lock') }}
+
       - name: Install dependencies
+        if: steps.cache-composer.outputs.cache-hit != 'true'
         run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Cache npm packages
+        id: cache-npm
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: npm-dev-${{ hashFiles('package-lock.json') }}
+
+      - name: Install npm dependencies
+        if: steps.cache-npm.outputs.cache-hit != 'true'
+        run: npm install
+
+      - name: Build assets
+        run: |
+          npm run production
 
       - name: PHPSTAN
         run: composer run static-analyse
+
+      - name: Run integration Tests
+        run: |
+          npm run cypress

@@ -22,7 +22,7 @@
  * @link       https://juvo-design.de
  * @since      1.0.0
  *
- * @package    Demo_Plugin
+ * @package    Catalyst_Portal
  */
 
 // If uninstall not called from WordPress, then exit.

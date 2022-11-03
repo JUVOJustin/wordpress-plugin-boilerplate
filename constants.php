@@ -1,3 +1,3 @@
 <?php
-define( 'DEMO_PLUGIN_PATH', __FILE__ );
-define( 'DEMO_PLUGIN_URL', __FILE__ );
+define( 'CATALYST_PORTAL_PATH', __FILE__ );
+define( 'CATALYST_PORTAL_URL', __FILE__ );

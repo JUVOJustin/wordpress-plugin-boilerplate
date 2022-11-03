@@ -1,22 +1,17 @@
 <?php
 
 /*
-Plugin Name: CMB2 Integration Tests Fields
-Plugin Author: CMB2
-Description: Configures test fields for CMB2's internal integration tests.
+Plugin Name: Integration Tests Setup
+Plugin Author: JUVOJustin
+Description: Set up WordPress for Integration Tests.
 */
 
-class Stup
+class Setup
 {
 
     public function __construct() {
 
     }
-
-}
-
-class Setup
-{
 
 }
 

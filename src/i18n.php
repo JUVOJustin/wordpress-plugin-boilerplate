@@ -1,6 +1,6 @@
 <?php
 
-namespace Demo_Plugin;
+namespace Catalyst_Portal;
 
 /**
  * Define the internationalization functionality.
@@ -19,7 +19,7 @@ class i18n {
     public function load_plugin_textdomain() {
 
         load_plugin_textdomain(
-            'demo-plugin',
+            'catalyst-portal',
             false,
             dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
         );

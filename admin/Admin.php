@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Demo_Plugin\Admin;
+namespace Catalyst_Portal\Admin;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -63,10 +63,10 @@ class Admin
          * class.
          */
 
-        if (file_exists(plugin_dir_url(__FILE__) . 'dist/css/demo-plugin.min.css')) {
-            wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'dist/css/demo-plugin.min.css', array(), $this->version, 'all');
+        if (file_exists(plugin_dir_url(__FILE__) . 'dist/css/catalyst-portal.min.css')) {
+            wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'dist/css/catalyst-portal.min.css', array(), $this->version, 'all');
         } else {
-            wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'dist/css/demo-plugin.css', array(), $this->version, 'all');
+            wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'dist/css/catalyst-portal.css', array(), $this->version, 'all');
         }
 
     }
@@ -90,10 +90,10 @@ class Admin
          * class.
          */
 
-        if (file_exists(plugin_dir_url(__FILE__) . 'dist/js/demo-plugin.min.js')) {
-            wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'dist/js/demo-plugin.min.js', array('jquery'), $this->version, false);
+        if (file_exists(plugin_dir_url(__FILE__) . 'dist/js/catalyst-portal.min.js')) {
+            wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'dist/js/catalyst-portal.min.js', array('jquery'), $this->version, false);
         } else {
-            wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'dist/js/demo-plugin.js', array('jquery'), $this->version, false);
+            wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'dist/js/catalyst-portal.js', array('jquery'), $this->version, false);
         }
 
     }

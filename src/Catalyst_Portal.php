@@ -1,9 +1,9 @@
 <?php
 
-namespace Demo_Plugin;
+namespace Catalyst_Portal;
 
-use Demo_Plugin\Frontend\Frontend;
-use Demo_Plugin\Admin\Admin;
+use Catalyst_Portal\Frontend\Frontend;
+use Catalyst_Portal\Admin\Admin;
 
 /**
  * The core plugin class.
@@ -15,11 +15,11 @@ use Demo_Plugin\Admin\Admin;
  * version of the plugin.
  *
  * @since      1.0.0
- * @package    Demo_Plugin
- * @subpackage Demo_Plugin/includes
+ * @package    Catalyst_Portal
+ * @subpackage Catalyst_Portal/includes
  * @author     Justin Vogt <mail@juvo-design.de>
  */
-class Demo_Plugin {
+class Catalyst_Portal {
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
@@ -54,7 +54,7 @@ class Demo_Plugin {
 	 */
 	public function __construct(string $version) {
 
-		$this->plugin_name = 'demo-plugin';
+		$this->plugin_name = 'catalyst-portal';
 		$this->version = $version;
 
 		$this->load_dependencies();

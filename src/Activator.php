@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Demo_Plugin;
+namespace Catalyst_Portal;
 
 
 class Activator {

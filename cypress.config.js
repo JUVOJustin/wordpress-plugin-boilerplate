@@ -12,7 +12,7 @@ module.exports = defineConfig({
 
       // modify config values
       if (!config.env.wp_username) {
-        config.env.plugin_slug = 'demo-plugin'
+        config.env.plugin_slug = 'catalyst-portal'
         config.env.wp_username = 'admin';
         config.env.wp_password = 'password';
       }

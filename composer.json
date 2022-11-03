@@ -17,9 +17,9 @@
   },
   "autoload": {
     "psr-4": {
-      "Demo_Plugin\\": "src/",
-      "Demo_Plugin\\Admin\\": "admin/",
-      "Demo_Plugin\\Frontend\\": "frontend/"
+      "Catalyst_Portal\\": "src/",
+      "Catalyst_Portal\\Admin\\": "admin/",
+      "Catalyst_Portal\\Frontend\\": "frontend/"
     }
   },
   "scripts": {
