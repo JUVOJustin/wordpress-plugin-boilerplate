@@ -3,7 +3,7 @@ name: Test/Analyse
 on: [push, pull_request]
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
 
@@ -20,48 +20,26 @@ jobs:
         uses: actions/cache@v3
         with:
           path: vendor
-          key: composer-${{ hashFiles('composer.lock') }}
+          key: composer-dev-${{ hashFiles('composer.lock') }}
 
       - name: Install dependencies
         if: steps.cache-composer.outputs.cache-hit != 'true'
         run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Cache npm packages
-        id: cache-npm-dev
+        id: cache-npm
         uses: actions/cache@v3
         with:
           path: node_modules
           key: npm-dev-${{ hashFiles('package-lock.json') }}
 
       - name: Install npm dependencies
-        if: steps.cache-npm-dev.outputs.cache-hit != 'true'
+        if: steps.cache-npm.outputs.cache-hit != 'true'
         run: npm install
 
       - name: Build assets
         run: |
           npm run production
-
-      - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
-          path: ./
-          retention-days: 3
-
-  test:
-
-    runs-on: ubuntu-latest
-
-    steps:
-
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: 'Download Artifacts'
-        uses: actions/download-artifact@v3
-        id: download
-        with:
-          name: build-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
 
       - name: PHPSTAN
         run: composer run static-analyse
