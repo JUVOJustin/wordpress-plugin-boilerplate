@@ -1,5 +1,7 @@
 {
   "devDependencies": {
+    "@wordpress/env": "^5.6.0",
+    "cypress": "^10.11.0",
     "laravel-mix": "^6.0.34",
     "laravel-mix-merge-manifest": "^2.1.0",
     "laravel-mix-purgecss": "^6.0.0",
@@ -11,6 +13,8 @@
     "development": "npx mix --mix-config=frontend/webpack.mix.js && npx mix --mix-config=admin/webpack.mix.js",
     "watch-admin": "npx mix watch --mix-config=admin/webpack.mix.js",
     "watch-frontend": "npx mix watch --mix-config=frontend/webpack.mix.js",
-    "production": "npx mix --production --mix-config=frontend/webpack.mix.js && npx mix --production --mix-config=admin/webpack.mix.js"
+    "production": "npx mix --production --mix-config=frontend/webpack.mix.js && npx mix --production --mix-config=admin/webpack.mix.js",
+    "env": "wp-env",
+    "cypress": "npm run env start && npm run env clean tests && npx cypress run --config video=false && npm run env stop"
   }
 }

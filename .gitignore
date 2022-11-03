@@ -4,3 +4,5 @@ setup.sh
 .idea
 /frontend/dist/
 /admin/dist/
+/tests/cypress/screenshots/
+/tests/cypress/videos/

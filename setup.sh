@@ -57,6 +57,7 @@ echo ---
 
 # Replace lowercase minus separated filename for strings like text-domain
 find ./ -type f -name '*.php' -exec sed -i.bak "s/demo-plugin/$filename_minus/g" {} \;
+find ./ -type f -name '*.js' -exec sed -i.bak "s/demo-plugin/$filename_minus/g" {} \;
 echo "Successfully replaced lowercase minus separated filename string like text-domain."
 echo ---
 
