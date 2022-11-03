@@ -21,8 +21,20 @@ jobs:
           key: ${{ runner.os }}-php-dev-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-php-dev-
+            
       - name: Install dependencies
         run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: PHPSTAN
         run: composer run static-analyse
+          
+      - name: Node install Dependencies
+        run: npm install
+        
+      - name: Build assets
+        run: |
+          npm run production
+          
+      - name: Run integration Tests
+        run: |
+          npm run cypress
