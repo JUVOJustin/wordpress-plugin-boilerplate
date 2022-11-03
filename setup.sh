@@ -16,7 +16,7 @@ while getopts ':hf:n:' option; do
       filename_minus=${filename/_/-}
       ;;
      n) namespace=$OPTARG
-       plugin_name=${$namespace/_/ }
+       plugin_name=${namespace/_/ }
       ;;
     :) printf "missing argument for -%s\n" "$OPTARG" >&2
       usage;
@@ -36,14 +36,24 @@ then
   echo "No Parameters passed"
   usage;
   exit 1;
-elif [[ (-z "$filename") || (-z "$namespace") ]]
+elif [[ (-z "$filename") || (-z "$namespace")]]
 then
   echo "You need to pass the -f and the -n parameters"
+  usage;
+  exit 1;
+elif [[ (-z "$plugin_name") ]]
+then
+  echo "Plugin name could not be determined"
   usage;
   exit 1;
 fi
 
 shift $((OPTIND - 1))
+
+echo ---
+echo Remove git relations to boilerplate
+echo ---
+rm -rf ./.git
 
 # Change Plugin Header
 sed -i.bak -E "s/([[:blank:]]*\*[[:blank:]]*Plugin Name:[[:blank:]]*).*/\1$plugin_name/g" demo-plugin.php;
@@ -111,8 +121,3 @@ echo ---
 echo "Run Integration Tests"
 echo ---
 npm run cypress
-
-echo ---
-echo Remove git relations to boilerplate
-echo ---
-rm -rf ./.git
