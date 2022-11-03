@@ -16,6 +16,7 @@ while getopts ':hf:n:' option; do
       filename_minus=${filename/_/-}
       ;;
      n) namespace=$OPTARG
+       plugin_name=${$namespace/_/ }
       ;;
     :) printf "missing argument for -%s\n" "$OPTARG" >&2
       usage;
@@ -43,6 +44,9 @@ then
 fi
 
 shift $((OPTIND - 1))
+
+# Change Plugin Header
+sed -i.bak "s/([[:blank:]]*\*[[:blank:]]*Plugin Name:[[:blank:]]*).*/\1$plugin_name/g" demo-plugin.php;
 
 # Rename Constants
 sed -i.bak "s/DEMO_PLUGIN/$(tr '[:lower:]' '[:upper:]' <<< "$namespace")/g" demo-plugin.php;
@@ -91,7 +95,6 @@ echo ---
 echo "Node Dependencies installed."
 echo ---
 
-# Install Dependencies
 composer update
 
 echo ---
@@ -99,8 +102,12 @@ echo "PHP Dependencies installed. Make final tests"
 echo ---
 composer run static-analyse
 
-
 echo ---
 echo "Build assets"
 echo ---
 npm run development
+
+echo ---
+echo "Run Integration Tests"
+echo ---
+npm run cypress
