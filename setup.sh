@@ -46,7 +46,7 @@ fi
 shift $((OPTIND - 1))
 
 # Change Plugin Header
-sed -i.bak "s/([[:blank:]]*\*[[:blank:]]*Plugin Name:[[:blank:]]*).*/\1$plugin_name/g" demo-plugin.php;
+sed -i.bak -E "s/([[:blank:]]*\*[[:blank:]]*Plugin Name:[[:blank:]]*).*/\1$plugin_name/g" demo-plugin.php;
 
 # Rename Constants
 sed -i.bak "s/DEMO_PLUGIN/$(tr '[:lower:]' '[:upper:]' <<< "$namespace")/g" demo-plugin.php;
@@ -111,3 +111,8 @@ echo ---
 echo "Run Integration Tests"
 echo ---
 npm run cypress
+
+echo ---
+echo Remove git relations to boilerplate
+echo ---
+rm -rf ./.git
