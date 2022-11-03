@@ -27,14 +27,14 @@ jobs:
         run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Cache npm packages
-        id: cache-composer
+        id: cache-npm-dev
         uses: actions/cache@v3
         with:
           path: node_modules
           key: npm-dev-${{ hashFiles('package-lock.json') }}
 
       - name: Install npm dependencies
-        if: steps.cache-composer.outputs.cache-hit != 'true'
+        if: steps.cache-npm-dev.outputs.cache-hit != 'true'
         run: npm install
 
       - name: Build assets
