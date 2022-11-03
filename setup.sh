@@ -105,8 +105,12 @@ echo ---
 echo "Node Dependencies installed."
 echo ---
 
-composer update
+echo ---
+echo "Rename plugin folder"
+echo ---
+mv ../plugin-boilerplate ../$filename_minus
 
+composer update
 echo ---
 echo "PHP Dependencies installed. Make final tests"
 echo ---
