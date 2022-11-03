@@ -17,21 +17,24 @@ jobs:
       - name: Validate composer.json and composer.lock
         run: composer validate
 
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v2
+      # Composer Install
+      - id: cache-composer
+        uses: actions/cache@v3
         with:
           path: vendor
-          key: ${{ runner.os }}-php-prod-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-prod-
-
-      # Composer Install
+          key: composer-prod-${{ hashFiles('composer.lock') }}
       - name: Install dependencies
+        if: steps.cache-composer.outputs.cache-hit != 'true'
         run: composer install --no-dev --prefer-dist --no-progress --ignore-platform-reqs
 
       # Node Install
-      - name: Node install Dependencies
+      - id: cache-npm
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: npm-dev-${{ hashFiles('package-lock.json') }}
+      - name: Install npm dependencies
+        if: steps.cache-npm.outputs.cache-hit != 'true'
         run: npm install
 
       # Build Assets
