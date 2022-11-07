@@ -50,14 +50,12 @@ jobs:
         id: cache-wp-env
         uses: actions/cache@v3
         with:
-          path: |
-            $GITHUB_WORKSPACE/.wp-env
+          path: ~/wp-env
           key: wp-env-${{ hashFiles('tests/setup/**/*', '.wp-env.json') }}
 
-      - if: steps.cache-wp-env.outputs.cache-hit != 'true'
-        run: |
-          npm run env start
-          npm run env install-path
+      - name: Install wp-env
+        if: steps.cache-wp-env.outputs.cache-hit != 'true'
+        run: npm run env start
 
       - name: Run integration Tests
         run: |
