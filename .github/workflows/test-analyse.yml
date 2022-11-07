@@ -51,7 +51,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            ~/.wp-env
+            $GITHUB_WORKSPACE/.wp-env
           key: wp-env-${{ hashFiles('tests/setup/**/*', '.wp-env.json') }}
 
       - if: steps.cache-wp-env.outputs.cache-hit != 'true'
