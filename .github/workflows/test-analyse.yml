@@ -30,7 +30,9 @@ jobs:
         id: cache-npm
         uses: actions/cache@v3
         with:
-          path: node_modules
+          path: |
+            node_modules
+            /home/runner/.cache/Cypress
           key: npm-dev-${{ hashFiles('package-lock.json') }}
 
       - name: Install npm dependencies
