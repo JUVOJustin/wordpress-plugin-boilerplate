@@ -13,7 +13,10 @@
     "phpstan/phpstan": "^1.7",
     "php-stubs/acf-pro-stubs": "^5.12",
     "szepeviktor/phpstan-wordpress": "^1.1",
-    "phpstan/extension-installer": "^1.1"
+    "phpstan/extension-installer": "^1.1",
+    "phpunit/phpunit": "^9",
+    "wp-phpunit/wp-phpunit": "^6.1",
+    "yoast/phpunit-polyfills": "^1.0"
   },
   "autoload": {
     "psr-4": {
