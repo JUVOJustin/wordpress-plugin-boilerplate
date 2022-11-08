@@ -46,17 +46,6 @@ jobs:
       - name: PHPSTAN
         run: composer run static-analyse
 
-      - name: Cache wp-env
-        id: cache-wp-env
-        uses: actions/cache@v3
-        with:
-          path: ~/wp-env
-          key: wp-env-${{ hashFiles('tests/setup/**/*', '.wp-env.json') }}
-
-      - name: Install wp-env
-        if: steps.cache-wp-env.outputs.cache-hit != 'true'
-        run: npm run env start
-
       - name: Run integration Tests
         run: |
           npm run cypress
