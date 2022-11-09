@@ -15,7 +15,7 @@
     "watch-frontend": "npx mix watch --mix-config=frontend/webpack.mix.js",
     "production": "npx mix --production --mix-config=frontend/webpack.mix.js && npx mix --production --mix-config=admin/webpack.mix.js",
     "wp-env": "wp-env",
-    "test:php": "npm run wp-env run phpunit 'phpunit -c /var/www/html/wp-content/plugins/demo-plugin/phpunit.xml.dist'",
-    "test:e2e":  "npm run env clean tests && npx cypress run --config video=false"
+    "test:php": "npm run wp-env start && npm run wp-env run phpunit 'phpunit -c /var/www/html/wp-content/plugins/demo-plugin/phpunit.xml.dist'",
+    "test:e2e":  "npm run wp-env start && npm run wp-env clean tests && npx cypress run --config video=false"
   }
 }
