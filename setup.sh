@@ -86,6 +86,11 @@ sed -i.bak "s/Demo_Plugin/$namespace/g" composer.json;
 echo "Successfully renamed all namespaces."
 echo ---
 
+# Replace filename in bootstrap test
+sed -i.bak "s/demo-plugin/$filename_minus/g" tests/bootstrap.php;
+echo "Successfully renamed filename in tests/bootrap.php"
+echo ---
+
 # Rename files with "-" separation
 for filename in $(find . -name 'demo-plugin*'); do echo mv \"$filename\" \"${filename//demo-plugin/$filename_minus}\"; done | /bin/bash
 # Rename files with "_" separation -> most likely php classes
