@@ -115,6 +115,7 @@ echo ---
 echo "Rename plugin folder"
 echo ---
 mv ../plugin-boilerplate ../$filename_minus
+cd ../$filename_minus
 
 composer update
 echo ---
