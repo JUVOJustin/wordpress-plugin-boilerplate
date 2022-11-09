@@ -88,7 +88,8 @@ echo ---
 
 # Replace filename in bootstrap test
 sed -i.bak "s/demo-plugin/$filename_minus/g" tests/bootstrap.php;
-echo "Successfully renamed filename in tests/bootrap.php"
+sed -i.bak "s/demo-plugin/$filename_minus/g" package.json;
+echo "Successfully renamed filename in tests/bootrap.php and package.json"
 echo ---
 
 # Rename files with "-" separation
@@ -129,4 +130,9 @@ npm run development
 echo ---
 echo "Run Integration Tests"
 echo ---
-npm run cypress
+npm run test:e2e
+
+echo ---
+echo "Run PHPUnit Tests"
+echo ---
+npm run test:php
