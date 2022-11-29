@@ -48,4 +48,4 @@ jobs:
 
       - name: Run integration Tests
         run: |
-          npm run cypress
+          npm run test:e2e
