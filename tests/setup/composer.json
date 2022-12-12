@@ -19,7 +19,7 @@
   },
   "extra": {
     "installer-paths": {
-      "{$name}/": [
+      "plugins/{$name}/": [
         "type:wordpress-plugin"
       ]
     }
