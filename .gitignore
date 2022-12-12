@@ -6,5 +6,5 @@ setup.sh
 /admin/dist/
 /tests/cypress/screenshots/
 /tests/cypress/videos/
-/tests/setup/Setup-Helper/vendor
-/tests/setup/Setup-Helper/composer.lock
+/tests/setup/plugins
+/tests/setup/vendor
