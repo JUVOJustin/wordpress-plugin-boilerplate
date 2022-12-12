@@ -66,6 +66,7 @@ jobs:
           find . -name "package.json" -type f -delete && find . -name "package-lock.json" -type f -delete
           rm -rf .git && find . -name ".gitignore" -type f -delete
           rm -rf .github
+          rm -rf ./tests
 
       # Zip everything
       - shell: bash
