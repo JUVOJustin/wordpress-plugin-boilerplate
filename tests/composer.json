@@ -1,0 +1,32 @@
+{
+  "name": "juvo/test-setup",
+  "description": "Used to load other third party plugins as dependency that cannot be loaded through composer e.g. premium plugins",
+  "license": "GPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "Justin Vogt",
+      "email": "mail@juvo-design.de",
+      "homepage": "https://juvo-design.de"
+    }
+  ],
+  "repositories": {
+    "satispress": {
+      "type": "composer",
+      "url": "https://plugins.juvo-design.de/satispress/"
+    }
+  },
+  "require": {
+  },
+  "extra": {
+    "installer-paths": {
+      "{$name}/": [
+        "type:wordpress-plugin"
+      ]
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "composer/installers": true
+    }
+  }
+}
