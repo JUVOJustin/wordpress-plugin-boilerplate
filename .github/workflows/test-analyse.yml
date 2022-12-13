@@ -27,7 +27,9 @@ jobs:
         run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Set Test Composer authentication
-        if: secrets.SATISPRESS_KEY
+        env: 
+            satispress_key: ${{ secrets.SATISPRESS_KEY }}
+        if: ${{ env.satispress_key != '' }}
         run: |
           cd ./tests/setup
           composer config http-basic.plugins.juvo-design.de ${{ secrets.SATISPRESS_KEY }} satispress
