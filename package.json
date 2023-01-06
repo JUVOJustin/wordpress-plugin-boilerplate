@@ -1,7 +1,7 @@
 {
   "devDependencies": {
     "@wordpress/env": "^5.6.0",
-    "cypress": "^10.11.0",
+    "cypress": "^12.3.0",
     "laravel-mix": "^6.0.34",
     "laravel-mix-merge-manifest": "^2.1.0",
     "laravel-mix-purgecss": "^6.0.0",
