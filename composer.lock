@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5da77a39e0608fa2aa3916e51a3b1f51",
+    "content-hash": "b44e75d86a787ee6407c9c5e58ea7ad9",
     "packages": [],
     "packages-dev": [
         {
@@ -305,16 +305,16 @@
         },
         {
             "name": "php-stubs/acf-pro-stubs",
-            "version": "v5.12.2",
+            "version": "v6.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-stubs/acf-pro-stubs.git",
-                "reference": "7e44b653bd72e5eebf725f3af6b5afaae3039dcf"
+                "reference": "3f029889ab95d7ed8baf16149e150bd4bb903227"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-stubs/acf-pro-stubs/zipball/7e44b653bd72e5eebf725f3af6b5afaae3039dcf",
-                "reference": "7e44b653bd72e5eebf725f3af6b5afaae3039dcf",
+                "url": "https://api.github.com/repos/php-stubs/acf-pro-stubs/zipball/3f029889ab95d7ed8baf16149e150bd4bb903227",
+                "reference": "3f029889ab95d7ed8baf16149e150bd4bb903227",
                 "shasum": ""
             },
             "require": {
@@ -343,9 +343,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-stubs/acf-pro-stubs/issues",
-                "source": "https://github.com/php-stubs/acf-pro-stubs/tree/v5.12.2"
+                "source": "https://github.com/php-stubs/acf-pro-stubs/tree/v6.0.2"
             },
-            "time": "2022-05-28T19:55:17+00:00"
+            "time": "2022-10-03T16:14:53+00:00"
         },
         {
             "name": "php-stubs/wordpress-stubs",
