@@ -62,7 +62,7 @@ class Frontend {
 		 */
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'dist/css/demo-plugin-public.css', array(), $this->version, 'all' );
-
+	
 	}
 
 	/**
@@ -85,6 +85,9 @@ class Frontend {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'dist/js/demo-plugin-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script($this->plugin_name.'-manifest', plugin_dir_url(__FILE__) . 'dist/js/manifest.js', array($this->plugin_name), $this->version, false);
+        	wp_enqueue_script($this->plugin_name.'-vendor', plugin_dir_url(__FILE__) . 'dist/js/vendor.js', array($this->plugin_name), $this->version, false);
+		
 
 	}
 
