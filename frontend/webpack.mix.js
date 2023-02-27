@@ -2,6 +2,16 @@ let mix = require('laravel-mix');
 require('laravel-mix-purgecss');
 require('laravel-mix-merge-manifest');
 
+mix.webpackConfig({
+        //...
+        output: {
+            //...
+            chunkLoadingGlobal: 'appConfigChunkLoadingGlobal',
+        },
+});
+
+mix.extract();
+
 mix.js('frontend/js/demo-plugin-public.js', 'js')
    .sass('frontend/scss/demo-plugin-public.scss', 'css')
    .purgeCss({
