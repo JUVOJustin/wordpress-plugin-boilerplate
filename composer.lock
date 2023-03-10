@@ -440,16 +440,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.9.7",
+            "version": "1.10.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "0501435cd342eac7664bd62155b1ef907fc60b6f"
+                "reference": "50d089a3e0904b0fe7e2cf2d4fd37d427d64235a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/0501435cd342eac7664bd62155b1ef907fc60b6f",
-                "reference": "0501435cd342eac7664bd62155b1ef907fc60b6f",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/50d089a3e0904b0fe7e2cf2d4fd37d427d64235a",
+                "reference": "50d089a3e0904b0fe7e2cf2d4fd37d427d64235a",
                 "shasum": ""
             },
             "require": {
@@ -479,7 +479,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.9.7"
+                "source": "https://github.com/phpstan/phpstan/tree/1.10.6"
             },
             "funding": [
                 {
@@ -495,7 +495,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-01-04T21:59:57+00:00"
+            "time": "2023-03-09T16:55:12+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
