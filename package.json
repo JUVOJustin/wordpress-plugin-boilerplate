@@ -1,9 +1,9 @@
 {
   "type": "module",
   "devDependencies": {
-    "@roots/bud": "^6.11.0",
-    "@roots/bud-preset-wordpress": "^6.11.0",
-    "@roots/bud-sass": "^6.11.0",
+    "@roots/bud": "^2023.3.27",
+    "@roots/bud-preset-wordpress": "^2023.3.27",
+    "@roots/bud-sass": "^2023.3.27",
     "@wordpress/env": "^5.6.0",
     "cypress": "^10.11.0"
   },
