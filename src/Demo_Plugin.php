@@ -19,145 +19,206 @@ use Demo_Plugin\Admin\Admin;
  * @subpackage Demo_Plugin/includes
  * @author     Justin Vogt <mail@juvo-design.de>
  */
-class Demo_Plugin {
+class Demo_Plugin
+{
 
-	/**
-	 * The loader that's responsible for maintaining and registering all hooks that power
-	 * the plugin
-	 *
-	 * @var Loader
-	 */
-	protected $loader;
+    /**
+     * The loader that's responsible for maintaining and registering all hooks that power
+     * the plugin
+     *
+     * @var Loader
+     */
+    protected $loader;
 
-	/**
-	 * The unique identifier of this plugin.
-	 *
-	 * @var string
-	 */
-	protected $plugin_name;
+    /**
+     * The unique identifier of this plugin.
+     *
+     * @var string
+     */
+    protected $plugin_name;
 
-	/**
-	 * The current version of the plugin.
-	 *
-	 * @var string
-	 */
-	protected $version;
+    /**
+     * The current version of the plugin.
+     *
+     * @var string
+     */
+    protected $version;
 
-	/**
-	 * Define the core functionality of the plugin.
-	 *
-	 * Set the plugin name and the plugin version that can be used throughout the plugin.
-	 * Load the dependencies, define the locale, and set the hooks for the admin area and
-	 * the public-facing side of the site.
-	 *
-	 * @since    1.0.0
-	 */
-	public function __construct(string $version) {
+    /**
+     * Define the core functionality of the plugin.
+     *
+     * Set the plugin name and the plugin version that can be used throughout the plugin.
+     * Load the dependencies, define the locale, and set the hooks for the admin area and
+     * the public-facing side of the site.
+     *
+     * @since    1.0.0
+     */
+    public function __construct(string $version)
+    {
 
-		$this->plugin_name = 'demo-plugin';
-		$this->version = $version;
+        $this->plugin_name = 'demo-plugin';
+        $this->version = $version;
 
-		$this->load_dependencies();
-		$this->set_locale();
-		$this->define_admin_hooks();
-		$this->define_public_hooks();
-	
-	}
+        $this->load_dependencies();
+        $this->set_locale();
+        $this->define_admin_hooks();
+        $this->define_public_hooks();
 
-	/**
-	 * Load the required dependencies for this plugin.
-	 *
-	 * Create an instance of the loader which will be used to register the hooks
-	 * with WordPress.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 */
-	private function load_dependencies() {
-		
-		$this->loader = new Loader();
-		
-	}
+    }
 
-	/**
-	 * Define the locale for this plugin for internationalization.
-	 *
-	 * Uses the i18n class in order to set the domain and to register the hook
-	 * with WordPress.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 */
-	private function set_locale() {
+    /**
+     * Load the required dependencies for this plugin.
+     *
+     * Create an instance of the loader which will be used to register the hooks
+     * with WordPress.
+     *
+     * @since    1.0.0
+     * @access   private
+     */
+    private function load_dependencies()
+    {
 
-		$plugin_i18n = new i18n();
+        $this->loader = new Loader();
 
-		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
+    }
 
-	}
+    /**
+     * Define the locale for this plugin for internationalization.
+     *
+     * Uses the i18n class in order to set the domain and to register the hook
+     * with WordPress.
+     *
+     * @since    1.0.0
+     * @access   private
+     */
+    private function set_locale()
+    {
 
-	/**
-	 * Register all of the hooks related to the admin area functionality
-	 * of the plugin.
-	 */
-	private function define_admin_hooks() {
+        $plugin_i18n = new i18n();
 
-		$plugin_admin = new Admin( $this->get_plugin_name(), $this->get_version() );
+        $this->loader->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+    }
 
-	}
+    /**
+     * Register all of the hooks related to the admin area functionality
+     * of the plugin.
+     */
+    private function define_admin_hooks()
+    {
 
-	/**
-	 * Register all of the hooks related to the public-facing functionality
-	 * of the plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 */
-	private function define_public_hooks() {
+        add_action('admin_enqueue_scripts', function () {
+            $this->enqueue_bud_entrypoint('admin');
+        }, 100);
 
-		$plugin_public = new Frontend( $this->get_plugin_name(), $this->get_version() );
+    }
 
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+    /**
+     * Register all of the hooks related to the public-facing functionality
+     * of the plugin.
+     *
+     * @since    1.0.0
+     * @access   private
+     */
+    private function define_public_hooks()
+    {
 
-	}
+        add_action('wp_enqueue_scripts', function () {
+            $this->enqueue_bud_entrypoint('frontend');
+        }, 100);
 
-	/**
-	 * Run the loader to execute all of the hooks with WordPress.
-	 */
-	public function run() {
-		$this->loader->run();
-	}
+    }
 
-	/**
-	 * The name of the plugin used to uniquely identify it within the context of
-	 * WordPress and to define internationalization functionality.
-	 *
-	 * @return    string    The name of the plugin.
-	 */
-	public function get_plugin_name() {
-		return $this->plugin_name;
-	}
+    /**
+     * Run the loader to execute all of the hooks with WordPress.
+     */
+    public function run()
+    {
+        $this->loader->run();
+    }
 
-	/**
-	 * The reference to the class that orchestrates the hooks with the plugin.
-	 *
-	 * @return    Loader    Orchestrates the hooks of the plugin.
-	 */
-	public function get_loader() {
-		return $this->loader;
-	}
+    /**
+     * The name of the plugin used to uniquely identify it within the context of
+     * WordPress and to define internationalization functionality.
+     *
+     * @return    string    The name of the plugin.
+     */
+    public function get_plugin_name()
+    {
+        return $this->plugin_name;
+    }
 
-	/**
-	 * Retrieve the version number of the plugin.
-	 *
-	 * @return    string    The version number of the plugin.
-	 */
-	public function get_version() {
-		return $this->version;
-	}
+    /**
+     * The reference to the class that orchestrates the hooks with the plugin.
+     *
+     * @return    Loader    Orchestrates the hooks of the plugin.
+     */
+    public function get_loader()
+    {
+        return $this->loader;
+    }
+
+    /**
+     * Retrieve the version number of the plugin.
+     *
+     * @return    string    The version number of the plugin.
+     */
+    public function get_version()
+    {
+        return $this->version;
+    }
+
+    /**
+     * Enqueue a bud entrypoint
+     *
+     * @param string $entry
+     * @param array $localize_data
+     */
+    private function enqueue_bud_entrypoint(string $entry, array $localize_data = [])
+    {
+        $entrypoints_manifest = DEMO_PLUGIN_PATH . '/dist/entrypoints.json';
+
+        // parse json file
+        $entrypoints = json_decode(file_get_contents($entrypoints_manifest));
+
+        // Iterate entrypoint groups
+        foreach ($entrypoints as $key => $bundle) {
+
+            // Only process the entrypoint that should be enqueued per call
+            if ($key != $entry) {
+                continue;
+            }
+
+            // Iterate js and css files
+            foreach ($bundle as $type => $files) {
+                foreach ($files as $file) {
+                    if ($type == "js") {
+                        wp_enqueue_script(
+                            "$this->plugin_name/$file",
+                            DEMO_PLUGIN_URL . 'dist/' . $file,
+                            $bundle->dependencies,
+                            null,
+                            true,
+                        );
+
+                        // Maybe localize js
+                        if (!empty($localize_data)) {
+                            wp_localize_script("$this->plugin_name/$file", str_replace('-', '_', $this->plugin_name), $localize_data);
+
+                            // Unset after localize since we only need to localize one script per bundle so on next iteration will be skipped
+                            unset($localize_data);
+                        }
+                    }
+
+                    if ($type == "css") {
+                        wp_enqueue_style(
+                            "$this->plugin_name/$file",
+                            DEMO_PLUGIN_URL . 'dist/' . $file
+                        );
+                    }
+                }
+            }
+        }
+    }
 
 }

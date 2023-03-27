@@ -41,7 +41,7 @@ jobs:
       - name: Build assets
         run: |
           npm run production
-          rm -rf node_modules && npm install --production
+          rm -rf node_modules
 
       # Update Version
       - name: Set env

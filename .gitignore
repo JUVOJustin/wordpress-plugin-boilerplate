@@ -2,8 +2,8 @@
 /node_modules/
 setup.sh
 .idea
-/frontend/dist/
-/admin/dist/
+dist/
+.budfiles/
 /tests/cypress/screenshots/
 /tests/cypress/videos/
 /tests/setup/plugins
