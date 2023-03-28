@@ -74,7 +74,6 @@ jobs:
           cd ..
           sudo apt-get install zip
           zip -r ${{ github.event.repository.name }}.zip ./*
-          mkdir ${{ github.workspace }}/dist
           mv ${{ github.event.repository.name }}.zip ${{ github.workspace }}/dist
 
       - name: 'Upload Artifact'
