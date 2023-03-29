@@ -5,7 +5,7 @@
     "@roots/bud-preset-wordpress": "^6.11.0",
     "@roots/bud-sass": "^6.11.0",
     "@wordpress/env": "^5.6.0",
-    "cypress": "^10.11.0"
+    "cypress": "^12.9.0"
   },
   "scripts": {
     "development": "npx bud build development",
