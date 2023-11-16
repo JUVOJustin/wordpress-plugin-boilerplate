@@ -58,6 +58,12 @@ jobs:
             ${{ github.event.repository.name }}.php
           commit-msg: Update Version in WordPress specific files
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Update release    
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: "true"
+          generateReleaseNotes: "true"
 
       # Delete Development Files
       - shell: bash
