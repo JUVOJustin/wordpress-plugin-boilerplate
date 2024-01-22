@@ -1,7 +1,7 @@
 > You most likely want to overwrite this readme with your own content
 
 # What is this boilerplate
-This boilerplate is a fork of [WordPress Boilerplate](https://github.com/DevinVinson/WordPress-Plugin-Boilerplate) but with namespaces, shortcodes support, phpstan and laravel mix support out of the box. 
+This boilerplate is a fork of [WordPress Boilerplate](https://github.com/DevinVinson/WordPress-Plugin-Boilerplate) but with namespaces, shortcodes support, phpstan and bud.js support out of the box. 
 
 ## How to use
 
