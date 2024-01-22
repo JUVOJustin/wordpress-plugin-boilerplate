@@ -196,7 +196,7 @@ class Demo_Plugin
                         wp_enqueue_script(
                             "$this->plugin_name/$file",
                             DEMO_PLUGIN_URL . 'dist/' . $file,
-                            $bundle->dependencies,
+                            $bundle->dependencies ?? [],
                             null,
                             true,
                         );
