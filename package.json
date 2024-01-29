@@ -16,6 +16,6 @@
     "test:e2e": "npm run composer:test && npm run wp-env --debug start && npm run wp-env clean tests && npx cypress run --config video=false"
   },
   "dependencies": {
-    "caniuse-lite": "^1.0.30001470"
+    "caniuse-lite": "^1.0.30001581"
   }
 }
