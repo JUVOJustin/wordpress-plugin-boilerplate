@@ -34,6 +34,8 @@
     }
   },
   "config": {
+    "optimize-autoloader": true,
+    "classmap-authoritative": true,
     "allow-plugins": {
       "phpstan/extension-installer": true,
       "composer/installers": true
