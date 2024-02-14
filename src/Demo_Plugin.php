@@ -22,6 +22,8 @@ use Demo_Plugin\Admin\Admin;
 class Demo_Plugin
 {
 
+    const PLUGIN_NAME = 'demo-plugin';
+
     /**
      * The loader that's responsible for maintaining and registering all hooks that power
      * the plugin
@@ -55,8 +57,6 @@ class Demo_Plugin
      */
     public function __construct(string $version)
     {
-
-        $this->plugin_name = 'demo-plugin';
         $this->version = $version;
 
         $this->load_dependencies();
@@ -145,7 +145,7 @@ class Demo_Plugin
      */
     public function get_plugin_name()
     {
-        return $this->plugin_name;
+        return self::PLUGIN_NAME;
     }
 
     /**
@@ -194,7 +194,7 @@ class Demo_Plugin
                 foreach ($files as $file) {
                     if ($type == "js") {
                         wp_enqueue_script(
-                            "$this->plugin_name/$file",
+                            self::PLUGIN_NAME. "/$file",
                             DEMO_PLUGIN_URL . 'dist/' . $file,
                             $bundle->dependencies ?? [],
                             null,
@@ -203,7 +203,7 @@ class Demo_Plugin
 
                         // Maybe localize js
                         if (!empty($localize_data)) {
-                            wp_localize_script("$this->plugin_name/$file", str_replace('-', '_', $this->plugin_name), $localize_data);
+                            wp_localize_script(self::PLUGIN_NAME. "/$file", str_replace('-', '_', self::PLUGIN_NAME), $localize_data);
 
                             // Unset after localize since we only need to localize one script per bundle so on next iteration will be skipped
                             unset($localize_data);
@@ -212,7 +212,7 @@ class Demo_Plugin
 
                     if ($type == "css") {
                         wp_enqueue_style(
-                            "$this->plugin_name/$file",
+                            self::PLUGIN_NAME. "/$file",
                             DEMO_PLUGIN_URL . 'dist/' . $file
                         );
                     }
@@ -220,5 +220,21 @@ class Demo_Plugin
             }
         }
     }
+
+    /**
+	 * Generates a unique but deterministic key usable for object caching. The key is prefixed by the plugin name
+	 *
+	 * @param array $matching_data Pass any data that should be used to match the cache
+	 *
+	 * @return string
+	 */
+	public static function generate_cache_key(array $matching_data): string {
+		foreach($matching_data as $key => $value) {
+			$matching_data[ $key] = serialize($value);
+		}
+
+		$matching_data = implode('-', $matching_data);
+		return self::plugin_name. '-'. md5($matching_data);
+	}
 
 }
