@@ -234,7 +234,7 @@ class Demo_Plugin
 		}
 
 		$matching_data = implode('-', $matching_data);
-		return self::plugin_name. '-'. md5($matching_data);
+		return self::PLUGIN_NAME. '-'. md5($matching_data);
 	}
 
 }
