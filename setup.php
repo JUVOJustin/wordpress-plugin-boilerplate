@@ -48,7 +48,6 @@ function replaceInFiles(string $find, string $replace, string $filePattern): boo
         if (basename($filename) === 'setup.php') {
             continue;
         }
-        echo $filename . "\n";
         $fileContents = file_get_contents($filename);
         $fileContents = str_replace($find, $replace, $fileContents);
         if (!file_put_contents($filename, $fileContents)) {
@@ -66,7 +65,7 @@ if (
     || !replaceInFiles('demo_plugin', str_replace('-', '_', $pluginSlug), '**/*.php')
     || !replaceInFiles('Demo_Plugin', $namespace, '{**/*.php, *.json}')
     || !replaceInFiles('DEMO_PLUGIN', strtoupper($namespace), '**/*.php')
-    || !replaceInFiles('Demo Plugin', strtoupper($namespace), '{demo-plugin.php,README.txt}')
+    || !replaceInFiles('Demo Plugin', strtoupper($pluginName), '{demo-plugin.php,README.txt}')
 ) {
     echo "Error replacing in files.\n";
     exit;
@@ -97,9 +96,9 @@ system('npm run production');
 
 echo "\n-> Setup completed\n\n";
 
-/*// Remove setup.php file
+// Remove setup.php file
 if(!unlink(__FILE__)) {
     echo "Error removing setup.php\n";
 }
-echo "\n-> Removing setup.php done\n\n";*/
+echo "\n-> Removing setup.php done\n\n";
 
