@@ -6,10 +6,27 @@ function ask($question) {
     return trim(fgets(STDIN)); // Get input from user
 }
 
-// Prompt user for necessary details
-$pluginSlug = ask("Enter the slug you want to use for the plugin as snake_case (e.g., 'demo_plugin'): ");
-$namespace = ask("Enter the namespace in PascalCase (e.g., 'DemoPlugin'): ");
-$pluginName = str_replace('_', ' ', $namespace); // Convert namespace to plugin name by replacing underscores with spaces
+function toPascalSnakeCase($string): string {
+    // Split the string into words based on spaces or underscores
+    $words = preg_split('/[\s_]+/', $string);
+
+    // Capitalize the first letter of each word and then join them with an underscore
+    return implode('_', array_map('ucfirst', $words));
+}
+
+$pluginName = ask("Enter the name of the plugin: ");
+
+$calculatedNamespace = toPascalSnakeCase($pluginName);
+$namespace = ask("Enter the namespace in Camel_Snake Case (e.g., 'Demo_Plugin'). Leave empty for default '$calculatedNamespace': ");
+if (empty($namespace)) {
+    $namespace = $calculatedNamespace;
+}
+
+$calculatedSlug = str_replace('_', '-', strtolower($pluginName));
+$pluginSlug = ask("Enter the slug you want to use for the plugin as snake_case (e.g., 'demo_plugin'). Leave empty for default '$calculatedSlug': ");
+if (empty($pluginSlug)) {
+    $pluginSlug = $calculatedSlug;
+}
 
 // Validate inputs
 if (empty($pluginSlug) || empty($namespace)) {
@@ -38,6 +55,7 @@ $constants = strtoupper($namespace);
 // Replace strings in specific files
 if (
     !replaceInFiles('demo-plugin', $filenameMinus, '*.{php,js}')
+    || !replaceInFiles('demo_plugin', $pluginSlug, '*.php')
     || !replaceInFiles('Demo_Plugin', $namespace, '*.php')
     || !replaceInFiles('DEMO_PLUGIN', $constants, '*.php')
 ) {
