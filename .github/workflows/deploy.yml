@@ -6,42 +6,41 @@ on:
       - '*'
 
 jobs:
+  call-install-deps:
+    uses: ./.github/workflows/install-deps.yml
+    with:
+      mode: 'prod'
+    secrets: inherit
+
   build:
     runs-on: ubuntu-latest
+    needs: call-install-deps
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2.1.4
 
-      - name: Validate composer.json and composer.lock
-        run: composer validate
-
-      # Composer Install
-      - id: cache-composer
+      - name: Load Cache
         uses: actions/cache@v3
         with:
-          path: vendor
-          key: composer-prod-${{ hashFiles('composer.lock') }}
-      - name: Install dependencies
-        if: steps.cache-composer.outputs.cache-hit != 'true'
-        run: composer install --no-dev --prefer-dist --no-progress --ignore-platform-reqs
+          path: |
+            vendor
+            node_modules
+            dist
+          key: deps-prod-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
+          fail-on-cache-miss: true
+        id: cache
 
-      # Node Install
-      - id: cache-npm
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: npm-dev-${{ hashFiles('package-lock.json') }}
-      - name: Install npm dependencies
-        if: steps.cache-npm.outputs.cache-hit != 'true'
-        run: npm install
-
-      # Build Assets
-      - name: Build assets
+      - name: Clean up development files (Prod)
         run: |
-          npm run production
-          rm -rf node_modules && npm install --production
+          find . -name "composer.json" -type f -delete && find . -name "composer.lock" -type f -delete
+          find . -name "package.json" -type f -delete && find . -name "package-lock.json" -type f -delete
+          find . -name "constants.php" && find . -name "README.md"
+          rm -rf .git && find . -name ".gitignore" -type f -delete
+          rm -rf .github
+          rm -rf tests
+        shell: bash
 
       # Update Version
       - name: Set env
@@ -56,73 +55,19 @@ jobs:
         with:
           file-path: |
             ${{ github.event.repository.name }}.php
+            README.txt
           commit-msg: Update Version in WordPress specific files
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: Update release    
-        uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: "true"
-          generateReleaseNotes: "true"
-
-      # Delete Development Files
-      - shell: bash
-        run: |
-          find . -name "composer.json" -type f -delete && find . -name "composer.lock" -type f -delete
-          find . -name "package.json" -type f -delete && find . -name "package-lock.json" -type f -delete
-          rm -rf .git && find . -name ".gitignore" -type f -delete
-          rm -rf .github
-          rm -rf ./tests
 
       # Zip everything
       - shell: bash
         run: |
           cd ..
           sudo apt-get install zip
-          zip -r ${{ github.event.repository.name }}.zip ./*
-          mv ${{ github.event.repository.name }}.zip ${{ github.workspace }}/dist
+          zip -r ${{ github.event.repository.name }}-${{ env.RELEASE_VERSION }}.zip ./*
 
-      - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v2
+      - name: Release
+        uses: ncipollo/release-action@v1
         with:
-          path: |
-            ${{ github.workspace }}/dist/${{ github.event.repository.name }}.zip
-          name: build
-          retention-days: 5
-
-  deploy:
-    # Wait for buld job to finish
-    needs: build
-
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-
-      - name: Set env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-
-      - name: Download Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: build
-
-      - name: Upload new Version
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY_PEM }}
-          source: ${{ github.event.repository.name }}.zip
-          target: ${{ secrets.PATH }}
-
-      - name: Update Version
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY_PEM }}
-          port: 22
-          script: |
-            sed -i 's/"version":[^,]*/"version": "${{ env.RELEASE_VERSION }}"/g' ${{ secrets.PATH }}/details.json
+          allowUpdates: true
+          artifacts: "../${{ github.event.repository.name }}-${{ env.RELEASE_VERSION }}.zip"

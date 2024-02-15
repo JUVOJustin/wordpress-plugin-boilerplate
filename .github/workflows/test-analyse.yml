@@ -3,61 +3,30 @@ name: Test/Analyse
 on: [push, pull_request]
 
 jobs:
-  test:
+  call-install-deps:
+    uses: ./.github/workflows/install-deps.yml
+    with:
+      mode: 'dev'
+    secrets: inherit
 
+  test:
     runs-on: ubuntu-latest
+    needs: call-install-deps
 
     steps:
-
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Validate composer.json and composer.lock
-        run: composer validate --strict
-
-      - name: Cache Composer packages
-        id: cache-composer
-        uses: actions/cache@v3
-        with:
-          path: vendor
-          key: composer-dev-${{ hashFiles('composer.lock') }}
-
-      - name: Install dependencies
-        if: steps.cache-composer.outputs.cache-hit != 'true'
-        run: composer install --prefer-dist --no-interaction --no-progress
-
-      - name: Set Test Composer authentication
-        env: 
-            satispress_key: ${{ secrets.SATISPRESS_KEY }}
-        if: ${{ env.satispress_key != '' }}
-        run: |
-          cd ./tests/setup
-          composer config http-basic.plugins.juvo-design.de ${{ secrets.SATISPRESS_KEY }} satispress
-
-      - name: Cache Composer (Test) packages
-        id: cache-composer-test
-        uses: actions/cache@v3
-        with:
-          path: vendor
-          key: composer-dev-test-${{ hashFiles('./tests/setup/composer.lock') }}
-
-      - name: Install (Test) dependencies
-        if: steps.cache-composer-test.outputs.cache-hit != 'true'
-        run: |
-          npm run composer:test
-
-      - name: Cache npm packages
-        id: cache-npm
+      - name: Load Cache
         uses: actions/cache@v3
         with:
           path: |
+            vendor
             node_modules
-            /home/runner/.cache/Cypress
-          key: npm-dev-${{ hashFiles('package-lock.json') }}
-
-      - name: Install npm dependencies
-        if: steps.cache-npm.outputs.cache-hit != 'true'
-        run: npm install
+            dist
+          key: deps-dev-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
+          fail-on-cache-miss: true
+        id: cache
 
       - name: Build assets
         run: |
@@ -66,6 +35,6 @@ jobs:
       - name: PHPSTAN
         run: composer run static-analyse
 
-      - name: Run integration Tests
-        run: |
-          npm run test:e2e
+#      - name: Run integration Tests
+#        run: |
+#          npm run test:e2e

@@ -1,0 +1,88 @@
+name: Install Dependencies
+on:
+  workflow_call:
+    inputs:
+      mode:
+        description: 'Either dev or prod. Dev will install dev dependencies, prod will remove dev dependencies.'
+        required: true
+        default: 'dev'
+        type: string
+
+jobs:
+  install-deps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2.1.4
+
+      - name: Cache Composer packages
+        id: cache-composer
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: composer-${{ inputs.mode }}-${{ hashFiles('composer.lock') }}
+
+      - if: steps.cache-composer.outputs.cache-hit != 'true'
+        name: Validate composer.json and composer.lock
+        run: composer validate --strict
+        shell: bash
+
+      # Set auth for ressources if required
+      - if: steps.cache-composer.outputs.cache-hit != 'true'
+        name: Set composer auth
+        run: |
+          composer config http-basic.connect.advancedcustomfields.com \
+          ${{ secrets.ACF_KEY }} https://citation.media
+        shell: bash
+
+      # Install dependencies
+      - if: steps.cache-composer.outputs.cache-hit != 'true'
+        name: Install dependencies
+        run: |
+          if [ "${{ inputs.mode }}" = "dev" ]; then
+            composer install --prefer-dist --no-interaction --no-progress
+          else
+            composer install --no-dev --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
+          fi
+        shell: bash
+
+      # Install node dependencies
+      - id: cache-npm
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: npm-dev-${{ hashFiles('package-lock.json') }} # Always -dev- because we need dev dependencies also for build
+      - name: Install npm dependencies
+        if: steps.cache-npm.outputs.cache-hit != 'true'
+        run: npm install
+        shell: bash
+
+      # Install dev composer resources
+      #    - if: inputs.mode == 'dev'
+      #      name: Set Test Composer authentication (Dev)
+      #      env:
+      #        satispress_key: ${{ secrets.SATISPRESS_KEY }}
+      #      run: |
+      #        if [ "$satispress_key" != '' ]; then
+      #          cd ./tests/setup
+      #          composer config http-basic.plugins.juvo-design.de ${{ secrets.SATISPRESS_KEY }} satispress
+      #          npm run composer:test
+      #        fi
+      #      shell: bash
+
+      # Build Assets for production and remove unused dev ressources
+      - if: inputs.mode == 'prod'
+        run: |
+          npm run production
+          rm -rf node_modules && npm install --production
+        shell: bash
+
+      - name: Cache all Deps
+        id: cache-deps
+        uses: actions/cache@v3
+        with:
+          path: |
+            vendor
+            node_modules
+            dist
+          key: deps-${{ inputs.mode }}-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
