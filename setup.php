@@ -16,7 +16,7 @@ function toPascalSnakeCase($string): string {
 
 $pluginName = ask("Enter the name of the plugin: ");
 if (empty($pluginName)) {
-    echo "You need to provide a name for the plugin.\n";
+    echo "-> You need to provide a name for the plugin.\n";
     exit(1);
 }
 echo "-> Using plugin name: $pluginName\n\n";
@@ -43,7 +43,7 @@ if (empty($pluginSlug) || empty($namespace)) {
 
 // Replace in files function
 function replaceInFiles(string $find, string $replace, string $filePattern): bool {
-    foreach (glob($filePattern) as $filename) {
+    foreach (glob($filePattern,GLOB_BRACE) as $filename) {
         // Exclude setup.php
         if (basename($filename) === 'setup.php') {
             continue;
