@@ -87,12 +87,6 @@ system('npm run production');
 
 echo "\n-> Setup completed\n\n";
 
-// Rename plugin-boilerplate folder to the plugin slug
-if(!rename(__DIR__, __DIR__ . '/../' . $pluginSlug)) {
-    echo "Error renaming plugin-boilerplate folder\n";
-}
-echo "\n-> Renaming plugin folder done\n\n";
-
 // Remove setup.php file
 if(!unlink(__FILE__)) {
     echo "Error removing setup.php\n";
