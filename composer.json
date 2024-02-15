@@ -1,15 +1,16 @@
 {
-  "name": "juvo/demo-plugin",
-  "description": "Blabla",
+  "name": "juvo/wordpress-plugin-boilerplate",
+  "description": "A boilerplate for WordPress plugin development.",
   "license": "GPL-3.0-or-later",
   "authors": [
     {
       "name": "Justin Vogt",
-      "email": "mail@juvo-design.de",
-      "homepage": "https://juvo-design.de"
+      "email": "mail@justin-vogt.com",
+      "homepage": "https://justin-vogt.com"
     }
   ],
   "require-dev": {
+    "composer/installers": "^1.0",
     "phpstan/phpstan": "^1.7",
     "php-stubs/acf-pro-stubs": "^6.0",
     "szepeviktor/phpstan-wordpress": "^1.1",
@@ -24,6 +25,7 @@
     }
   },
   "scripts": {
+    "post-create-project-cmd": "php setup.php",
     "static-analyse": "@php ./vendor/bin/phpstan analyse"
   },
   "extra": {
