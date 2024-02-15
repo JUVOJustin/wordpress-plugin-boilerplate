@@ -49,6 +49,7 @@ jobs:
         run: |
           sed -i -E 's/([[:blank:]]*\*[[:blank:]]*Version:[[:blank:]]*).*/\1${{ env.RELEASE_VERSION }}/' ${{ github.event.repository.name }}.php
           sed -i -E 's/([[:blank:]]*\$version[[:blank:]]*=[[:blank:]]*")(.*)(".*)/\1${{ env.RELEASE_VERSION }}\3/' ${{ github.event.repository.name }}.php
+          sed -i -E 's/Stable tag: .*/Stable tag: ${{ env.RELEASE_VERSION }}/' README.txt
 
       - name: Update resources
         uses: test-room-7/action-update-file@v1
