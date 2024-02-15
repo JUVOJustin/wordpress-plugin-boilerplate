@@ -15,6 +15,10 @@ function toPascalSnakeCase($string): string {
 }
 
 $pluginName = ask("Enter the name of the plugin: ");
+if (empty($pluginName)) {
+    echo "You need to provide a name for the plugin.\n";
+    exit(1);
+}
 echo "-> Using plugin name: $pluginName\n\n";
 
 $calculatedNamespace = toPascalSnakeCase($pluginName);
