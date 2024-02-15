@@ -24,7 +24,7 @@ if (empty($namespace)) {
 }
 echo "-> Using namespace: $namespace\n\n";
 
-$calculatedSlug = str_replace('_', '-', strtolower($pluginName));
+$calculatedSlug = str_replace('_', '-',str_replace(' ', '-', strtolower($pluginName)));
 $pluginSlug = ask("Enter the slug you want to use for the plugin as kebab-case (e.g., 'demo-plugin'). Leave empty for default '$calculatedSlug': ");
 if (empty($pluginSlug)) {
     $pluginSlug = $calculatedSlug;
