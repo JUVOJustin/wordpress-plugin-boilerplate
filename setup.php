@@ -38,8 +38,12 @@ if (empty($pluginSlug) || empty($namespace)) {
 }
 
 // Replace in files function
-function replaceInFiles($find, $replace, $filePattern): bool {
+function replaceInFiles(string $find, string $replace, string $filePattern): bool {
     foreach (glob($filePattern) as $filename) {
+        // Exclude setup.php
+        if (basename($filename) === 'setup.php') {
+            continue;
+        }
         $fileContents = file_get_contents($filename);
         $fileContents = str_replace($find, $replace, $fileContents);
         if (!file_put_contents($filename, $fileContents)) {
@@ -51,6 +55,19 @@ function replaceInFiles($find, $replace, $filePattern): bool {
     return true;
 }
 
+// Replace strings in specific files
+if (
+    !replaceInFiles('demo-plugin', $pluginSlug, '*.{php,js}')
+    || !replaceInFiles('demo_plugin', str_replace('-', '_', $pluginSlug), '*.php')
+    || !replaceInFiles('Demo_Plugin', $namespace, '*.php')
+    || !replaceInFiles('DEMO_PLUGIN', strtoupper($namespace), '*.php')
+    || !replaceInFiles('Demo Plugin', strtoupper($namespace), '{demo-plugin.php,README.txt}')
+) {
+    echo "Error replacing in files.\n";
+    exit;
+}
+echo "\n-> Replacements done.\n\n";
+
 // Rename files (demonstration purpose, expand as needed)
 if (
     !rename('src/Demo_Plugin.php', "src/{$namespace}.php")
@@ -60,18 +77,6 @@ if (
     exit;
 }
 echo "\n-> Renaming files done.\n\n";
-
-// Replace strings in specific files
-if (
-    !replaceInFiles('demo-plugin', $pluginSlug, '*.{php,js}')
-    || !replaceInFiles('demo_plugin', str_replace('-', '_', $pluginSlug), '*.php')
-    || !replaceInFiles('Demo_Plugin', $namespace, '*.php')
-    || !replaceInFiles('DEMO_PLUGIN', strtoupper($namespace), '*.php')
-) {
-    echo "Error replacing in files.\n";
-    exit;
-}
-echo "\n-> Replacements done.\n\n";
 
 // Replace strings in composer
 if(!replaceInFiles('Demo_Plugin', $namespace, 'composer.json')) {
