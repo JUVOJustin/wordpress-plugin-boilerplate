@@ -28,12 +28,12 @@ jobs:
         shell: bash
 
       # Set auth for ressources if required
-      - if: steps.cache-composer.outputs.cache-hit != 'true'
-        name: Set composer auth
-        run: |
-          composer config http-basic.connect.advancedcustomfields.com \
-          ${{ secrets.ACF_KEY }} https://citation.media
-        shell: bash
+#      - if: steps.cache-composer.outputs.cache-hit != 'true'
+#        name: Set composer auth
+#        run: |
+#          composer config http-basic.connect.advancedcustomfields.com \
+#          ${{ secrets.ACF_KEY }} https://citation.media
+#        shell: bash
 
       # Install dependencies
       - if: steps.cache-composer.outputs.cache-hit != 'true'
