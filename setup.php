@@ -52,7 +52,7 @@ if (
     || !replaceInFiles('demo_plugin', str_replace('-', '_', $pluginSlug), $phpPaths)
     || !replaceInFiles('Demo_Plugin', $namespace, array_merge($phpPaths, ['*.json']))
     || !replaceInFiles('DEMO_PLUGIN', strtoupper($namespace), $phpPaths)
-    || !replaceInFiles('Demo Plugin', strtoupper($pluginName), ['demo-plugin.php', 'README.txt'])
+    || !replaceInFiles('Demo Plugin', $pluginName, ['demo-plugin.php', 'README.txt'])
 ) {
     echo "Error replacing in files.\n";
     exit;
