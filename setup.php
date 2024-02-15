@@ -62,7 +62,7 @@ function replaceInFiles(string $find, string $replace, string $filePattern): boo
 
 // Replace strings in specific files
 if (
-    !replaceInFiles('demo-plugin', $pluginSlug, '{**/*.php,*.js, *.json}')
+    !replaceInFiles('demo-plugin', $pluginSlug, '{**/*.php,*.js,*.json}')
     || !replaceInFiles('demo_plugin', str_replace('-', '_', $pluginSlug), '**/*.php')
     || !replaceInFiles('Demo_Plugin', $namespace, '{**/*.php, *.json}')
     || !replaceInFiles('DEMO_PLUGIN', strtoupper($namespace), '**/*.php')
