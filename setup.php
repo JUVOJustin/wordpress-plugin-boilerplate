@@ -15,21 +15,21 @@ function toPascalSnakeCase($string): string {
 }
 
 $pluginName = ask("Enter the name of the plugin: ");
-echo "-> Using plugin name: $pluginName\n";
+echo "-> Using plugin name: $pluginName\n\n";
 
 $calculatedNamespace = toPascalSnakeCase($pluginName);
 $namespace = ask("Enter the namespace in Camel_Snake Case (e.g., 'Demo_Plugin'). Leave empty for default '$calculatedNamespace': ");
 if (empty($namespace)) {
     $namespace = $calculatedNamespace;
 }
-echo "-> Using namespace: $namespace\n";
+echo "-> Using namespace: $namespace\n\n";
 
 $calculatedSlug = str_replace('_', '-', strtolower($pluginName));
 $pluginSlug = ask("Enter the slug you want to use for the plugin as kebab-case (e.g., 'demo-plugin'). Leave empty for default '$calculatedSlug': ");
 if (empty($pluginSlug)) {
     $pluginSlug = $calculatedSlug;
 }
-echo "-> Using slug: $pluginSlug\n";
+echo "-> Using slug: $pluginSlug\n\n";
 
 // Validate inputs
 if (empty($pluginSlug) || empty($namespace)) {
