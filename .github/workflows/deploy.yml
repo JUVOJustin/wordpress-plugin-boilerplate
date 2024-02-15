@@ -7,14 +7,14 @@ on:
 
 jobs:
   call-install-deps:
-    if: ${{ contains(github.repository.toLowerCase(), 'juvojustin/wordpress-plugin-boilerplate'.toLowerCase()) == false }} # This line is save to be deleted. It's only here to prevent the workflow from running on the boilerplate repository.
+    if: github.repository != 'JUVOJustin/wordpress-plugin-boilerplate' # This line is save to be deleted. It's only here to prevent the workflow from running on the boilerplate repository.
     uses: ./.github/workflows/install-deps.yml
     with:
       mode: 'prod'
     secrets: inherit
 
   build:
-    if: ${{ contains(github.repository.toLowerCase(), 'juvojustin/wordpress-plugin-boilerplate'.toLowerCase()) == false }} # This line is save to be deleted. It's only here to prevent the workflow from running on the boilerplate repository.
+    if: github.repository != 'JUVOJustin/wordpress-plugin-boilerplate' # This line is save to be deleted. It's only here to prevent the workflow from running on the boilerplate repository.
     runs-on: ubuntu-latest
     needs: call-install-deps
 
