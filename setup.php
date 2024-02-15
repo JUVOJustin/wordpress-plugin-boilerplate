@@ -54,7 +54,7 @@ function replaceInFiles($find, $replace, $filePattern): bool {
 // Rename files (demonstration purpose, expand as needed)
 if (
     !rename('src/Demo_Plugin.php', "src/{$namespace}.php")
-    || !rename('src/demo-plugin.php', "src/{$pluginSlug}.php")
+    || !rename('demo-plugin.php', "{$pluginSlug}.php")
 ) {
     echo "Error renaming files.\n";
     exit;
