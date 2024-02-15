@@ -59,9 +59,7 @@ if (
     echo "Error renaming files.\n";
     exit;
 }
-echo "---\n";
-echo "Renaming files done.\n";
-echo "---\n";
+echo "\n-> Renaming files done.\n\n";
 
 // Replace strings in specific files
 if (
@@ -73,31 +71,31 @@ if (
     echo "Error replacing in files.\n";
     exit;
 }
-echo "---\n";
-echo "Replacements done.\n";
-echo "---\n";
+echo "\n-> Replacements done.\n\n";
 
 // Replace strings in composer
 if(!replaceInFiles('Demo_Plugin', $namespace, 'composer.json')) {
     echo "Error replacing in composer.json\n";
     exit;
 }
-echo "Renaming and replacements done.\n";
+echo "\n-> Renaming and replacements done.\n\n";
 
 // Further operations like composer update, npm install, etc.
 system('composer update');
 system('npm install');
-system('npm run development');
+system('npm run production');
 
-echo "Setup completed.\n";
+echo "\n-> Setup completed\n\n";
 
 // Rename plugin-boilerplate folder to the plugin slug
 if(!rename(__DIR__, __DIR__ . '/../' . $pluginSlug)) {
     echo "Error renaming plugin-boilerplate folder\n";
 }
+echo "\n-> Renaming plugin folder done\n\n";
 
 // Remove setup.php file
 if(!unlink(__FILE__)) {
     echo "Error removing setup.php\n";
 }
+echo "\n-> Removing setup.php done\n\n";
 
