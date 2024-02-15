@@ -15,18 +15,21 @@ function toPascalSnakeCase($string): string {
 }
 
 $pluginName = ask("Enter the name of the plugin: ");
+echo "-> Using plugin name: $pluginName\n";
 
 $calculatedNamespace = toPascalSnakeCase($pluginName);
 $namespace = ask("Enter the namespace in Camel_Snake Case (e.g., 'Demo_Plugin'). Leave empty for default '$calculatedNamespace': ");
 if (empty($namespace)) {
     $namespace = $calculatedNamespace;
 }
+echo "-> Using namespace: $namespace\n";
 
 $calculatedSlug = str_replace('_', '-', strtolower($pluginName));
-$pluginSlug = ask("Enter the slug you want to use for the plugin as snake_case (e.g., 'demo_plugin'). Leave empty for default '$calculatedSlug': ");
+$pluginSlug = ask("Enter the slug you want to use for the plugin as kebab-case (e.g., 'demo-plugin'). Leave empty for default '$calculatedSlug': ");
 if (empty($pluginSlug)) {
     $pluginSlug = $calculatedSlug;
 }
+echo "-> Using slug: $pluginSlug\n";
 
 // Validate inputs
 if (empty($pluginSlug) || empty($namespace)) {
@@ -48,34 +51,30 @@ function replaceInFiles($find, $replace, $filePattern): bool {
     return true;
 }
 
-// Example of renaming operations
-$filenameMinus = str_replace('_', '-', $pluginSlug);
-$constants = strtoupper($namespace);
-
-// Replace strings in specific files
-if (
-    !replaceInFiles('demo-plugin', $filenameMinus, '*.{php,js}')
-    || !replaceInFiles('demo_plugin', $pluginSlug, '*.php')
-    || !replaceInFiles('Demo_Plugin', $namespace, '*.php')
-    || !replaceInFiles('DEMO_PLUGIN', $constants, '*.php')
-) {
-    echo "Error replacing in files.\n";
-    exit;
-}
-echo "---\n";
-echo "Replacements done.\n";
-echo "---\n";
-
 // Rename files (demonstration purpose, expand as needed)
 if (
     !rename('src/Demo_Plugin.php', "src/{$namespace}.php")
-    || !rename('src/demo-plugin.php', "src/{$filenameMinus}.php")
+    || !rename('src/demo-plugin.php', "src/{$pluginSlug}.php")
 ) {
     echo "Error renaming files.\n";
     exit;
 }
 echo "---\n";
 echo "Renaming files done.\n";
+echo "---\n";
+
+// Replace strings in specific files
+if (
+    !replaceInFiles('demo-plugin', $pluginSlug, '*.{php,js}')
+    || !replaceInFiles('demo_plugin', str_replace('-', '_', $pluginSlug), '*.php')
+    || !replaceInFiles('Demo_Plugin', $namespace, '*.php')
+    || !replaceInFiles('DEMO_PLUGIN', strtoupper($namespace), '*.php')
+) {
+    echo "Error replacing in files.\n";
+    exit;
+}
+echo "---\n";
+echo "Replacements done.\n";
 echo "---\n";
 
 // Replace strings in composer
@@ -91,6 +90,11 @@ system('npm install');
 system('npm run development');
 
 echo "Setup completed.\n";
+
+// Rename plugin-boilerplate folder to the plugin slug
+if(!rename(__DIR__, __DIR__ . '/../' . $pluginSlug)) {
+    echo "Error renaming plugin-boilerplate folder\n";
+}
 
 // Remove setup.php file
 if(!unlink(__FILE__)) {
