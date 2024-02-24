@@ -1,6 +1,12 @@
 name: Test/Analyse
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '**'
+  pull_request:
 
 jobs:
   call-install-deps:
