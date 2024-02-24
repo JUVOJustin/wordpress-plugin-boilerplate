@@ -178,7 +178,7 @@ class Loader {
         // Check if WP_CLI is available
         if (!empty($this->cli) && !class_exists('WP_CLI')) {
             error_log('WP_CLI not found. Skipping WP-CLI commands registration.');
-        } else {
+        } elseif(!empty($this->cli)) {
             foreach($this->cli as $name => $data) {
                 \WP_CLI::add_command($name, $data['instance'], $data['args']);
             }

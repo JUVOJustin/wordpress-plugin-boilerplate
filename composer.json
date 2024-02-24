@@ -15,10 +15,9 @@
     "php-stubs/acf-pro-stubs": "^6.0",
     "szepeviktor/phpstan-wordpress": "^1.1",
     "phpstan/extension-installer": "^1.1",
-    "phpunit/phpunit": "^9",
-    "wp-phpunit/wp-phpunit": "^6.1",
     "yoast/phpunit-polyfills": "^1.0",
-    "php-stubs/wp-cli-stubs": "^2.10"
+    "php-stubs/wp-cli-stubs": "^2.10",
+    "lucatume/wp-browser": "^4.1"
   },
   "autoload": {
     "psr-4": {
@@ -41,5 +40,8 @@
       "phpstan/extension-installer": true,
       "composer/installers": true
     }
+  },
+  "require": {
+    "php": ">=7.4"
   }
 }
