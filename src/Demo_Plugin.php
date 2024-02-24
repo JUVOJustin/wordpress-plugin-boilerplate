@@ -2,9 +2,6 @@
 
 namespace Demo_Plugin;
 
-use Demo_Plugin\Frontend\Frontend;
-use Demo_Plugin\Admin\Admin;
-
 /**
  * The core plugin class.
  *

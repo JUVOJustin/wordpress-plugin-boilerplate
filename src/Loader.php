@@ -41,6 +41,13 @@ class Loader {
     protected $shortcodes;
 
     /**
+     * The array of WP-CLI commands registered with WordPress.
+     *
+     * @var array $cli The array of WP-CLI commands registered with WordPress.
+     */
+    protected $cli;
+
+    /**
      * Initialize the collections used to maintain the actions and filters.
      *
      * @since    1.0.0
@@ -79,6 +86,21 @@ class Loader {
      */
     public function add_shortcode( string $hook, object $component, string $callback ) {
         $this->shortcodes = $this->add( $this->shortcodes, $hook, $component, $callback );
+    }
+
+    /**
+     * Add a new WP-CLI command to the collection to be registered with WordPress.
+     *
+     * @param string $name
+     * @param object $instance
+     * @param array $args
+     * @return void
+     */
+    public function add_cli(string $name, object $instance, array $args = []) {
+        $this->cli[$name] = [
+            'instance' => $instance,
+            'args' => $args
+        ];
     }
 
     /**
@@ -152,6 +174,16 @@ class Loader {
                 $hook['callback']
             ) );
         }
+
+        // Check if WP_CLI is available
+        if (!empty($this->cli) && !class_exists('WP_CLI')) {
+            error_log('WP_CLI not found. Skipping WP-CLI commands registration.');
+        } else {
+            foreach($this->cli as $name => $data) {
+                \WP_CLI::add_command($name, $data['instance'], $data['args']);
+            }
+        }
+
 
     }
 
