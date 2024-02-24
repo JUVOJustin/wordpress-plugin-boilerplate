@@ -42,7 +42,7 @@ jobs:
           if [ "${{ inputs.mode }}" = "dev" ]; then
             composer install --prefer-dist --no-interaction --no-progress
           else
-            composer install --no-dev --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
+            composer install --no-dev --prefer-dist --no-progress --no-suggest --ignore-platform-reqs --optimize-autoloader --classmap-authoritative
           fi
         shell: bash
 
