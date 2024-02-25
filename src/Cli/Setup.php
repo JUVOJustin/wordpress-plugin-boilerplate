@@ -69,13 +69,13 @@ class Setup {
 			// Further operations like composer update, npm install, etc.
 			$progress = \WP_CLI\Utils\make_progress_bar( 'After Setup Processes', 3 );
 
-			WP_CLI::launch( 'composer update' );
+			WP_CLI::launch( 'composer update', false );
 			$progress->tick();
 
-			WP_CLI::launch( 'npm install' );
+			WP_CLI::launch( 'npm install', false );
 			$progress->tick();
 
-			WP_CLI::launch( 'npm run production' );
+			WP_CLI::launch( 'npm run production', false );
 			$progress->tick();
 
 			// All done
