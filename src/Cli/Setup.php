@@ -11,14 +11,14 @@ class Setup {
 	protected string $name;
 	protected string $namespace;
 	protected string $string;
+	protected string $path = DEMO_PLUGIN_PATH;
 
 	/**
 	 * @throws ExitException
 	 */
 	public function __invoke( $args, $assoc_args ) {
 
-		$dir = __DIR__ . '/../../';
-		if ( file_exists( $dir . 'setup.php' ) ) {
+		if ( file_exists( $this->path . 'setup.php' ) ) {
 
 			if ( ! isset( $assoc_args['name'] ) ) {
 				WP_CLI::error( 'You have to provide a plugin name' );
@@ -69,7 +69,7 @@ class Setup {
 			$this->removeSetupFromAutoload();
 
 			// Cleanup setup folder
-			if ( ! unlink( $dir. "setup.php" ) ) {
+			if ( ! unlink( $this->path . "setup.php" ) ) {
 				WP_CLI::error( 'Error removing setup file' );
 			}
 			WP_CLI::success( 'Setup completed' );
@@ -108,8 +108,8 @@ class Setup {
 	 */
 	private function rename_files() {
 		if (
-			! rename( 'src/Demo_Plugin.php', "src/$this->namespace.php" )
-			|| ! rename( 'demo-plugin.php', "$this->slug.php" )
+			! rename( $this->path . 'src/Demo_Plugin.php', $this->path . "src/$this->namespace.php" )
+			|| ! rename( $this->path . 'demo-plugin.php', $this->path . "$this->slug.php" )
 		) {
 			WP_CLI::error( 'Error renaming files.' );
 		}
@@ -162,14 +162,14 @@ class Setup {
 	private function removeSetupFromAutoload() {
 
 		// Path to your composer.json
-		$composerJsonPath = '../../composer.json';
+		$composerJsonPath = $this->path . 'composer.json';
 
 		// Load the current composer.json into an array
 		$composerConfig = json_decode(file_get_contents($composerJsonPath), true);
 
 		// Remove the script from the autoload.files section
 		if (isset($composerConfig['autoload']['files'])) {
-			$key = array_search('wp-cli-command.php', $composerConfig['autoload']['files']);
+			$key = array_search('setup.php', $composerConfig['autoload']['files']);
 			if ($key !== false) {
 				unset($composerConfig['autoload']['files'][$key]);
 			}
