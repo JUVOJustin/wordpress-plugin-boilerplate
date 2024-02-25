@@ -11,7 +11,13 @@ class Setup {
 	protected string $name;
 	protected string $namespace;
 	protected string $string;
-	protected string $path = DEMO_PLUGIN_PATH;
+	protected string $path;
+
+	/**
+	 */
+	public function __construct() {
+		$this->path = __DIR__ . '/../../';
+	}
 
 	/**
 	 * @throws ExitException
