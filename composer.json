@@ -17,15 +17,18 @@
     "phpstan/extension-installer": "^1.1",
     "yoast/phpunit-polyfills": "^1.0",
     "php-stubs/wp-cli-stubs": "^2.10",
-    "lucatume/wp-browser": "^4.1"
+    "wp-cli/wp-cli": "^2.10"
   },
   "autoload": {
     "psr-4": {
       "Demo_Plugin\\": "src/"
-    }
+    },
+    "files": ["setup/init.php"]
   },
   "scripts": {
-    "post-create-project-cmd": "php setup.php",
+    "post-create-project-cmd": [
+      "composer exec -- wp setup"
+    ],
     "static-analyse": "@php ./vendor/bin/phpstan analyse"
   },
   "extra": {
