@@ -28,6 +28,9 @@ class Setup {
 		if ( file_exists( $this->path . '/setup.php' ) ) {
 
 			$this->name = $this->ask( "Enter the name of the plugin:" );
+			if ( empty( $this->name ) ) {
+				WP_CLI::error( 'You need to provide a name for the plugin.' );
+			}
 
 			// Namespace
 			$namespace = $this->toPascalSnakeCase( $this->name );
