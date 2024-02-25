@@ -140,7 +140,10 @@ class Setup {
 		foreach ( $filePattern as $pattern ) {
 			foreach ( glob( $pattern, GLOB_BRACE ) as $filename ) {
 				// Exclude setup.php
-				if ( basename( $filename ) === 'setup.php' ) {
+				if (
+					basename( $filename ) === 'setup.php'
+					|| basename( $filename ) === 'Setup.php'
+				) {
 					continue;
 				}
 				$fileContents = file_get_contents( $filename );
