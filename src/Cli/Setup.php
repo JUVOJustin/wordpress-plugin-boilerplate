@@ -63,13 +63,27 @@ class Setup {
 			$this->replace_in_files();
 			$this->rename_files();
 
-			// Further operations like composer update, npm install, etc.
-			system( 'composer update' );
-			system( 'npm install' );
-			system( 'npm run production' );
-
 			// Remove setup from autoloader
 			$this->removeSetupFromAutoload();
+
+			// Further operations like composer update, npm install, etc.
+			$progress = \WP_CLI\Utils\make_progress_bar( 'After Setup Processes', 3 );
+			for ( $i = 0; $i < $count; $i++ ) {
+				// uses wp_insert_user() to insert the user
+				$progress->tick();
+			}
+
+			WP_CLI::launch( 'composer update' );
+			$progress->tick();
+
+			WP_CLI::launch( 'npm install' );
+			$progress->tick();
+
+			WP_CLI::launch( 'npm run production' );
+			$progress->tick();
+
+			// All done
+			$progress->finish();
 
 			// Cleanup setup folder
 			if ( ! unlink( $this->path . "setup.php" ) ) {
