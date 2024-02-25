@@ -17,7 +17,8 @@ class Setup {
 	 */
 	public function __invoke( $args, $assoc_args ) {
 
-		if ( file_exists( '../../setup.php' ) ) {
+		$dir = __DIR__ . '/../../';
+		if ( file_exists( $dir . 'setup.php' ) ) {
 
 			if ( ! isset( $assoc_args['name'] ) ) {
 				WP_CLI::error( 'You have to provide a plugin name' );
@@ -68,7 +69,7 @@ class Setup {
 			$this->removeSetupFromAutoload();
 
 			// Cleanup setup folder
-			if ( ! unlink( "../../setup.php" ) ) {
+			if ( ! unlink( $dir. "setup.php" ) ) {
 				WP_CLI::error( 'Error removing setup file' );
 			}
 			WP_CLI::success( 'Setup completed' );
