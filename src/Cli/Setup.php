@@ -24,11 +24,8 @@ class Setup {
 	 */
 	public function __invoke( $args, $assoc_args ) {
 
-		if ( file_exists( $this->path . 'setup.php' ) ) {
-
-			if ( ! isset( $assoc_args['name'] ) ) {
-				WP_CLI::error( 'You have to provide a plugin name' );
-			}
+		// Plugin setup conditions
+		if ( file_exists( $this->path . 'setup.php' ) && isset( $assoc_args['name'] ) ) {
 
 			$this->name = $assoc_args['name'];
 
@@ -80,7 +77,12 @@ class Setup {
 			}
 			WP_CLI::success( 'Setup completed' );
 
+		} elseif ( ! file_exists( $this->path . 'setup.php' ) && isset( $assoc_args['name'] ) ) {
+			WP_CLI::error( 'It seems the plugin is already set up.' );
+		} elseif ( file_exists( $this->path . 'setup.php' ) && ! isset( $assoc_args['name'] ) ) {
+			WP_CLI::warning( 'If you want to setup the plugin you have to provide a plugin name with "--name=Your Plugin name"' );
 		}
+
 	}
 
 	/**
@@ -171,26 +173,26 @@ class Setup {
 		$composerJsonPath = $this->path . 'composer.json';
 
 		// Load the current composer.json into an array
-		$composerConfig = json_decode(file_get_contents($composerJsonPath), true);
+		$composerConfig = json_decode( file_get_contents( $composerJsonPath ), true );
 
 		// Remove the script from the autoload.files section
-		if (isset($composerConfig['autoload']['files'])) {
-			$key = array_search('setup.php', $composerConfig['autoload']['files']);
-			if ($key !== false) {
-				unset($composerConfig['autoload']['files'][$key]);
+		if ( isset( $composerConfig['autoload']['files'] ) ) {
+			$key = array_search( 'setup.php', $composerConfig['autoload']['files'] );
+			if ( $key !== false ) {
+				unset( $composerConfig['autoload']['files'][ $key ] );
 			}
 
 			// If the files array is empty, remove it
-			if (empty($composerConfig['autoload']['files'])) {
-				unset($composerConfig['autoload']['files']);
+			if ( empty( $composerConfig['autoload']['files'] ) ) {
+				unset( $composerConfig['autoload']['files'] );
 			}
 		}
 
 		// Save the modified composer.json
-		file_put_contents($composerJsonPath, json_encode($composerConfig, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+		file_put_contents( $composerJsonPath, json_encode( $composerConfig, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 
 		// Regenerate the autoloader
-		system('composer dump-autoload');
+		system( 'composer dump-autoload' );
 	}
 
 	/**
