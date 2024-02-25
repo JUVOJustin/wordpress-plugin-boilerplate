@@ -68,8 +68,8 @@ class Setup {
 			$this->removeSetupFromAutoload();
 
 			// Cleanup setup folder
-			if ( ! rmdir( "../../setup" ) ) {
-				WP_CLI::error( 'Error removing setup folder' );
+			if ( ! unlink( "../../setup.php" ) ) {
+				WP_CLI::error( 'Error removing setup file' );
 			}
 			WP_CLI::success( 'Setup completed' );
 

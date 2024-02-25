@@ -23,7 +23,9 @@
     "psr-4": {
       "Demo_Plugin\\": "src/"
     },
-    "files": ["setup/init.php"]
+    "files": [
+      "setup.php"
+    ]
   },
   "scripts": {
     "post-create-project-cmd": [
