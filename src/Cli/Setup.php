@@ -138,9 +138,11 @@ class Setup {
 	}
 
 	/**
+	 * Replace string in files unsing glob
+	 *
 	 * @param string $find
 	 * @param string $replace
-	 * @param array $filePattern
+	 * @param array $filePattern array of glob patterns
 	 *
 	 * @return bool
 	 */
@@ -167,6 +169,11 @@ class Setup {
 		return true;
 	}
 
+	/**
+	 * Remove setup.php from file autoload
+	 *
+	 * @return void
+	 */
 	private function removeSetupFromAutoload() {
 
 		// Path to your composer.json
