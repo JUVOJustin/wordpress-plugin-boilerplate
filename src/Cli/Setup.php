@@ -207,9 +207,6 @@ class Setup {
 
 		// Save the modified composer.json
 		file_put_contents( $composerJsonPath, json_encode( $composerConfig, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
-
-		// Regenerate the autoloader
-		system( 'composer dump-autoload' );
 	}
 
 	/**
