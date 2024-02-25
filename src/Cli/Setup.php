@@ -16,7 +16,7 @@ class Setup {
 	/**
 	 */
 	public function __construct() {
-		$this->path = __DIR__ . '/../../';
+		$this->path = realpath(__DIR__ . '/../../');
 	}
 
 	/**
@@ -24,8 +24,11 @@ class Setup {
 	 */
 	public function __invoke( $args, $assoc_args ) {
 
+		$config = WP_CLI::get_config();
+		$pwd = WP_CLI::launch( 'pwd', true, true );
+
 		// Plugin setup conditions
-		if ( file_exists( $this->path . 'setup.php' ) && isset( $assoc_args['name'] ) ) {
+		if ( file_exists( $this->path . '/setup.php' ) && isset( $assoc_args['name'] ) ) {
 
 			$this->name = $assoc_args['name'];
 
@@ -73,27 +76,37 @@ class Setup {
 			$this->removeSetupFromAutoload();
 			$progress->tick();
 
-			WP_CLI::launch( "cd $this->path && composer update" );
+			// Fix paths
+			exec( "composer update 2>&1", $output, $code );
+			if ( $code !== 0 ) {
+				WP_CLI::error( 'Error running composer update' );
+			}
 			$progress->tick();
 
-			WP_CLI::launch( "cd $this->path && npm install" );
+			exec( "npm install 2>&1", $output, $code );
+			if ( $code !== 0 ) {
+				WP_CLI::error( 'Error running npm install' );
+			}
 			$progress->tick();
 
-			WP_CLI::launch( "cd $this->path && npm run production" );
+			exec( "npm run production 2>&1", $output, $code );
+			if ( $code !== 0 ) {
+				WP_CLI::error( 'Error running npm run production' );
+			}
 			$progress->tick();
 
 			// All done
 			$progress->finish();
 
 			// Cleanup setup folder
-			if ( ! unlink( $this->path . "setup.php" ) ) {
+			if ( ! unlink( $this->path . "/setup.php" ) ) {
 				WP_CLI::error( 'Error removing setup file' );
 			}
 			WP_CLI::success( 'Setup completed' );
 
-		} elseif ( ! file_exists( $this->path . 'setup.php' ) && isset( $assoc_args['name'] ) ) {
+		} elseif ( ! file_exists( $this->path . '/setup.php' ) && isset( $assoc_args['name'] ) ) {
 			WP_CLI::error( 'It seems the plugin is already set up.' );
-		} elseif ( file_exists( $this->path . 'setup.php' ) && ! isset( $assoc_args['name'] ) ) {
+		} elseif ( file_exists( $this->path . '/setup.php' ) && ! isset( $assoc_args['name'] ) ) {
 			WP_CLI::warning( 'If you want to setup the plugin you have to provide a plugin name with "--name=Your Plugin name"' );
 		}
 
@@ -130,8 +143,8 @@ class Setup {
 	 */
 	private function rename_files() {
 		if (
-			! rename( $this->path . 'src/Demo_Plugin.php', $this->path . "src/$this->namespace.php" )
-			|| ! rename( $this->path . 'demo-plugin.php', $this->path . "$this->slug.php" )
+			! rename( $this->path . '/src/Demo_Plugin.php', $this->path . "/src/$this->namespace.php" )
+			|| ! rename( $this->path . '/demo-plugin.php', $this->path . "/$this->slug.php" )
 		) {
 			WP_CLI::error( 'Error renaming files.' );
 		}
@@ -191,7 +204,7 @@ class Setup {
 	private function removeSetupFromAutoload() {
 
 		// Path to your composer.json
-		$composerJsonPath = $this->path . 'composer.json';
+		$composerJsonPath = $this->path . '/composer.json';
 
 		// Load the current composer.json into an array
 		$composerConfig = json_decode( file_get_contents( $composerJsonPath ), true );
