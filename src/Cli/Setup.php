@@ -60,22 +60,26 @@ class Setup {
 
 			], array( 'key', 'value' ) );
 
+			// Further operations like composer update, npm install, etc.
+			$progress = \WP_CLI\Utils\make_progress_bar( 'After Setup Processes', 6 );
+
 			$this->replace_in_files();
+			$progress->tick();
+
 			$this->rename_files();
+			$progress->tick();
 
 			// Remove setup from autoloader
 			$this->removeSetupFromAutoload();
-
-			// Further operations like composer update, npm install, etc.
-			$progress = \WP_CLI\Utils\make_progress_bar( 'After Setup Processes', 3 );
-
-			WP_CLI::launch( 'composer update', false );
 			$progress->tick();
 
-			WP_CLI::launch( 'npm install', false );
+			WP_CLI::launch( "cd $this->path && composer update" );
 			$progress->tick();
 
-			WP_CLI::launch( 'npm run production', false );
+			WP_CLI::launch( "cd $this->path && npm install" );
+			$progress->tick();
+
+			WP_CLI::launch( "cd $this->path && npm run production" );
 			$progress->tick();
 
 			// All done
