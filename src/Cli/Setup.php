@@ -24,27 +24,18 @@ class Setup {
 	 */
 	public function __invoke( $args, $assoc_args ) {
 
-		$config = WP_CLI::get_config();
-		$pwd = WP_CLI::launch( 'pwd', true, true );
+		// if setup file still exists, assume setup has to be made
+		if ( file_exists( $this->path . '/setup.php' ) ) {
 
-		// Plugin setup conditions
-		if ( file_exists( $this->path . '/setup.php' ) && isset( $assoc_args['name'] ) ) {
-
-			$this->name = $assoc_args['name'];
+			$this->name = $this->ask( "Enter the name of the plugin:" );
 
 			// Namespace
-			if ( isset( $assoc_args['namespace'] ) ) {
-				$this->namespace = $assoc_args['namespace'];
-			} else {
-				$this->namespace = $this->toPascalSnakeCase( $this->name );
-			}
+			$namespace = $this->toPascalSnakeCase( $this->name );
+			$this->namespace = $this->ask( "Enter the namespace in Camel_Snake Case (e.g., 'Demo_Plugin'). Leave empty for default '" . $namespace . "':", $namespace );
 
 			// Slug
-			if ( isset( $assoc_args['slug'] ) ) {
-				$this->slug = $assoc_args['slug'];
-			} else {
-				$this->slug = str_replace( '_', '-', str_replace( ' ', '-', strtolower( $this->name ) ) );
-			}
+			$slug = str_replace( '_', '-', str_replace( ' ', '-', strtolower( $this->name ) ) );;
+			$this->slug = $this->ask( "Enter the slug you want to use for the plugin as kebab-case (e.g., 'demo-plugin'). Leave empty for default '" . $slug . "':", $slug );
 
 			WP_CLI::log( "Using the following values:" );
 			format_items( 'table', [
@@ -64,7 +55,7 @@ class Setup {
 			], array( 'key', 'value' ) );
 
 			// Further operations like composer update, npm install, etc.
-			$progress = \WP_CLI\Utils\make_progress_bar( 'After Setup Processes', 6 );
+			$progress = \WP_CLI\Utils\make_progress_bar( 'Setup', 7 );
 
 			$this->replace_in_files();
 			$progress->tick();
@@ -95,19 +86,15 @@ class Setup {
 			}
 			$progress->tick();
 
-			// All done
-			$progress->finish();
-
 			// Cleanup setup folder
 			if ( ! unlink( $this->path . "/setup.php" ) ) {
 				WP_CLI::error( 'Error removing setup file' );
 			}
+
+			// All done
+			$progress->finish();
 			WP_CLI::success( 'Setup completed' );
 
-		} elseif ( ! file_exists( $this->path . '/setup.php' ) && isset( $assoc_args['name'] ) ) {
-			WP_CLI::error( 'It seems the plugin is already set up.' );
-		} elseif ( file_exists( $this->path . '/setup.php' ) && ! isset( $assoc_args['name'] ) ) {
-			WP_CLI::warning( 'If you want to setup the plugin you have to provide a plugin name with "--name=Your Plugin name"' );
 		}
 
 	}
@@ -132,7 +119,6 @@ class Setup {
 		) {
 			WP_CLI::error( 'Error replacing in files.' );
 		}
-		WP_CLI::success( 'Replacements done.' );
 	}
 
 	/**
@@ -148,7 +134,6 @@ class Setup {
 		) {
 			WP_CLI::error( 'Error renaming files.' );
 		}
-		WP_CLI::success( 'Renaming files done.' );
 	}
 
 	/**
@@ -230,12 +215,13 @@ class Setup {
 	 * Ask an open question and return the answer
 	 *
 	 * @param $question
+	 * @param null $default
 	 *
 	 * @return string
 	 */
-	function ask( $question ): string {
-		echo $question . "\n";
-
-		return trim( fgets( STDIN ) ); // Get input from user
+	function ask( $question, $default = null ): string {
+		WP_CLI::log(WP_CLI::colorize( '%4'. $question . '%n' ));
+		$output = trim( fgets( STDIN ) ); // Get input from user
+		return $output ? $output : $default;
 	}
 }
