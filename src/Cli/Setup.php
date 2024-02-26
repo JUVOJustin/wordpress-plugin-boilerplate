@@ -10,7 +10,7 @@ class Setup {
 
 	protected string $name;
 	protected string $namespace;
-	protected string $string;
+	protected string $slug;
 	protected string $path;
 
 	/**
@@ -218,11 +218,11 @@ class Setup {
 	 * Ask an open question and return the answer
 	 *
 	 * @param $question
-	 * @param null $default
+	 * @param string|null $default
 	 *
 	 * @return string
 	 */
-	function ask( $question, $default = null ): string {
+	function ask( $question, ?string $default = null ): string {
 		WP_CLI::log(WP_CLI::colorize( '%4'. $question . '%n' ));
 		$output = trim( fgets( STDIN ) ); // Get input from user
 		return $output ? $output : $default;
