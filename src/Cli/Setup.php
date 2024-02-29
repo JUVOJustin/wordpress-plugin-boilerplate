@@ -20,7 +20,10 @@ class Setup {
 	}
 
 	/**
+	 * Initial plugin setup
+	 *
 	 * @throws ExitException
+	 * @when before_wp_load
 	 */
 	public function __invoke( $args, $assoc_args ) {
 
