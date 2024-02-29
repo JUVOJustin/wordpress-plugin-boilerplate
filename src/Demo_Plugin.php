@@ -108,6 +108,9 @@ class Demo_Plugin
             $this->enqueue_bud_entrypoint('admin');
         }, 100);
 
+		// Add Setup Command
+	    $this->loader->add_cli('setup', new Cli\Setup());
+
     }
 
     /**

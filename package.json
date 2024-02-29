@@ -5,17 +5,13 @@
     "@roots/bud": "^6.20.0",
     "@roots/bud-preset-wordpress": "^6.20.0",
     "@roots/bud-preset-recommend": "^6.20.0",
-    "@roots/bud-sass": "^6.20.0",
-    "@wordpress/env": "^5.6.0",
-    "cypress": "^10.11.0"
+    "@roots/bud-sass": "^6.20.0"
   },
   "scripts": {
     "development": "npx bud build development",
     "production": "npx bud build production",
     "wp-env": "wp-env",
-    "composer:test": "cd ./tests/setup; composer install; cd ../..",
-    "test:php": "npm run composer:test && npm run wp-env --debug start && npm run wp-env run phpunit 'phpunit -c /var/www/html/wp-content/plugins/wsform-login/phpunit.xml.dist'",
-    "test:e2e": "npm run composer:test && npm run wp-env --debug start && npm run wp-env clean tests && npx cypress run --config video=false"
+    "codecept": "vendor/bin/codecept"
   },
   "dependencies": {
     "caniuse-lite": "^1.0.30001470"
