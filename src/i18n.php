@@ -16,7 +16,7 @@ class i18n {
      *
      * @since    1.0.0
      */
-    public function load_plugin_textdomain() {
+    public function load_plugin_textdomain(): void {
 
         load_plugin_textdomain(
             'demo-plugin',

@@ -72,7 +72,7 @@ class Demo_Plugin
      * @since    1.0.0
      * @access   private
      */
-    private function load_dependencies()
+    private function load_dependencies(): void
     {
 
         $this->loader = new Loader();
@@ -88,7 +88,7 @@ class Demo_Plugin
      * @since    1.0.0
      * @access   private
      */
-    private function set_locale()
+    private function set_locale(): void
     {
 
         $plugin_i18n = new i18n();
@@ -101,7 +101,7 @@ class Demo_Plugin
      * Register all of the hooks related to the admin area functionality
      * of the plugin.
      */
-    private function define_admin_hooks()
+    private function define_admin_hooks(): void
     {
 
         add_action('admin_enqueue_scripts', function () {
@@ -120,7 +120,7 @@ class Demo_Plugin
      * @since    1.0.0
      * @access   private
      */
-    private function define_public_hooks()
+    private function define_public_hooks(): void
     {
 
         add_action('wp_enqueue_scripts', function () {
@@ -132,7 +132,7 @@ class Demo_Plugin
     /**
      * Run the loader to execute all of the hooks with WordPress.
      */
-    public function run()
+    public function run(): void
     {
         $this->loader->run();
     }
@@ -143,7 +143,7 @@ class Demo_Plugin
      *
      * @return    string    The name of the plugin.
      */
-    public function get_plugin_name()
+    public function get_plugin_name(): string
     {
         return self::PLUGIN_NAME;
     }
@@ -153,7 +153,7 @@ class Demo_Plugin
      *
      * @return    Loader    Orchestrates the hooks of the plugin.
      */
-    public function get_loader()
+    public function get_loader(): Loader
     {
         return $this->loader;
     }
@@ -163,7 +163,7 @@ class Demo_Plugin
      *
      * @return    string    The version number of the plugin.
      */
-    public function get_version()
+    public function get_version(): string
     {
         return $this->version;
     }
@@ -172,9 +172,9 @@ class Demo_Plugin
      * Enqueue a bud entrypoint
      *
      * @param string $entry
-     * @param array $localize_data
+     * @param mixed[] $localize_data
      */
-    private function enqueue_bud_entrypoint(string $entry, array $localize_data = [])
+    private function enqueue_bud_entrypoint(string $entry, array $localize_data = []): void
     {
         $entrypoints_manifest = DEMO_PLUGIN_PATH . '/dist/entrypoints.json';
 
@@ -224,7 +224,7 @@ class Demo_Plugin
     /**
 	 * Generates a unique but deterministic key usable for object caching. The key is prefixed by the plugin name
 	 *
-	 * @param array $matching_data Pass any data that should be used to match the cache
+	 * @param mixed[] $matching_data Pass any data that should be used to match the cache
 	 *
 	 * @return string
 	 */

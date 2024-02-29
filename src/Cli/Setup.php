@@ -22,10 +22,13 @@ class Setup {
 	/**
 	 * Initial plugin setup
 	 *
+	 * @param string[] $args
+	 * @param string[] $assoc_args
+	 *
 	 * @throws ExitException
 	 * @when before_wp_load
 	 */
-	public function __invoke( $args, $assoc_args ) {
+	public function __invoke( array $args, array $assoc_args ): void {
 
 		// if setup file still exists, assume setup has to be made
 		if ( file_exists( $this->path . '/setup.php' ) ) {
@@ -63,7 +66,17 @@ class Setup {
 			// Further operations like composer update, npm install, etc.
 			$progress = \WP_CLI\Utils\make_progress_bar( 'Setup', 7 );
 
-			$this->replace_in_files();
+			// Replace in files
+			$phpPaths = [ '*.php', '**/*.php', 'tests/**/*.php' ];
+			if (
+				! $this->replaceInFiles( 'demo-plugin', $this->slug, array_merge( $phpPaths, [ '*.js', '*.json' ] ) )
+				|| ! $this->replaceInFiles( 'demo_plugin', str_replace( '-', '_', $this->slug ), $phpPaths )
+				|| ! $this->replaceInFiles( 'Demo_Plugin', $this->namespace, array_merge( $phpPaths, [ '*.json' ] ) )
+				|| ! $this->replaceInFiles( 'DEMO_PLUGIN', strtoupper( $this->namespace ), $phpPaths )
+				|| ! $this->replaceInFiles( 'Demo Plugin', $this->name, [ 'demo-plugin.php', 'README.txt' ] )
+			) {
+				WP_CLI::error( 'Error replacing in files.' );
+			}
 			$progress->tick();
 
 			$this->rename_files();
@@ -106,34 +119,12 @@ class Setup {
 	}
 
 	/**
-	 * Replaces slug, namespace and name in files
-	 *
-	 * @return void
-	 * @throws ExitException
-	 */
-	private function replace_in_files() {
-
-		// Define PHP paths since glob in php is not recursive
-		$phpPaths = [ '*.php', '**/*.php', 'tests/**/*.php' ];
-
-		if (
-			! $this->replaceInFiles( 'demo-plugin', $this->slug, array_merge( $phpPaths, [ '*.js', '*.json' ] ) )
-			|| ! $this->replaceInFiles( 'demo_plugin', str_replace( '-', '_', $this->slug ), $phpPaths )
-			|| ! $this->replaceInFiles( 'Demo_Plugin', $this->namespace, array_merge( $phpPaths, [ '*.json' ] ) )
-			|| ! $this->replaceInFiles( 'DEMO_PLUGIN', strtoupper( $this->namespace ), $phpPaths )
-			|| ! $this->replaceInFiles( 'Demo Plugin', $this->name, [ 'demo-plugin.php', 'README.txt' ] )
-		) {
-			WP_CLI::error( 'Error replacing in files.' );
-		}
-	}
-
-	/**
 	 * Rename files
 	 *
 	 * @return void
 	 * @throws ExitException
 	 */
-	private function rename_files() {
+	private function rename_files(): void {
 		if (
 			! rename( $this->path . '/src/Demo_Plugin.php', $this->path . "/src/$this->namespace.php" )
 			|| ! rename( $this->path . '/demo-plugin.php', $this->path . "/$this->slug.php" )
@@ -143,11 +134,11 @@ class Setup {
 	}
 
 	/**
-	 * @param $string
+	 * @param string $string
 	 *
 	 * @return string
 	 */
-	private function toPascalSnakeCase( $string ): string {
+	private function toPascalSnakeCase( string $string ): string {
 		// Split the string into words based on spaces or underscores
 		$words = preg_split( '/[\s_]+/', $string );
 
@@ -156,11 +147,11 @@ class Setup {
 	}
 
 	/**
-	 * Replace string in files unsing glob
+	 * Replace string in files using glob
 	 *
 	 * @param string $find
 	 * @param string $replace
-	 * @param array $filePattern array of glob patterns
+	 * @param string[] $filePattern array of glob patterns
 	 *
 	 * @return bool
 	 */
@@ -192,7 +183,7 @@ class Setup {
 	 *
 	 * @return void
 	 */
-	private function removeSetupFromAutoload() {
+	private function removeSetupFromAutoload(): void {
 
 		// Path to your composer.json
 		$composerJsonPath = $this->path . '/composer.json';
@@ -220,12 +211,12 @@ class Setup {
 	/**
 	 * Ask an open question and return the answer
 	 *
-	 * @param $question
+	 * @param string $question
 	 * @param string|null $default
 	 *
 	 * @return string
 	 */
-	function ask( $question, ?string $default = null ): string {
+	function ask( string $question, ?string $default = null ): string {
 		WP_CLI::log(WP_CLI::colorize( '%4'. $question . '%n' ));
 		$output = trim( fgets( STDIN ) ); // Get input from user
 		return $output ? $output : $default;
