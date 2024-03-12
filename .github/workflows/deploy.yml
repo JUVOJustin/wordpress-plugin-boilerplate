@@ -73,4 +73,5 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
+          omitBodyDuringUpdate: true
           artifacts: "../${{ github.event.repository.name }}-${{ env.RELEASE_VERSION }}.zip"
