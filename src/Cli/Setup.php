@@ -157,7 +157,8 @@ class Setup {
 	 */
 	private function replaceInFiles( string $find, string $replace, array $filePattern ): bool {
 		foreach ( $filePattern as $pattern ) {
-			foreach ( glob( $this->path . $pattern, GLOB_BRACE ) as $filename ) {
+			$found = glob( $this->path . '/' . $pattern, GLOB_BRACE );
+			foreach ($found  as $filename ) {
 				// Exclude setup.php
 				if (
 					basename( $filename ) === 'setup.php'
