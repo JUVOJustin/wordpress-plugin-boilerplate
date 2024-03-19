@@ -2,6 +2,9 @@
 
 namespace Demo_Plugin\Cli;
 
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use RegexIterator;
 use WP_CLI;
 use WP_CLI\ExitException;
 use function WP_CLI\Utils\format_items;
@@ -16,7 +19,7 @@ class Setup {
 	/**
 	 */
 	public function __construct() {
-		$this->path = realpath(__DIR__ . '/../../');
+		$this->path = realpath( __DIR__ . '/../../' );
 	}
 
 	/**
@@ -39,7 +42,7 @@ class Setup {
 			}
 
 			// Namespace
-			$namespace = $this->toPascalSnakeCase( $this->name );
+			$namespace       = $this->toPascalSnakeCase( $this->name );
 			$this->namespace = $this->ask( "Enter the namespace in Camel_Snake Case (e.g., 'Demo_Plugin'). Leave empty for default '" . $namespace . "':", $namespace );
 
 			// Slug
@@ -67,23 +70,16 @@ class Setup {
 			$progress = \WP_CLI\Utils\make_progress_bar( 'Setup', 7 );
 
 			// Replace in files
-			$phpPaths = [ '*.php', '**/*.php', 'tests/**/*.php' ];
+			$pattern = [ '' ];
 			if (
-				! $this->replaceInFiles( 'demo-plugin', $this->slug, array_merge( $phpPaths, [ '*.js', '*.json' ] ) )
-				|| ! $this->replaceInFiles( 'demo_plugin', str_replace( '-', '_', $this->slug ), $phpPaths )
-				|| ! $this->replaceInFiles( 'Demo_Plugin', $this->namespace, array_merge( $phpPaths, [ '*.json' ] ) )
-				|| ! $this->replaceInFiles( 'DEMO_PLUGIN', strtoupper( $this->namespace ), $phpPaths )
+				! $this->replaceInFiles( 'demo-plugin', $this->slug, [ '.*\.js', '.*\.json' ] )
+				|| ! $this->replaceInFiles( 'demo_plugin', str_replace( '-', '_', $this->slug ), [ '.*\.php' ] )
+				|| ! $this->replaceInFiles( 'Demo_Plugin', $this->namespace, [ '.*\.php', '.*\.json' ] )
+				|| ! $this->replaceInFiles( 'DEMO_PLUGIN', strtoupper( $this->namespace ), [ '.*\.php' ] )
 				|| ! $this->replaceInFiles( 'Demo Plugin', $this->name, [ 'demo-plugin.php', 'README.txt' ] )
 			) {
 				WP_CLI::error( 'Error replacing in files.' );
 			}
-
-/*			// We need to manually update Setup.php since it is excluded from replaceInFiles()
-			$setupFile = file_get_contents( $this->path . '/src/Cli/Setup.php' );
-			$setupFile = str_replace( 'namespace Demo_Plugin' . '\Cli', "namespace ". $this->namespace. "\Cli", $setupFile ); // NEVER REMOVE SPLIT OF STRING IN SEARCH PARAM
-			if ( ! file_put_contents( $this->path . '/src/Cli/Setup.php', $setupFile ) ) {
-				WP_CLI::error( 'Error replacing in file: /src/Cli/Setup.php' );
-			}*/
 			$progress->tick();
 
 			$this->rename_files();
@@ -113,7 +109,7 @@ class Setup {
 			$progress->tick();
 
 			// Cleanup setup folder
-			if ( file_exists($this->path . "/setup.php") && ! unlink( $this->path . "/setup.php" ) ) {
+			if ( file_exists( $this->path . "/setup.php" ) && ! unlink( $this->path . "/setup.php" ) ) {
 				WP_CLI::error( 'Error removing setup file' );
 			}
 
@@ -162,8 +158,29 @@ class Setup {
 	 *
 	 * @return bool
 	 */
-	private function replaceInFiles( string $find, string $replace, array $filePattern ): bool {
-		foreach ( $filePattern as $pattern ) {
+	private function replaceInFiles( string $find, string $replace, array $filePatterns ): bool {
+
+		$dir = new RecursiveDirectoryIterator( $this->path );
+		$ite = new RecursiveIteratorIterator( $dir );
+
+		foreach ( $filePatterns as $filePattern ) {
+
+			$files    = new RegexIterator( $ite, "/^(?!.*(\/vendor\/|\/node_modules\/))$filePattern$/", RegexIterator::GET_MATCH );
+			foreach ( $files as $file ) {
+
+				$fileContents = file_get_contents( $file );
+				$fileContents = str_replace( $find, $replace, $fileContents );
+				if ( ! file_put_contents( $file, $fileContents ) ) {
+					echo "Error replacing in file: $file\n";
+					return false;
+				}
+
+			}
+
+		}
+
+
+		/*foreach ( $filePattern as $pattern ) {
 			$found = glob( $this->path . '/' . $pattern, GLOB_BRACE );
 			foreach ($found  as $filename ) {
 				$fileContents = file_get_contents( $filename );
@@ -173,7 +190,7 @@ class Setup {
 					return false;
 				}
 			}
-		}
+		}*/
 
 		return true;
 	}
@@ -217,8 +234,12 @@ class Setup {
 	 * @return string
 	 */
 	function ask( string $question, ?string $default = null ): string {
-		WP_CLI::log(WP_CLI::colorize( '%4'. $question . '%n' ));
+		WP_CLI::log( WP_CLI::colorize( '%4' . $question . '%n' ) );
 		$output = trim( fgets( STDIN ) ); // Get input from user
+
 		return $output ? $output : $default;
 	}
+
+
+	function rsearch( $folder, $regPattern ) {}
 }
