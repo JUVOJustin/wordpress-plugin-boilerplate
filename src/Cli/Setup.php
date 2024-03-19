@@ -153,7 +153,7 @@ class Setup {
 	 *
 	 * @param string $find
 	 * @param string $replace
-	 * @param string[] $filePattern array of glob patterns
+	 * @param string[] $filePatterns array of glob patterns
 	 *
 	 * @return bool
 	 */
