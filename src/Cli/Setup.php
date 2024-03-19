@@ -72,7 +72,7 @@ class Setup {
 			// Replace in files
 			$pattern = [ '' ];
 			if (
-				! $this->replaceInFiles( 'demo-plugin', $this->slug, [ '.*\.js', '.*\.json' ] )
+				! $this->replaceInFiles( 'demo-plugin', $this->slug, [ '.*\.php', '.*\.js', '.*\.json' ] )
 				|| ! $this->replaceInFiles( 'demo_plugin', str_replace( '-', '_', $this->slug ), [ '.*\.php' ] )
 				|| ! $this->replaceInFiles( 'Demo_Plugin', $this->namespace, [ '.*\.php', '.*\.json' ] )
 				|| ! $this->replaceInFiles( 'DEMO_PLUGIN', strtoupper( $this->namespace ), [ '.*\.php' ] )
@@ -176,23 +176,8 @@ class Setup {
 					echo "Error replacing in file: $file\n";
 					return false;
 				}
-
 			}
-
 		}
-
-
-		/*foreach ( $filePattern as $pattern ) {
-			$found = glob( $this->path . '/' . $pattern, GLOB_BRACE );
-			foreach ($found  as $filename ) {
-				$fileContents = file_get_contents( $filename );
-				$fileContents = str_replace( $find, $replace, $fileContents );
-				if ( ! file_put_contents( $filename, $fileContents ) ) {
-					echo "Error replacing in file: $filename\n";
-					return false;
-				}
-			}
-		}*/
 
 		return true;
 	}
