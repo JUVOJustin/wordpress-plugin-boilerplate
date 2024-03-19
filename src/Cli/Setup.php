@@ -38,18 +38,18 @@ class Setup {
 			WP_CLI::confirm( "Are you sure you want to rerun the setup?" );
 		}
 
-		$this->name = $this->ask( "Enter the name of the plugin:" );
+		$this->name = $this->ask( "Enter the 'human' name of the plugin (e.g. My Awesome Plugin):" );
 		if ( empty( $this->name ) ) {
 			WP_CLI::error( 'You need to provide a name for the plugin.' );
 		}
 
 		// Namespace
 		$namespace       = $this->toPascalSnakeCase( $this->name );
-		$this->namespace = $this->ask( "Enter the namespace in Camel_Snake Case (e.g., 'Demo_Plugin'). Leave empty for default '" . $namespace . "':", $namespace );
+		$this->namespace = $this->ask( "Enter the namespace in Camel_Snake Case (e.g., 'My_Awesome_Plugin'). Leave empty for default '" . $namespace . "':", $namespace );
 
 		// Slug
 		$slug = str_replace( '_', '-', str_replace( ' ', '-', strtolower( $this->name ) ) );;
-		$this->slug = $this->ask( "Enter the slug you want to use for the plugin as kebab-case (e.g., 'demo-plugin'). Leave empty for default '" . $slug . "':", $slug );
+		$this->slug = $this->ask( "Enter the slug you want to use for the plugin as kebab-case (e.g., 'awesome-plugin'). Leave empty for default '" . $slug . "':", $slug );
 
 		WP_CLI::log( "Using the following values:" );
 		format_items( 'table', [
