@@ -113,7 +113,7 @@ class Setup {
 			$progress->tick();
 
 			// Cleanup setup folder
-			if ( ! unlink( $this->path . "/setup.php" ) ) {
+			if ( file_exists($this->path . "/setup.php") && ! unlink( $this->path . "/setup.php" ) ) {
 				WP_CLI::error( 'Error removing setup file' );
 			}
 
@@ -170,7 +170,6 @@ class Setup {
 				$fileContents = str_replace( $find, $replace, $fileContents );
 				if ( ! file_put_contents( $filename, $fileContents ) ) {
 					echo "Error replacing in file: $filename\n";
-
 					return false;
 				}
 			}
