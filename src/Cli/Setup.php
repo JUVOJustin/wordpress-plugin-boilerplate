@@ -76,7 +76,7 @@ class Setup {
 				|| ! $this->replaceInFiles( 'demo_plugin', str_replace( '-', '_', $this->slug ), [ '.*\.php' ] )
 				|| ! $this->replaceInFiles( 'Demo_Plugin', $this->namespace, [ '.*\.php', '.*\.json' ] )
 				|| ! $this->replaceInFiles( 'DEMO_PLUGIN', strtoupper( $this->namespace ), [ '.*\.php' ] )
-				|| ! $this->replaceInFiles( 'Demo Plugin', $this->name, [ 'demo-plugin.php', 'README.txt' ] )
+				|| ! $this->replaceInFiles( 'Demo Plugin', $this->name, [ 'demo-plugin\.php', 'README\.txt' ] )
 			) {
 				WP_CLI::error( 'Error replacing in files.' );
 			}
