@@ -34,90 +34,90 @@ class Setup {
 	public function __invoke( array $args, array $assoc_args ): void {
 
 		// if setup file still exists, assume setup has to be made
-		if ( file_exists( $this->path . '/setup.php' ) ) {
-
-			$this->name = $this->ask( "Enter the name of the plugin:" );
-			if ( empty( $this->name ) ) {
-				WP_CLI::error( 'You need to provide a name for the plugin.' );
-			}
-
-			// Namespace
-			$namespace       = $this->toPascalSnakeCase( $this->name );
-			$this->namespace = $this->ask( "Enter the namespace in Camel_Snake Case (e.g., 'Demo_Plugin'). Leave empty for default '" . $namespace . "':", $namespace );
-
-			// Slug
-			$slug = str_replace( '_', '-', str_replace( ' ', '-', strtolower( $this->name ) ) );;
-			$this->slug = $this->ask( "Enter the slug you want to use for the plugin as kebab-case (e.g., 'demo-plugin'). Leave empty for default '" . $slug . "':", $slug );
-
-			WP_CLI::log( "Using the following values:" );
-			format_items( 'table', [
-				[
-					'key'   => 'Plugin Name',
-					'value' => $this->name,
-				],
-				[
-					'key'   => 'Namespace',
-					'value' => $this->namespace,
-				],
-				[
-					'key'   => 'Slug',
-					'value' => $this->slug,
-				],
-
-			], array( 'key', 'value' ) );
-
-			// Further operations like composer update, npm install, etc.
-			$progress = \WP_CLI\Utils\make_progress_bar( 'Setup', 7 );
-
-			// Replace in files
-			$pattern = [ '' ];
-			if (
-				! $this->replaceInFiles( 'demo-plugin', $this->slug, [ '.*\.php', '.*\.js', '.*\.json' ] )
-				|| ! $this->replaceInFiles( 'demo_plugin', str_replace( '-', '_', $this->slug ), [ '.*\.php' ] )
-				|| ! $this->replaceInFiles( 'Demo_Plugin', $this->namespace, [ '.*\.php', '.*\.json' ] )
-				|| ! $this->replaceInFiles( 'DEMO_PLUGIN', strtoupper( $this->namespace ), [ '.*\.php' ] )
-				|| ! $this->replaceInFiles( 'Demo Plugin', $this->name, [ '.*demo-plugin\.php', '.*README\.txt' ] )
-			) {
-				WP_CLI::error( 'Error replacing in files.' );
-			}
-			$progress->tick();
-
-			$this->rename_files();
-			$progress->tick();
-
-			// Remove setup from autoloader
-			$this->removeSetupFromAutoload();
-			$progress->tick();
-
-			// Fix paths
-			exec( "composer update 2>&1", $output, $code );
-			if ( $code !== 0 ) {
-				WP_CLI::error( 'Error running composer update' );
-			}
-			$progress->tick();
-
-			exec( "npm install 2>&1", $output, $code );
-			if ( $code !== 0 ) {
-				WP_CLI::error( 'Error running npm install' );
-			}
-			$progress->tick();
-
-			exec( "npm run production 2>&1", $output, $code );
-			if ( $code !== 0 ) {
-				WP_CLI::error( 'Error running npm run production' );
-			}
-			$progress->tick();
-
-			// Cleanup setup folder
-			if ( file_exists( $this->path . "/setup.php" ) && ! unlink( $this->path . "/setup.php" ) ) {
-				WP_CLI::error( 'Error removing setup file' );
-			}
-
-			// All done
-			$progress->finish();
-			WP_CLI::success( 'Setup completed' );
-
+		if ( ! file_exists( $this->path . '/setup.php' ) ) {
+			WP_CLI::confirm( "Are you sure you want to rerun the setup?" );
 		}
+
+		$this->name = $this->ask( "Enter the name of the plugin:" );
+		if ( empty( $this->name ) ) {
+			WP_CLI::error( 'You need to provide a name for the plugin.' );
+		}
+
+		// Namespace
+		$namespace       = $this->toPascalSnakeCase( $this->name );
+		$this->namespace = $this->ask( "Enter the namespace in Camel_Snake Case (e.g., 'Demo_Plugin'). Leave empty for default '" . $namespace . "':", $namespace );
+
+		// Slug
+		$slug = str_replace( '_', '-', str_replace( ' ', '-', strtolower( $this->name ) ) );;
+		$this->slug = $this->ask( "Enter the slug you want to use for the plugin as kebab-case (e.g., 'demo-plugin'). Leave empty for default '" . $slug . "':", $slug );
+
+		WP_CLI::log( "Using the following values:" );
+		format_items( 'table', [
+			[
+				'key'   => 'Plugin Name',
+				'value' => $this->name,
+			],
+			[
+				'key'   => 'Namespace',
+				'value' => $this->namespace,
+			],
+			[
+				'key'   => 'Slug',
+				'value' => $this->slug,
+			],
+
+		], array( 'key', 'value' ) );
+
+		// Further operations like composer update, npm install, etc.
+		$progress = \WP_CLI\Utils\make_progress_bar( 'Setup', 7 );
+
+		// Replace in files
+		$pattern = [ '' ];
+		if (
+			! $this->replaceInFiles( 'demo-plugin', $this->slug, [ '.*\.php', '.*\.js', '.*\.json' ] )
+			|| ! $this->replaceInFiles( 'demo_plugin', str_replace( '-', '_', $this->slug ), [ '.*\.php' ] )
+			|| ! $this->replaceInFiles( 'Demo_Plugin', $this->namespace, [ '.*\.php', '.*\.json' ] )
+			|| ! $this->replaceInFiles( 'DEMO_PLUGIN', strtoupper( $this->namespace ), [ '.*\.php' ] )
+			|| ! $this->replaceInFiles( 'Demo Plugin', $this->name, [ '.*\.php', '.*README\.txt' ] )
+		) {
+			WP_CLI::error( 'Error replacing in files.' );
+		}
+		$progress->tick();
+
+		$this->rename_files();
+		$progress->tick();
+
+		// Remove setup from autoloader
+		$this->removeSetupFromAutoload();
+		$progress->tick();
+
+		// Fix paths
+		exec( "composer update 2>&1", $output, $code );
+		if ( $code !== 0 ) {
+			WP_CLI::error( 'Error running composer update' );
+		}
+		$progress->tick();
+
+		exec( "npm install 2>&1", $output, $code );
+		if ( $code !== 0 ) {
+			WP_CLI::error( 'Error running npm install' );
+		}
+		$progress->tick();
+
+		exec( "npm run production 2>&1", $output, $code );
+		if ( $code !== 0 ) {
+			WP_CLI::error( 'Error running npm run production' );
+		}
+		$progress->tick();
+
+		// Cleanup setup folder
+		if ( file_exists( $this->path . "/setup.php" ) && ! unlink( $this->path . "/setup.php" ) ) {
+			WP_CLI::error( 'Error removing setup file' );
+		}
+
+		// All done
+		$progress->finish();
+		WP_CLI::success( 'Setup completed' );
 
 	}
 
@@ -165,15 +165,16 @@ class Setup {
 
 		foreach ( $filePatterns as $filePattern ) {
 
-			$files    = new RegexIterator( $ite, "/^(?!.*(\/vendor\/|\/node_modules\/))$filePattern$/", RegexIterator::GET_MATCH );
+			$files = new RegexIterator( $ite, "/^(?!.*(\/vendor\/|\/node_modules\/))$filePattern$/", RegexIterator::GET_MATCH );
 			foreach ( $files as $file ) {
 
 				$file = $file[0];
 
-				$fileContents = file_get_contents($file);
+				$fileContents = file_get_contents( $file );
 				$fileContents = str_replace( $find, $replace, $fileContents );
 				if ( ! file_put_contents( $file, $fileContents ) ) {
 					echo "Error replacing in file: $file\n";
+
 					return false;
 				}
 			}
@@ -220,13 +221,10 @@ class Setup {
 	 *
 	 * @return string
 	 */
-	function ask( string $question, ?string $default = null ): string {
+	private function ask( string $question, ?string $default = null ): string {
 		WP_CLI::log( WP_CLI::colorize( '%4' . $question . '%n' ) );
 		$output = trim( fgets( STDIN ) ); // Get input from user
 
 		return $output ? $output : $default;
 	}
-
-
-	function rsearch( $folder, $regPattern ) {}
 }
