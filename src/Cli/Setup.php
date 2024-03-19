@@ -78,12 +78,12 @@ class Setup {
 				WP_CLI::error( 'Error replacing in files.' );
 			}
 
-			// We need to manually update Setup.php since it is excluded from replaceInFiles()
+/*			// We need to manually update Setup.php since it is excluded from replaceInFiles()
 			$setupFile = file_get_contents( $this->path . '/src/Cli/Setup.php' );
 			$setupFile = str_replace( 'namespace Demo_Plugin' . '\Cli', "namespace ". $this->namespace. "\Cli", $setupFile ); // NEVER REMOVE SPLIT OF STRING IN SEARCH PARAM
 			if ( ! file_put_contents( $this->path . '/src/Cli/Setup.php', $setupFile ) ) {
 				WP_CLI::error( 'Error replacing in file: /src/Cli/Setup.php' );
-			}
+			}*/
 			$progress->tick();
 
 			$this->rename_files();
@@ -166,13 +166,6 @@ class Setup {
 		foreach ( $filePattern as $pattern ) {
 			$found = glob( $this->path . '/' . $pattern, GLOB_BRACE );
 			foreach ($found  as $filename ) {
-				// Exclude setup.php
-				if (
-					basename( $filename ) === 'setup.php'
-					|| basename( $filename ) === 'Setup.php'
-				) {
-					continue;
-				}
 				$fileContents = file_get_contents( $filename );
 				$fileContents = str_replace( $find, $replace, $fileContents );
 				if ( ! file_put_contents( $filename, $fileContents ) ) {
