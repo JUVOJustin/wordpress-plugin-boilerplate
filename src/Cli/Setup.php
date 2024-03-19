@@ -72,7 +72,6 @@ class Setup {
 		$progress = \WP_CLI\Utils\make_progress_bar( 'Setup', 7 );
 
 		// Replace in files
-		$pattern = [ '' ];
 		if (
 			! $this->replaceInFiles( 'demo-plugin', $this->slug, [ '.*\.php', '.*\.js', '.*\.json' ] )
 			|| ! $this->replaceInFiles( 'demo_plugin', str_replace( '-', '_', $this->slug ), [ '.*\.php' ] )
