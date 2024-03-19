@@ -168,7 +168,9 @@ class Setup {
 			$files    = new RegexIterator( $ite, "/^(?!.*(\/vendor\/|\/node_modules\/))$filePattern$/", RegexIterator::GET_MATCH );
 			foreach ( $files as $file ) {
 
-				$fileContents = file_get_contents( $file );
+				$file = $file[0];
+
+				$fileContents = file_get_contents($file);
 				$fileContents = str_replace( $find, $replace, $fileContents );
 				if ( ! file_put_contents( $file, $fileContents ) ) {
 					echo "Error replacing in file: $file\n";
