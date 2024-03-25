@@ -76,7 +76,7 @@ class Setup {
 			! $this->replaceInFiles( 'demo-plugin', $this->slug, [ '.*\.php', '.*\.js', '.*\.json' ] )
 			|| ! $this->replaceInFiles( 'demo_plugin', str_replace( '-', '_', $this->slug ), [ '.*\.php' ] )
 			|| ! $this->replaceInFiles( 'Demo_Plugin', $this->namespace, [ '.*\.php', '.*\.json' ] )
-			|| ! $this->replaceInFiles( 'DEMO_PLUGIN', strtoupper( $this->namespace ), [ '.*\.php' ] )
+			|| ! $this->replaceInFiles( 'DEMO_PLUGIN', strtoupper( $this->namespace ), [ '.*\.php', '.*\.json' ] )
 			|| ! $this->replaceInFiles( 'Demo Plugin', $this->name, [ '.*\.php', '.*README\.txt' ] )
 		) {
 			WP_CLI::error( 'Error replacing in files.' );
@@ -91,7 +91,7 @@ class Setup {
 		$progress->tick();
 
 		// Fix paths
-		exec( "composer update 2>&1", $output, $code );
+		exec( "composer dump-autoload && composer update 2>&1", $output, $code );
 		if ( $code !== 0 ) {
 			WP_CLI::error( 'Error running composer update' );
 		}

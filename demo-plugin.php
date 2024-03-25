@@ -42,6 +42,7 @@ define( 'DEMO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
  * Use Composer PSR-4 Autoloading
  */
 require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+require plugin_dir_path( __FILE__ ) . 'vendor/vendor-prefixed/autoload.php';
 
 /**
  * The code that runs during plugin activation.
