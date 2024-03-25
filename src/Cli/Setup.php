@@ -69,7 +69,7 @@ class Setup {
 		], array( 'key', 'value' ) );
 
 		// Further operations like composer update, npm install, etc.
-		$progress = \WP_CLI\Utils\make_progress_bar( 'Setup', 8 );
+		$progress = \WP_CLI\Utils\make_progress_bar( 'Setup', 7 );
 
 		// Replace in files
 		if (
@@ -90,15 +90,8 @@ class Setup {
 		$this->removeSetupFromAutoload();
 		$progress->tick();
 
-		// Remove wp-cli from dev deps again
-		exec( "composer remove wp-cli/wp-cli --dev 2>&1", $output, $code );
-		if ( $code !== 0 ) {
-			WP_CLI::error( 'Error removing wp-cli' );
-		}
-		$progress->tick();
-
 		// Fix paths
-		exec( "composer update 2>&1", $output, $code );
+		exec( "composer dump-autoload && composer update 2>&1", $output, $code );
 		if ( $code !== 0 ) {
 			WP_CLI::error( 'Error running composer update' );
 		}
