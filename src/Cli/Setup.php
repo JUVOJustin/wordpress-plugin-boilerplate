@@ -91,7 +91,7 @@ class Setup {
 		$progress->tick();
 
 		// Remove wp-cli from dev deps again
-		exec( "composer remove wp-cli/wp-cli --dev", $output, $code );
+		exec( "composer remove wp-cli/wp-cli --dev 2>&1", $output, $code );
 		if ( $code !== 0 ) {
 			WP_CLI::error( 'Error removing wp-cli' );
 		}
