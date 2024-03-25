@@ -17,7 +17,8 @@
     "phpstan/extension-installer": "^1.1",
     "yoast/phpunit-polyfills": "^1.0",
     "php-stubs/wp-cli-stubs": "^2.10",
-    "wp-cli/wp-cli": "^2.10"
+    "wp-cli/wp-cli": "^2.10",
+    "brianhenryie/strauss": "^0.17.0"
   },
   "autoload": {
     "psr-4": {
@@ -31,6 +32,15 @@
     "post-create-project-cmd": [
       "composer exec -- wp setup"
     ],
+    "strauss": [
+      "vendor/bin/strauss"
+    ],
+    "post-install-cmd": [
+      "@strauss"
+    ],
+    "post-update-cmd": [
+      "@strauss"
+    ],
     "static-analyse": "@php ./vendor/bin/phpstan analyse"
   },
   "extra": {
@@ -38,6 +48,16 @@
       "vendor/{$vendor}/{$name}/": [
         "type:wordpress-plugin"
       ]
+    },
+    "strauss": {
+      "target_directory": "vendor/vendor-prefixed",
+      "namespace_prefix": "Demo_Plugin\\Dependencies\\",
+      "classmap_prefix": "Demo_Plugin",
+      "constant_prefix": "DEMO_PLUGIN",
+      "exclude_from_prefix": {
+        "file_patterns": []
+      },
+      "delete_vendor_files": false
     }
   },
   "config": {
