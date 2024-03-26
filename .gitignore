@@ -8,3 +8,4 @@ dist/
 /tests/cypress/videos/
 /tests/setup/plugins
 /tests/setup/vendor
+bin

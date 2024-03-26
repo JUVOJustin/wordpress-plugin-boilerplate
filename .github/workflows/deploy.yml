@@ -42,6 +42,7 @@ jobs:
           rm -rf .git && find . -name ".gitignore" -type f -delete
           rm -rf .github
           rm -rf tests
+          rm -rf bin
         shell: bash
 
       # Update Version
