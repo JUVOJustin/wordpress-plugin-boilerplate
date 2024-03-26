@@ -17,8 +17,7 @@
     "phpstan/extension-installer": "^1.1",
     "yoast/phpunit-polyfills": "^1.0",
     "php-stubs/wp-cli-stubs": "^2.10",
-    "wp-cli/wp-cli": "^2.10",
-    "brianhenryie/strauss": "^0.17.0"
+    "wp-cli/wp-cli": "^2.10"
   },
   "minimum-stability": "stable",
   "prefer-stable": true,
