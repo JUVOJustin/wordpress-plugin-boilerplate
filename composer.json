@@ -35,7 +35,8 @@
       "composer exec -- wp setup"
     ],
     "strauss": [
-      "vendor/bin/strauss"
+      "test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/latest/download/strauss.phar",
+      "@php bin/strauss.phar"
     ],
     "post-install-cmd": [
       "@strauss"
