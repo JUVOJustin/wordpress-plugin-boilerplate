@@ -4,7 +4,7 @@ This boilerplate is a fork of [WordPress Boilerplate](https://github.com/DevinVi
 ## Features of this boilerplate
 - Namespaces support using composer
 - Automatic Namespace prefixing with [Strauss](https://github.com/BrianHenryIE/strauss)
-- Easy Shortcode Registration through the loader
+- Easy Shortcode, CLI Command Registration through the loader
 - PHPStan with ready-made Github actions
 - [Bud.js](https://bud.js.org/) for simple bundling and build of assets
 - Ready made Github actions, for building and bundling
