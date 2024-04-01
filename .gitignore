@@ -9,3 +9,4 @@ dist/
 /tests/setup/plugins
 /tests/setup/vendor
 bin/*
+!bin/.gitkeep
