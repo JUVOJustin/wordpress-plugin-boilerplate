@@ -197,7 +197,7 @@ class Demo_Plugin
                             self::PLUGIN_NAME. "/$file",
                             DEMO_PLUGIN_URL . 'dist/' . $file,
                             $bundle->dependencies ?? [],
-                            null,
+                            $this->version,
                             true,
                         );
 
@@ -213,7 +213,9 @@ class Demo_Plugin
                     if ($type == "css") {
                         wp_enqueue_style(
                             self::PLUGIN_NAME. "/$file",
-                            DEMO_PLUGIN_URL . 'dist/' . $file
+                            DEMO_PLUGIN_URL . 'dist/' . $file,
+			    [],
+			    $this->version,
                         );
                     }
                 }
