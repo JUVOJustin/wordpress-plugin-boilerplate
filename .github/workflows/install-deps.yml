@@ -35,15 +35,20 @@ jobs:
 #          ${{ secrets.ACF_KEY }} https://citation.media
 #        shell: bash
 
-      # Install dependencies
       - if: steps.cache-composer.outputs.cache-hit != 'true'
-        name: Install dependencies
+        name: Install Composer dependencies on cache miss
         run: |
           if [ "${{ inputs.mode }}" = "dev" ]; then
             composer install --prefer-dist --no-interaction --no-progress
           else
             composer install --no-dev --prefer-dist --no-progress --no-suggest --ignore-platform-reqs --optimize-autoloader --classmap-authoritative
           fi
+        shell: bash
+
+      - if: steps.cache-composer.outputs.cache-hit == 'true'
+        name: Rebuild autoload on cache hit
+        run: |
+          composer dump-autoload --optimize
         shell: bash
 
       # Install node dependencies
