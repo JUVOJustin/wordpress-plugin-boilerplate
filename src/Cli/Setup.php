@@ -161,10 +161,11 @@ class Setup {
 
 		$dir = new RecursiveDirectoryIterator( $this->path, FilesystemIterator::SKIP_DOTS );
         $filter = new \RecursiveCallbackFilterIterator($dir, function ($current, $key, $iterator) {
+            $path = str_replace( $current->getFilename(), '', $current->getPathname() );
             if (
-                strpos($current->getPathname(), 'vendor') !== false
-                || strpos($current->getPathname(), 'node_modules') !== false
-                || strpos($current->getPathname(), '.git') !== false
+                strpos($path, 'vendor') !== false
+                || strpos($path, 'node_modules') !== false
+                || strpos($path, '.git') !== false
             ) {
                 return false;
             }
