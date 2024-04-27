@@ -130,7 +130,7 @@ class Setup {
 	private function rename_files(): void {
 		if (
 			! rename( $this->path . '/src/Demo_Plugin.php', $this->path . "/src/$this->namespace.php" )
-			|| ! rename( $this->path . '/test-plugin.php', $this->path . "/$this->slug.php" )
+			|| ! rename( $this->path . '/demo-plugin.php', $this->path . "/$this->slug.php" )
 		) {
 			WP_CLI::error( 'Error renaming files.' );
 		}
