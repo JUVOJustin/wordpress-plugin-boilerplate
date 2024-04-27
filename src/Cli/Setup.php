@@ -182,7 +182,7 @@ class Setup {
 
 		foreach ( $filePatterns as $filePattern ) {
 
-			$files = new RegexIterator( $ite, "/^$filePattern$/", RegexIterator::GET_MATCH );
+			$files = new RegexIterator( $ite, "/^{$filePattern}$/", RegexIterator::GET_MATCH );
 			foreach ( $files as $file ) {
 
 				$file = $file[0];
