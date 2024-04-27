@@ -196,7 +196,6 @@ class Setup {
 				$fileContents = str_replace( $find, $replace, $fileContents );
 				if ( ! file_put_contents( $file, $fileContents ) ) {
                     \WP_CLI::error("Error replacing in file: $file");
-					return false;
 				}
 			}
 		}
