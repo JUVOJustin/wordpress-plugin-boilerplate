@@ -2,8 +2,8 @@
 
 namespace Demo_Plugin\Cli;
 
+use FilesystemIterator;
 use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 use RegexIterator;
 use WP_CLI;
 use WP_CLI\ExitException;
@@ -73,9 +73,9 @@ class Setup {
 
 		// Replace in files
 		if (
-			! $this->replaceInFiles( 'demo-plugin', $this->slug, [ '.*\.php', '.*\.js', '.*\.json' ] )
+			! $this->replaceInFiles( 'demo-plugin', $this->slug, [ '.*\.php', '.*\.js', '.*\.json', '.*\.github\/.*\.yml' ] )
 			|| ! $this->replaceInFiles( 'demo_plugin', str_replace( '-', '_', $this->slug ), [ '.*\.php' ] )
-			|| ! $this->replaceInFiles( 'Demo_Plugin', $this->namespace, [ '.*\.php', '.*\.json' ] )
+			|| ! $this->replaceInFiles( 'Demo_Plugin', $this->namespace, [ '.*\.php', '.*\.json', '.*\.github\/.*\.yml' ] )
 			|| ! $this->replaceInFiles( 'DEMO_PLUGIN', strtoupper( $this->namespace ), [ '.*\.php', '.*\.json' ] )
 			|| ! $this->replaceInFiles( 'Demo Plugin', $this->name, [ '.*\.php', '.*README\.txt' ] )
 		) {
@@ -83,8 +83,9 @@ class Setup {
 		}
 		$progress->tick();
 
-		$this->rename_files();
-		$progress->tick();
+        // rename main files
+        $this->rename_files();
+        $progress->tick();
 
 		// Remove setup from autoloader
 		$this->removeSetupFromAutoload();
@@ -149,32 +150,52 @@ class Setup {
 	}
 
 	/**
-	 * Replace string in files using glob
+	 * Replace string in files using regex
 	 *
 	 * @param string $find
 	 * @param string $replace
-	 * @param string[] $filePatterns array of glob patterns
+	 * @param string[] $filePatterns array of regex patterns
 	 *
 	 * @return bool
 	 */
 	private function replaceInFiles( string $find, string $replace, array $filePatterns ): bool {
 
-		$dir = new RecursiveDirectoryIterator( $this->path );
-		$ite = new RecursiveIteratorIterator( $dir );
+		$dir = new RecursiveDirectoryIterator( $this->path, FilesystemIterator::SKIP_DOTS );
+        $filter = new \RecursiveCallbackFilterIterator($dir, function ($current, $key, $iterator) {
+            $path = str_replace( $current->getFilename(), '', $current->getPathname() );
+            // Directly check for 'vendor' or 'node_modules' in the path
+            if (strpos($path, 'vendor') !== false || strpos($path, 'node_modules') !== false) {
+                return false;
+            }
+
+            // Check for '.git' in the path
+            if (strpos($path, '.git') !== false) {
+                // Ensure that it's not '.github' that's being matched
+                if (strpos($path, '.github') === false) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+        $ite = new \RecursiveIteratorIterator($filter);
 
 		foreach ( $filePatterns as $filePattern ) {
 
-			$files = new RegexIterator( $ite, "/^(?!.*(\/vendor\/|\/node_modules\/))$filePattern$/", RegexIterator::GET_MATCH );
+			$files = new RegexIterator( $ite, "/^{$filePattern}$/", RegexIterator::GET_MATCH );
 			foreach ( $files as $file ) {
 
 				$file = $file[0];
 
 				$fileContents = file_get_contents( $file );
+                if (empty($fileContents)) {
+                    \WP_CLI::log("Skipping file '$file', since it is empty");
+                    continue;
+                }
+
 				$fileContents = str_replace( $find, $replace, $fileContents );
 				if ( ! file_put_contents( $file, $fileContents ) ) {
-					echo "Error replacing in file: $file\n";
-
-					return false;
+                    \WP_CLI::error("Error replacing in file: $file");
 				}
 			}
 		}

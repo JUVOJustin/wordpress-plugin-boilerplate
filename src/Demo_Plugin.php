@@ -20,6 +20,7 @@ class Demo_Plugin
 {
 
     const PLUGIN_NAME = 'demo-plugin';
+    const PLUGIN_VERSION = '1.0.0';
 
     /**
      * The loader that's responsible for maintaining and registering all hooks that power
@@ -30,20 +31,6 @@ class Demo_Plugin
     protected $loader;
 
     /**
-     * The unique identifier of this plugin.
-     *
-     * @var string
-     */
-    protected $plugin_name;
-
-    /**
-     * The current version of the plugin.
-     *
-     * @var string
-     */
-    protected $version;
-
-    /**
      * Define the core functionality of the plugin.
      *
      * Set the plugin name and the plugin version that can be used throughout the plugin.
@@ -52,9 +39,8 @@ class Demo_Plugin
      *
      * @since    1.0.0
      */
-    public function __construct(string $version)
+    public function __construct()
     {
-        $this->version = $version;
 
         $this->load_dependencies();
         $this->set_locale();
@@ -138,17 +124,6 @@ class Demo_Plugin
     }
 
     /**
-     * The name of the plugin used to uniquely identify it within the context of
-     * WordPress and to define internationalization functionality.
-     *
-     * @return    string    The name of the plugin.
-     */
-    public function get_plugin_name(): string
-    {
-        return self::PLUGIN_NAME;
-    }
-
-    /**
      * The reference to the class that orchestrates the hooks with the plugin.
      *
      * @return    Loader    Orchestrates the hooks of the plugin.
@@ -156,16 +131,6 @@ class Demo_Plugin
     public function get_loader(): Loader
     {
         return $this->loader;
-    }
-
-    /**
-     * Retrieve the version number of the plugin.
-     *
-     * @return    string    The version number of the plugin.
-     */
-    public function get_version(): string
-    {
-        return $this->version;
     }
 
     /**
@@ -197,7 +162,7 @@ class Demo_Plugin
                             self::PLUGIN_NAME. "/$file",
                             DEMO_PLUGIN_URL . 'dist/' . $file,
                             $bundle->dependencies ?? [],
-                            $this->version,
+                            self::PLUGIN_VERSION,
                             true,
                         );
 
@@ -214,8 +179,8 @@ class Demo_Plugin
                         wp_enqueue_style(
                             self::PLUGIN_NAME. "/$file",
                             DEMO_PLUGIN_URL . 'dist/' . $file,
-			    [],
-			    $this->version,
+                            [],
+                            self::PLUGIN_VERSION,
                         );
                     }
                 }

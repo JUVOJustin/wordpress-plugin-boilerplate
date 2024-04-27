@@ -54,8 +54,8 @@ jobs:
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - name: Update Version in WordPress files
         run: |
-          sed -i -E 's/([[:blank:]]*\*[[:blank:]]*Version:[[:blank:]]*).*/\1${{ env.RELEASE_VERSION }}/' ${{ github.event.repository.name }}.php
-          sed -i -E 's/([[:blank:]]*\$version[[:blank:]]*=[[:blank:]]*")(.*)(".*)/\1${{ env.RELEASE_VERSION }}\3/' ${{ github.event.repository.name }}.php
+          sed -i -E "s/(const VERSION = ')[^']*(';)/\1${{ env.RELEASE_VERSION }}\2/" src/Demo_Plugin.php
+          sed -i -E 's/([[:blank:]]*\*[[:blank:]]*Version:[[:blank:]]*).*/\1${{ env.RELEASE_VERSION }}/' demo-plugin.php
           sed -i -E 's/Stable tag: .*/Stable tag: ${{ env.RELEASE_VERSION }}/' README.txt
 
       - name: Update resources
@@ -72,11 +72,11 @@ jobs:
         run: |
           cd ..
           sudo apt-get install zip
-          zip -r ${{ github.event.repository.name }}-${{ env.RELEASE_VERSION }}.zip ./*
+          zip -r demo-plugin-${{ env.RELEASE_VERSION }}.zip ./*
 
       - name: Release
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
           omitBodyDuringUpdate: true
-          artifacts: "../${{ github.event.repository.name }}-${{ env.RELEASE_VERSION }}.zip"
+          artifacts: "../demo-plugin-${{ env.RELEASE_VERSION }}.zip"
