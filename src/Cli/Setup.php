@@ -73,9 +73,9 @@ class Setup {
 
 		// Replace in files
 		if (
-			! $this->replaceInFiles( 'demo-plugin', $this->slug, [ '.*\.php', '.*\.js', '.*\.json', '.github/\.yml' ] )
+			! $this->replaceInFiles( 'demo-plugin', $this->slug, [ '.*\.php', '.*\.js', '.*\.json', '\.github/.*\.yml' ] )
 			|| ! $this->replaceInFiles( 'demo_plugin', str_replace( '-', '_', $this->slug ), [ '.*\.php' ] )
-			|| ! $this->replaceInFiles( 'Demo_Plugin', $this->namespace, [ '.*\.php', '.*\.json', '.github/\.yml' ] )
+			|| ! $this->replaceInFiles( 'Demo_Plugin', $this->namespace, [ '.*\.php', '.*\.json', '\.github/.*\.yml' ] )
 			|| ! $this->replaceInFiles( 'DEMO_PLUGIN', strtoupper( $this->namespace ), [ '.*\.php', '.*\.json' ] )
 			|| ! $this->replaceInFiles( 'Demo Plugin', $this->name, [ '.*\.php', '.*README\.txt' ] )
 		) {
