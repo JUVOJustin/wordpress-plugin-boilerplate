@@ -4,7 +4,6 @@ namespace Demo_Plugin\Cli;
 
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 use RegexIterator;
 use WP_CLI;
 use WP_CLI\ExitException;
@@ -161,11 +160,21 @@ class Setup {
 	private function replaceInFiles( string $find, string $replace, array $filePatterns ): bool {
 
 		$dir = new RecursiveDirectoryIterator( $this->path, FilesystemIterator::SKIP_DOTS );
-		$ite = new RecursiveIteratorIterator( $dir );
+        $filter = new \RecursiveCallbackFilterIterator($dir, function ($current, $key, $iterator) {
+            if (
+                strpos($current->getPathname(), 'vendor') !== false
+                || strpos($current->getPathname(), 'node_modules') !== false
+                || strpos($current->getPathname(), '.git') !== false
+            ) {
+                return false;
+            }
+            return true;
+        });
+        $ite = new \RecursiveIteratorIterator($filter);
 
 		foreach ( $filePatterns as $filePattern ) {
 
-			$files = new RegexIterator( $ite, "/(?!.*(\/vendor\/|\/node_modules\/)){$filePattern}/", RegexIterator::GET_MATCH );
+			$files = new RegexIterator( $ite, "/$filePattern/", RegexIterator::GET_MATCH );
 			foreach ( $files as $file ) {
 
 				$file = $file[0];
