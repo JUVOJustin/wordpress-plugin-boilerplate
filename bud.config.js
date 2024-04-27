@@ -18,8 +18,8 @@ export default async bud => {
          * These paths are expressed relative to the `@src` directory
          */
         .entry({
-            "frontend": [`/frontend/js/app.js`, `/frontend/scss/app.scss`], // [`./sources/app.js`, `./sources/app.css`]
-            "admin": [`/admin/js/app.js`, `/admin/scss/app.scss`]
+            "demo-plugin-frontend": [`/frontend/js/app.js`, `/frontend/scss/app.scss`], // [`./sources/app.js`, `./sources/app.css`]
+            "demo-plugin-admin": [`/admin/js/app.js`, `/admin/scss/app.scss`]
         })
 
         .provide({

@@ -105,7 +105,7 @@ class Demo_Plugin
     {
 
         add_action('admin_enqueue_scripts', function () {
-            $this->enqueue_bud_entrypoint('admin');
+            $this->enqueue_bud_entrypoint('demo-plugin-admin');
         }, 100);
 
 		// Add Setup Command
@@ -124,7 +124,7 @@ class Demo_Plugin
     {
 
         add_action('wp_enqueue_scripts', function () {
-            $this->enqueue_bud_entrypoint('frontend');
+            $this->enqueue_bud_entrypoint('demo-plugin-frontend');
         }, 100);
 
     }
