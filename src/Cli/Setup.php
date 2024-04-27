@@ -150,11 +150,11 @@ class Setup {
 	}
 
 	/**
-	 * Replace string in files using glob
+	 * Replace string in files using regex
 	 *
 	 * @param string $find
 	 * @param string $replace
-	 * @param string[] $filePatterns array of glob patterns
+	 * @param string[] $filePatterns array of regex patterns
 	 *
 	 * @return bool
 	 */
@@ -165,7 +165,7 @@ class Setup {
 
 		foreach ( $filePatterns as $filePattern ) {
 
-			$files = new RegexIterator( $ite, "/^(?!.*(\/vendor\/|\/node_modules\/))$filePattern$/", RegexIterator::GET_MATCH );
+			$files = new RegexIterator( $ite, "/(?!.*(\/vendor\/|\/node_modules\/)){$filePattern}/", RegexIterator::GET_MATCH );
 			foreach ( $files as $file ) {
 
 				$file = $file[0];
