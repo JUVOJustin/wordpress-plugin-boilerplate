@@ -2,6 +2,7 @@
 
 namespace Demo_Plugin\Cli;
 
+use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RegexIterator;
@@ -159,7 +160,7 @@ class Setup {
 	 */
 	private function replaceInFiles( string $find, string $replace, array $filePatterns ): bool {
 
-		$dir = new RecursiveDirectoryIterator( $this->path );
+		$dir = new RecursiveDirectoryIterator( $this->path, FilesystemIterator::SKIP_DOTS );
 		$ite = new RecursiveIteratorIterator( $dir );
 
 		foreach ( $filePatterns as $filePattern ) {
