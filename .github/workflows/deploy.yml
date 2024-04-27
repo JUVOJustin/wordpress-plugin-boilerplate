@@ -72,11 +72,11 @@ jobs:
         run: |
           cd ..
           sudo apt-get install zip
-          zip -r ${{ github.event.repository.name }}-${{ env.RELEASE_VERSION }}.zip ./*
+          zip -r demo-plugin-${{ env.RELEASE_VERSION }}.zip ./*
 
       - name: Release
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
           omitBodyDuringUpdate: true
-          artifacts: "../${{ github.event.repository.name }}-${{ env.RELEASE_VERSION }}.zip"
+          artifacts: "../demo-plugin-${{ env.RELEASE_VERSION }}.zip"
