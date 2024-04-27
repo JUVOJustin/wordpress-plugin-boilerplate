@@ -71,10 +71,6 @@ class Setup {
 		// Further operations like composer update, npm install, etc.
 		$progress = \WP_CLI\Utils\make_progress_bar( 'Setup', 7 );
 
-        // rename main files
-        $this->rename_files();
-        $progress->tick();
-
 		// Replace in files
 		if (
 			! $this->replaceInFiles( 'demo-plugin', $this->slug, [ '.*\.php', '.*\.js', '.*\.json', '.*\.github\/.*\.yml' ] )
@@ -86,6 +82,10 @@ class Setup {
 			WP_CLI::error( 'Error replacing in files.' );
 		}
 		$progress->tick();
+
+        // rename main files
+        $this->rename_files();
+        $progress->tick();
 
 		// Remove setup from autoloader
 		$this->removeSetupFromAutoload();
