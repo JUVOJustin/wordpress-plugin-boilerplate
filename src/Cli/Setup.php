@@ -181,10 +181,14 @@ class Setup {
 				$file = $file[0];
 
 				$fileContents = file_get_contents( $file );
+                if (empty($fileContents)) {
+                    \WP_CLI::log("Skipping file '$file', since it is empty");
+                    continue;
+                }
+
 				$fileContents = str_replace( $find, $replace, $fileContents );
 				if ( ! file_put_contents( $file, $fileContents ) ) {
-					echo "Error replacing in file: $file\n";
-
+                    \WP_CLI::error("Error replacing in file: $file");
 					return false;
 				}
 			}
