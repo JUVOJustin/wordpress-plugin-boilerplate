@@ -56,8 +56,15 @@
       "namespace_prefix": "Demo_Plugin\\Dependencies\\",
       "classmap_prefix": "Demo_Plugin",
       "constant_prefix": "DEMO_PLUGIN",
+      "exclude_from_copy": {
+        "packages": [
+          "timber/timber"
+        ]
+      },
       "exclude_from_prefix": {
-        "file_patterns": []
+        "packages": [
+          "timber/timber"
+        ]
       },
       "delete_vendor_files": true
     }
