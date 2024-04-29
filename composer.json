@@ -58,12 +58,14 @@
       "constant_prefix": "DEMO_PLUGIN",
       "exclude_from_copy": {
         "packages": [
-          "timber/timber"
+          "timber/timber",
+          "twig/twig"
         ]
       },
       "exclude_from_prefix": {
         "packages": [
-          "timber/timber"
+          "timber/timber",
+          "twig/twig"
         ]
       },
       "delete_vendor_files": true
