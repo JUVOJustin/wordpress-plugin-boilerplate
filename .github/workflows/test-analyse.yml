@@ -20,8 +20,10 @@ jobs:
     needs: call-install-deps
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
 
       - name: Load Cache
         uses: actions/cache@v3
