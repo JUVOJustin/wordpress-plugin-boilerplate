@@ -12,12 +12,12 @@ jobs:
   install-deps:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v2.1.4
 
       - name: Cache Composer packages
         id: cache-composer
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: vendor
           key: composer-${{ inputs.mode }}-${{ hashFiles('composer.lock') }}
@@ -53,7 +53,7 @@ jobs:
 
       # Install node dependencies
       - id: cache-npm
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: npm-dev-${{ hashFiles('package-lock.json') }} # Always -dev- because we need dev dependencies also for build
@@ -84,7 +84,7 @@ jobs:
 
       - name: Cache all Deps
         id: cache-deps
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             vendor
