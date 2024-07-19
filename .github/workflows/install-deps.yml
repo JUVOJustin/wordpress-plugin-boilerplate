@@ -84,7 +84,7 @@ jobs:
       - if: inputs.mode == 'prod'
         run: |
           npm run production
-          rm -rf node_modules && npm ci --production
+          rm -rf node_modules && npm ci --omit=dev
         shell: bash
 
       - name: Cache all Deps
