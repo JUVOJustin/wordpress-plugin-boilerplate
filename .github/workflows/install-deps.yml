@@ -64,7 +64,7 @@ jobs:
           key: npm-dev-${{ hashFiles('package-lock.json') }} # Always -dev- because we need dev dependencies also for build
       - name: Install npm dependencies
         if: steps.cache-npm.outputs.cache-hit != 'true'
-        run: npm install
+        run: npm ci
         shell: bash
 
       # Install dev composer resources
@@ -84,7 +84,7 @@ jobs:
       - if: inputs.mode == 'prod'
         run: |
           npm run production
-          rm -rf node_modules && npm install --production
+          rm -rf node_modules && npm ci --omit=dev
         shell: bash
 
       - name: Cache all Deps
