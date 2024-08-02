@@ -69,10 +69,4 @@ export default async bud => {
      * Minification reduces the size of the output files, which decreases loading time and improves performance.
      */
     bud.minimize(bud.isProduction)
-
-    /**
-     * Disables the proxy feature of Bud.js as it's not needed when using 'ddev' for local development.
-     * This helps avoid unnecessary complications or conflicts in local development environments.
-     */
-    bud.proxy(false)
 }
