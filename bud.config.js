@@ -69,4 +69,11 @@ export default async bud => {
      * Minification reduces the size of the output files, which decreases loading time and improves performance.
      */
     bud.minimize(bud.isProduction)
+
+    /**
+     * Compatibility for shadcn components and alias ootb
+     */
+    bud.alias({
+        '@': bud.path('@src'),
+    })
 }
