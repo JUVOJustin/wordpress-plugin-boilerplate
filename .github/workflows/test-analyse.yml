@@ -27,6 +27,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
+          tools: cs2pr
 
       - name: Load Cache
         uses: actions/cache@v4
@@ -47,7 +48,12 @@ jobs:
         run: composer run static-analyse
 
       - name: PHPCS
-        run: composer run phpcs
+        id: phpcs
+        run: composer run phpcs --report-full --report-checkstyle=./phpcs-report.xml
+
+      - name: Show PHPCS results in PR
+        if: ${{ always() && steps.phpcs.outcome == 'failure' }}
+        run: cs2pr ./phpcs-report.xml
 
 #      - name: Run integration Tests
 #        run: |
