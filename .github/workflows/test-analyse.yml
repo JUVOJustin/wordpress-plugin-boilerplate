@@ -49,7 +49,7 @@ jobs:
 
       - name: PHPCS
         id: phpcs
-        run: composer run phpcs --report-full --report-checkstyle=./phpcs-report.xml
+        run: composer run phpcs-ci
 
       - name: Show PHPCS results in PR
         if: ${{ always() && steps.phpcs.outcome == 'failure' }}
