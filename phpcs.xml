@@ -37,8 +37,4 @@
         <exclude-pattern>*.tsx</exclude-pattern>
     </rule>
 
-
-    <!-- You can also specify the severity of the errors/warnings to be displayed -->
-    <config name="severity" value="8"/>
-
 </ruleset>

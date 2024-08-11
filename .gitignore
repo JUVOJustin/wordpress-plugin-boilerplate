@@ -10,3 +10,4 @@ dist/
 /tests/setup/vendor
 bin/*
 !bin/.gitkeep
+/phpcs-report.xml
