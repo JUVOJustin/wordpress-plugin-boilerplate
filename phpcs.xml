@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<ruleset>
+
+    <!-- Strip the filepaths down to the relevant bit. -->
+    <arg name="basepath" value="."/>
+
+    <!-- Show progress, show the error codes for each message (source). -->
+    <arg value="ps" />
+
+    <!-- Check up to 8 files simultaneously. -->
+    <arg name="parallel" value="8" />
+
+    <!-- Specify the standard to use -->
+    <rule ref="WordPress"/>
+
+    <!-- Directories to ignore -->
+    <exclude-pattern>vendor/*</exclude-pattern>
+    <exclude-pattern>node_modules/*</exclude-pattern>
+    <exclude-pattern>bin/*</exclude-pattern>
+    <exclude-pattern>dist/*</exclude-pattern>
+
+    <!-- Include all files from the root of the project -->
+    <file>.</file>
+
+    <!-- You can also specify the severity of the errors/warnings to be displayed -->
+    <config name="severity" value="5"/>
+
+</ruleset>

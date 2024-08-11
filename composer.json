@@ -17,7 +17,9 @@
     "phpstan/extension-installer": "^1.1",
     "yoast/phpunit-polyfills": "^1.0",
     "php-stubs/wp-cli-stubs": "^2",
-    "wp-cli/wp-cli": "^2"
+    "wp-cli/wp-cli": "^2",
+    "wp-coding-standards/wpcs": "^3.1"
+
   },
   "minimum-stability": "stable",
   "prefer-stable": true,
@@ -43,7 +45,8 @@
     "post-update-cmd": [
       "@strauss"
     ],
-    "static-analyse": "@php ./vendor/bin/phpstan analyse"
+    "static-analyse": "@php ./vendor/bin/phpstan analyse",
+    "phpcs": "@php ./vendor/bin/phpcs"
   },
   "extra": {
     "installer-paths": {
@@ -74,7 +77,8 @@
   "config": {
     "allow-plugins": {
       "phpstan/extension-installer": true,
-      "composer/installers": true
+      "composer/installers": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true
     }
   },
   "require": {
