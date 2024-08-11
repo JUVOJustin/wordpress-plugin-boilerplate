@@ -12,6 +12,7 @@ use RecursiveDirectoryIterator;
 use RegexIterator;
 use WP_CLI;
 use WP_CLI\ExitException;
+use WP_Filesystem_Direct;
 use function WP_CLI\Utils\format_items;
 
 /**
@@ -50,17 +51,33 @@ class Setup {
 	protected $path;
 
 	/**
+	 * WordPress Filesystem used for i/o operations
+	 *
+	 * @var WP_Filesystem_Direct
+	 */
+	private WP_Filesystem_Direct $filesystem;
+
+	/**
 	 * Init Class and set root path of plugin
 	 */
 	public function __construct() {
 		$this->path = realpath( __DIR__ . '/../../' );
+
+		// Try to get WordPress filesystem. If not possible load it.
+		global $wp_filesystem;
+		if ( ! is_a( $wp_filesystem, 'WP_Filesystem_Base' ) ) {
+			require_once ABSPATH . '/wp-admin/includes/file.php';
+			WP_Filesystem();
+		}
+
+		$this->filesystem = new WP_Filesystem_Direct( false );
 	}
 
 	/**
 	 * Initial plugin setup
 	 *
-	 * @param string[] $args
-	 * @param string[] $assoc_args
+	 * @param string[] $args Unnamed arguments passed from the command calling.
+	 * @param string[] $assoc_args  Named arguments passed from the command.
 	 *
 	 * @throws ExitException CLI ended with error.
 	 * @when before_wp_load
@@ -68,7 +85,7 @@ class Setup {
 	public function __invoke( array $args, array $assoc_args ): void {
 
 		// if setup file still exists, assume setup has to be made.
-		if ( ! file_exists( $this->path . '/setup.php' ) ) {
+		if ( ! $this->filesystem->exists( $this->path . '/setup.php' ) ) {
 			WP_CLI::confirm( 'Are you sure you want to rerun the setup?' );
 		}
 
@@ -167,9 +184,10 @@ class Setup {
 	 * @throws ExitException CLI ended with error.
 	 */
 	private function rename_files(): void {
+
 		if (
-			! rename( $this->path . '/src/Demo_Plugin.php', $this->path . "/src/$this->namespace.php" )
-			|| ! rename( $this->path . '/demo-plugin.php', $this->path . "/$this->slug.php" )
+			! $this->filesystem->move( $this->path . '/src/Demo_Plugin.php', $this->path . "/src/$this->namespace.php" )
+			|| ! $this->filesystem->move( $this->path . '/demo-plugin.php', $this->path . "/$this->slug.php" )
 		) {
 			WP_CLI::error( 'Error renaming files.' );
 		}
@@ -193,8 +211,8 @@ class Setup {
 	/**
 	 * Replace string in files using regex
 	 *
-	 * @param string $find The string to replace.
-	 * @param string $replace The value to replace the $find string with.
+	 * @param string   $find The string to replace.
+	 * @param string   $replace The value to replace the $find string with.
 	 * @param string[] $file_patterns array of regex patterns that determine which files to check.
 	 *
 	 * @return bool
@@ -232,14 +250,14 @@ class Setup {
 
 				$file = $file[0];
 
-				$file_contents = file_get_contents( $file );
+				$file_contents = $this->filesystem->get_contents( $file );
 				if ( empty( $file_contents ) ) {
 					\WP_CLI::log( "Skipping file '$file', since it is empty" );
 					continue;
 				}
 
 				$file_contents = str_replace( $find, $replace, $file_contents );
-				if ( ! file_put_contents( $file, $file_contents ) ) {
+				if ( ! $this->filesystem->put_contents( $file, $file_contents ) ) {
 					\WP_CLI::error( "Error replacing in file: $file" );
 				}
 			}
@@ -259,7 +277,7 @@ class Setup {
 		$composer_json_path = $this->path . '/composer.json';
 
 		// Load the current composer.json into an array
-		$composer_config = wp_json_file_decode(file_get_contents( $composer_json_path ), ['associative' => true]);
+		$composer_config = wp_json_file_decode( $this->filesystem->get_contents( $composer_json_path ), array( 'associative' => true ) );
 
 		// Remove the script from the autoload.files section
 		if ( isset( $composer_config['autoload']['files'] ) ) {
@@ -275,7 +293,7 @@ class Setup {
 		}
 
 		// Save the modified composer.json
-		file_put_contents( $composer_json_path, wp_json_encode( $composer_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
+		$this->filesystem->put_contents( $composer_json_path, wp_json_encode( $composer_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 	}
 
 	/**
