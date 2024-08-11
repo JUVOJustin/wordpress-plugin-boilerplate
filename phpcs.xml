@@ -15,7 +15,6 @@
         <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
         <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
         <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
-
     </rule>
 
     <!-- Directories to ignore -->
@@ -24,6 +23,9 @@
     <exclude-pattern>bin/*</exclude-pattern>
     <exclude-pattern>dist/*</exclude-pattern>
 
+    <!-- Include all files from the root of the project -->
+    <file>.</file>
+
     <!-- PHPCS Reports errors on empty files even when they do have an empty line at the end -->
     <rule ref="Squiz.Commenting.FileComment.SpacingAfterComment">
         <exclude-pattern>*.js</exclude-pattern>
@@ -31,8 +33,13 @@
         <exclude-pattern>*.tsx</exclude-pattern>
     </rule>
 
-    <!-- Include all files from the root of the project -->
-    <file>.</file>
+    <!-- Disable rules for specific files -->
+    <rule ref="WordPress.WP.AlternativeFunctions">
+        <exclude-pattern>src/Cli/*.php</exclude-pattern>
+        <exclude-pattern>*.ts</exclude-pattern>
+        <exclude-pattern>*.tsx</exclude-pattern>
+    </rule>
+
 
     <!-- You can also specify the severity of the errors/warnings to be displayed -->
     <config name="severity" value="8"/>
