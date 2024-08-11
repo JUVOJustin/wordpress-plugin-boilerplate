@@ -46,6 +46,9 @@ jobs:
       - name: PHPSTAN
         run: composer run static-analyse
 
+      - name: PHPCS
+        run: composer run phpcs
+
 #      - name: Run integration Tests
 #        run: |
 #          npm run test:e2e
