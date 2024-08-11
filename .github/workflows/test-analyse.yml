@@ -6,7 +6,7 @@ on:
       - '**'
     tags-ignore:
       - '**'
-  pull_request:
+  pull_request_target:
 
 jobs:
   call-install-deps:
@@ -27,6 +27,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
+          tools: cs2pr
 
       - name: Load Cache
         uses: actions/cache@v4
@@ -44,7 +45,16 @@ jobs:
           npm run production
 
       - name: PHPSTAN
-        run: composer run static-analyse
+        run: composer run phpstan-ci
+
+      - name: PHPCS
+        id: phpcs
+        continue-on-error: true
+        run: composer run phpcs-ci
+
+      - name: Show PHPCS results in PR
+        if: ${{ always() && steps.phpcs.outcome == 'failure' }}
+        run: cs2pr ./phpcs-report.xml --graceful-warnings
 
 #      - name: Run integration Tests
 #        run: |

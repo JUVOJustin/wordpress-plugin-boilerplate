@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Register all actions, filters, shortcodes and cli commands for the plugin
+ *
+ * @package    Demo_Plugin
+ */
 
 namespace Demo_Plugin;
 
@@ -9,7 +13,6 @@ namespace Demo_Plugin;
  * Maintain a list of all hooks that are registered throughout
  * the plugin, and register them with the WordPress API. Call the
  * run function to execute the list of actions and filters.
- *
  */
 class Loader {
 
@@ -53,11 +56,9 @@ class Loader {
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-
 		$this->actions    = array();
 		$this->filters    = array();
 		$this->shortcodes = array();
-
 	}
 
 	/**
@@ -66,8 +67,8 @@ class Loader {
 	 * @param string $hook The name of the WordPress action that is being registered.
 	 * @param object $component A reference to the instance of the object on which the action is defined.
 	 * @param string $callback The name of the function definition on the $component.
-	 * @param int $priority Optional. The priority at which the function should be fired. Default is 10.
-	 * @param int $accepted_args Optional. The number of arguments that should be passed to the $callback. Default is 1.
+	 * @param int    $priority Optional. The priority at which the function should be fired. Default is 10.
+	 * @param int    $accepted_args Optional. The number of arguments that should be passed to the $callback. Default is 1.
 	 *
 	 * @since    1.0.0
 	 */
@@ -91,17 +92,17 @@ class Loader {
 	/**
 	 * Add a new WP-CLI command to the collection to be registered with WordPress.
 	 *
-	 * @param string $name
-	 * @param object $instance
-	 * @param mixed[] $args
+	 * @param string              $name The name of the cli command you want to register.
+	 * @param object              $instance A reference to the instance of the object on which the callback is defined.
+	 * @param array<string,mixed> $args An associative array with additional registration parameters.
 	 *
 	 * @return void
 	 */
-	public function add_cli( string $name, object $instance, array $args = [] ): void {
-		$this->cli[ $name ] = [
+	public function add_cli( string $name, object $instance, array $args = array() ): void {
+		$this->cli[ $name ] = array(
 			'instance' => $instance,
-			'args'     => $args
-		];
+			'args'     => $args,
+		);
 	}
 
 	/**
@@ -109,11 +110,11 @@ class Loader {
 	 * collection.
 	 *
 	 * @param array<int, array{'hook':string, 'component':object, 'callback':string, 'priority':int, 'accepted_args':int}> $hooks The collection of hooks that is being registered (that is, actions or filters).
-	 * @param string $hook The name of the WordPress filter that is being registered.
-	 * @param object $component A reference to the instance of the object on which the filter is defined.
-	 * @param string $callback The name of the function definition on the $component.
-	 * @param int $priority The priority at which the function should be fired.
-	 * @param int $accepted_args The number of arguments that should be passed to the $callback.
+	 * @param string                                                                                                       $hook The name of the WordPress filter that is being registered.
+	 * @param object                                                                                                       $component A reference to the instance of the object on which the filter is defined.
+	 * @param string                                                                                                       $callback The name of the function definition on the $component.
+	 * @param int                                                                                                          $priority The priority at which the function should be fired.
+	 * @param int                                                                                                          $accepted_args The number of arguments that should be passed to the $callback.
 	 *
 	 * @return   array<int, array{'hook':string, 'component':object, 'callback':string, 'priority':int, 'accepted_args':int}> The collection of actions and filters registered with WordPress.
 	 * @since    1.0.0
@@ -126,11 +127,10 @@ class Loader {
 			'component'     => $component,
 			'callback'      => $callback,
 			'priority'      => $priority,
-			'accepted_args' => $accepted_args
+			'accepted_args' => $accepted_args,
 		);
 
 		return $hooks;
-
 	}
 
 	/**
@@ -139,8 +139,8 @@ class Loader {
 	 * @param string $hook The name of the WordPress filter that is being registered.
 	 * @param object $component A reference to the instance of the object on which the filter is defined.
 	 * @param string $callback The name of the function definition on the $component.
-	 * @param int $priority Optional. The priority at which the function should be fired. Default is 10.
-	 * @param int $accepted_args Optional. The number of arguments that should be passed to the $callback. Default is 1
+	 * @param int    $priority Optional. The priority at which the function should be fired. Default is 10.
+	 * @param int    $accepted_args Optional. The number of arguments that should be passed to the $callback. Default is 1.
 	 *
 	 * @since    1.0.0
 	 */
@@ -156,34 +156,44 @@ class Loader {
 	public function run(): void {
 
 		foreach ( $this->filters as $hook ) {
-			add_filter( $hook['hook'], array(
-				$hook['component'],
-				$hook['callback']
-			), $hook['priority'], $hook['accepted_args'] );
+			add_filter(
+				$hook['hook'],
+				array(
+					$hook['component'],
+					$hook['callback'],
+				),
+				$hook['priority'],
+				$hook['accepted_args']
+			);
 		}
 
 		foreach ( $this->actions as $hook ) {
-			add_action( $hook['hook'], array(
-				$hook['component'],
-				$hook['callback']
-			), $hook['priority'], $hook['accepted_args'] );
+			add_action(
+				$hook['hook'],
+				array(
+					$hook['component'],
+					$hook['callback'],
+				),
+				$hook['priority'],
+				$hook['accepted_args']
+			);
 		}
 
 		foreach ( $this->shortcodes as $hook ) {
-			add_shortcode( $hook['hook'], array(
-				$hook['component'],
-				$hook['callback']
-			) );
+			add_shortcode(
+				$hook['hook'],
+				array(
+					$hook['component'],
+					$hook['callback'],
+				)
+			);
 		}
 
 		// Check if WP_CLI is available
 		if ( ! empty( $this->cli ) && class_exists( 'WP_CLI' ) ) {
-		    foreach ( $this->cli as $name => $data ) {
-			\WP_CLI::add_command( $name, $data['instance'], $data['args'] );
-		    }
+			foreach ( $this->cli as $name => $data ) {
+				\WP_CLI::add_command( $name, $data['instance'], $data['args'] );
+			}
 		}
-
-
 	}
-
 }
