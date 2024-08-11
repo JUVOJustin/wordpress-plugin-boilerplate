@@ -48,14 +48,14 @@ require plugin_dir_path( __FILE__ ) . 'vendor/vendor-prefixed/autoload.php';
  * The code that runs during plugin activation.
  */
 function activate_demo_plugin() {
-    Activator::activate();
+	Activator::activate();
 }
 
 /**
  * The code that runs during plugin deactivation.
  */
 function deactivate_demo_plugin() {
-    Deactivator::deactivate();
+	Deactivator::deactivate();
 }
 
 register_activation_hook( __FILE__, 'activate_demo_plugin' );

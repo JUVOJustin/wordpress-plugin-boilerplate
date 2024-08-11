@@ -35,7 +35,7 @@ class Setup {
 
 		// if setup file still exists, assume setup has to be made
 		if ( ! file_exists( $this->path . '/setup.php' ) ) {
-			WP_CLI::confirm( "Are you sure you want to rerun the setup?" );
+			WP_CLI::confirm( 'Are you sure you want to rerun the setup?' );
 		}
 
 		$this->name = $this->ask( "Enter the 'human' name of the plugin (e.g. My Awesome Plugin):" );
@@ -48,77 +48,81 @@ class Setup {
 		$this->namespace = $this->ask( "Enter the namespace in Camel_Snake Case (e.g., 'My_Awesome_Plugin'). Leave empty for default '" . $namespace . "':", $namespace );
 
 		// Slug
-		$slug = str_replace( '_', '-', str_replace( ' ', '-', strtolower( $this->name ) ) );;
+		$slug = str_replace( '_', '-', str_replace( ' ', '-', strtolower( $this->name ) ) );
+
 		$this->slug = $this->ask( "Enter the slug you want to use for the plugin as kebab-case (e.g., 'awesome-plugin'). Leave empty for default '" . $slug . "':", $slug );
 
-		WP_CLI::log( "Using the following values:" );
-		format_items( 'table', [
-			[
-				'key'   => 'Plugin Name',
-				'value' => $this->name,
-			],
-			[
-				'key'   => 'Namespace',
-				'value' => $this->namespace,
-			],
-			[
-				'key'   => 'Slug',
-				'value' => $this->slug,
-			],
+		WP_CLI::log( 'Using the following values:' );
+		format_items(
+			'table',
+			array(
+				array(
+					'key'   => 'Plugin Name',
+					'value' => $this->name,
+				),
+				array(
+					'key'   => 'Namespace',
+					'value' => $this->namespace,
+				),
+				array(
+					'key'   => 'Slug',
+					'value' => $this->slug,
+				),
 
-		], array( 'key', 'value' ) );
+			),
+			array( 'key', 'value' )
+		);
 
 		// Further operations like composer update, npm install, etc.
 		$progress = \WP_CLI\Utils\make_progress_bar( 'Setup', 7 );
 
 		// Replace in files
 		if (
-			! $this->replaceInFiles( 'demo-plugin', $this->slug, [ '.*\.php', '.*\.js', '.*\.json', '.*\.github\/.*\.yml' ] )
-			|| ! $this->replaceInFiles( 'demo_plugin', str_replace( '-', '_', $this->slug ), [ '.*\.php' ] )
-			|| ! $this->replaceInFiles( 'Demo_Plugin', $this->namespace, [ '.*\.php', '.*\.json', '.*\.github\/.*\.yml' ] )
-			|| ! $this->replaceInFiles( 'DEMO_PLUGIN', strtoupper( $this->namespace ), [ '.*\.php', '.*\.json' ] )
-			|| ! $this->replaceInFiles( 'Demo Plugin', $this->name, [ '.*\.php', '.*README\.txt' ] )
+			! $this->replaceInFiles( 'demo-plugin', $this->slug, array( '.*\.php', '.*\.js', '.*\.json', '.*\.github\/.*\.yml' ) )
+			|| ! $this->replaceInFiles( 'demo_plugin', str_replace( '-', '_', $this->slug ), array( '.*\.php' ) )
+			|| ! $this->replaceInFiles( 'Demo_Plugin', $this->namespace, array( '.*\.php', '.*\.json', '.*\.github\/.*\.yml' ) )
+			|| ! $this->replaceInFiles( 'DEMO_PLUGIN', strtoupper( $this->namespace ), array( '.*\.php', '.*\.json' ) )
+			|| ! $this->replaceInFiles( 'Demo Plugin', $this->name, array( '.*\.php', '.*README\.txt' ) )
 		) {
 			WP_CLI::error( 'Error replacing in files.' );
 		}
 		$progress->tick();
 
-        // rename main files
-        $this->rename_files();
-        $progress->tick();
+		// rename main files
+		$this->rename_files();
+		$progress->tick();
 
 		// Remove setup from autoloader
 		$this->removeSetupFromAutoload();
 		$progress->tick();
 
 		// Fix paths
-		exec( "composer dump-autoload && composer update 2>&1", $output, $code );
+		exec( 'composer dump-autoload && composer update 2>&1', $output, $code );
 		if ( $code !== 0 ) {
 			WP_CLI::error( 'Error running composer update' );
 		}
 		$progress->tick();
 
-		exec( "npm install 2>&1", $output, $code );
+		exec( 'npm install 2>&1', $output, $code );
 		if ( $code !== 0 ) {
 			WP_CLI::error( 'Error running npm install' );
 		}
 		$progress->tick();
 
-		exec( "npm run production 2>&1", $output, $code );
+		exec( 'npm run production 2>&1', $output, $code );
 		if ( $code !== 0 ) {
 			WP_CLI::error( 'Error running npm run production' );
 		}
 		$progress->tick();
 
 		// Cleanup setup folder
-		if ( file_exists( $this->path . "/setup.php" ) && ! unlink( $this->path . "/setup.php" ) ) {
+		if ( file_exists( $this->path . '/setup.php' ) && ! unlink( $this->path . '/setup.php' ) ) {
 			WP_CLI::error( 'Error removing setup file' );
 		}
 
 		// All done
 		$progress->finish();
 		WP_CLI::success( 'Setup completed' );
-
 	}
 
 	/**
@@ -152,33 +156,36 @@ class Setup {
 	/**
 	 * Replace string in files using regex
 	 *
-	 * @param string $find
-	 * @param string $replace
+	 * @param string   $find
+	 * @param string   $replace
 	 * @param string[] $filePatterns array of regex patterns
 	 *
 	 * @return bool
 	 */
 	private function replaceInFiles( string $find, string $replace, array $filePatterns ): bool {
 
-		$dir = new RecursiveDirectoryIterator( $this->path, FilesystemIterator::SKIP_DOTS );
-        $filter = new \RecursiveCallbackFilterIterator($dir, function ($current, $key, $iterator) {
-            $path = str_replace( $current->getFilename(), '', $current->getPathname() );
-            // Directly check for 'vendor' or 'node_modules' in the path
-            if (strpos($path, 'vendor') !== false || strpos($path, 'node_modules') !== false) {
-                return false;
-            }
+		$dir    = new RecursiveDirectoryIterator( $this->path, FilesystemIterator::SKIP_DOTS );
+		$filter = new \RecursiveCallbackFilterIterator(
+			$dir,
+			function ( $current, $key, $iterator ) {
+				$path = str_replace( $current->getFilename(), '', $current->getPathname() );
+				// Directly check for 'vendor' or 'node_modules' in the path
+				if ( strpos( $path, 'vendor' ) !== false || strpos( $path, 'node_modules' ) !== false ) {
+					return false;
+				}
 
-            // Check for '.git' in the path
-            if (strpos($path, '.git') !== false) {
-                // Ensure that it's not '.github' that's being matched
-                if (strpos($path, '.github') === false) {
-                    return false;
-                }
-            }
+				// Check for '.git' in the path
+				if ( strpos( $path, '.git' ) !== false ) {
+					// Ensure that it's not '.github' that's being matched
+					if ( strpos( $path, '.github' ) === false ) {
+						return false;
+					}
+				}
 
-            return true;
-        });
-        $ite = new \RecursiveIteratorIterator($filter);
+				return true;
+			}
+		);
+		$ite    = new \RecursiveIteratorIterator( $filter );
 
 		foreach ( $filePatterns as $filePattern ) {
 
@@ -188,14 +195,14 @@ class Setup {
 				$file = $file[0];
 
 				$fileContents = file_get_contents( $file );
-                if (empty($fileContents)) {
-                    \WP_CLI::log("Skipping file '$file', since it is empty");
-                    continue;
-                }
+				if ( empty( $fileContents ) ) {
+					\WP_CLI::log( "Skipping file '$file', since it is empty" );
+					continue;
+				}
 
 				$fileContents = str_replace( $find, $replace, $fileContents );
 				if ( ! file_put_contents( $file, $fileContents ) ) {
-                    \WP_CLI::error("Error replacing in file: $file");
+					\WP_CLI::error( "Error replacing in file: $file" );
 				}
 			}
 		}
@@ -236,7 +243,7 @@ class Setup {
 	/**
 	 * Ask an open question and return the answer
 	 *
-	 * @param string $question
+	 * @param string      $question
 	 * @param string|null $default
 	 *
 	 * @return string

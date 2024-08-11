@@ -3,10 +3,8 @@
 
 namespace Demo_Plugin;
 
-
 class Deactivator {
 
-    public static function deactivate(): void {
-    }
-
+	public static function deactivate(): void {
+	}
 }
