@@ -259,7 +259,7 @@ class Setup {
 		$composer_json_path = $this->path . '/composer.json';
 
 		// Load the current composer.json into an array
-		$composer_config = wp_json_file_decode( file_get_contents( $composer_json_path ), array( 'associative' => true ) );
+		$composer_config = json_decode( file_get_contents( $composer_json_path ), array( 'associative' => true ) );
 
 		// Remove the script from the autoload.files section
 		if ( isset( $composer_config['autoload']['files'] ) ) {
