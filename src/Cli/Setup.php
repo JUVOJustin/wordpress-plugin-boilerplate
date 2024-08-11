@@ -275,7 +275,7 @@ class Setup {
 		}
 
 		// Save the modified composer.json
-		file_put_contents( $composer_json_path, wp_json_encode( $composer_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
+		file_put_contents( $composer_json_path, json_encode( $composer_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 	}
 
 	/**
