@@ -46,7 +46,7 @@
       "@strauss"
     ],
     "phpstan": "@php ./vendor/bin/phpstan analyse",
-    "phpstan:ci": "@php ./vendor/bin/phpstan analyse | cs2pr",
+    "phpstan:ci": "@php ./vendor/bin/phpstan analyse --error-format=checkstyle | cs2pr",
     "phpcs": "@php ./vendor/bin/phpcs --report-full",
     "phpcs:ci": "@phpcs --report-checkstyle=./phpcs-report.xml",
     "phpcbf": "@php ./vendor/bin/phpcbf"
