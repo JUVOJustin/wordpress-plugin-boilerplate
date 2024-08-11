@@ -4,7 +4,7 @@
     <!-- Strip the filepaths down to the relevant bit. -->
     <arg value="sp"/>
     <arg name="basepath" value="."/>
-    <arg name="parallel" value="8" />
+    <arg name="parallel" value="8"/>
     <arg name="colors"/>
 
     <!-- Specify the standard to use -->
@@ -26,13 +26,6 @@
     <!-- PHPCS Reports errors on empty files even when they do have an empty line at the end -->
     <rule ref="Squiz.Commenting.FileComment.SpacingAfterComment">
         <exclude-pattern>*.js</exclude-pattern>
-        <exclude-pattern>*.ts</exclude-pattern>
-        <exclude-pattern>*.tsx</exclude-pattern>
-    </rule>
-
-    <!-- Disable rules for specific files -->
-    <rule ref="WordPress.WP.AlternativeFunctions">
-        <exclude-pattern>src/Cli/*.php</exclude-pattern>
         <exclude-pattern>*.ts</exclude-pattern>
         <exclude-pattern>*.tsx</exclude-pattern>
     </rule>
