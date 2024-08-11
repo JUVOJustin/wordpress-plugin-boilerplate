@@ -45,7 +45,7 @@ jobs:
           npm run production
 
       - name: PHPSTAN
-        run: composer run static-analyse
+        run: composer run phpstan-ci
 
       - name: PHPCS
         id: phpcs
