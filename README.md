@@ -6,7 +6,9 @@ This boilerplate is a fork of [WordPress Boilerplate](https://github.com/DevinVi
 - Automatic Namespace prefixing with [Strauss](https://github.com/BrianHenryIE/strauss)
 - Easy Shortcode, CLI Command Registration through the loader
 - PHPStan with ready-made Github actions
+- PHPCS with ready-made Github actions
 - [Bud.js](https://bud.js.org/) for simple bundling and build of assets
+- ESLint built in
 - Ready made Github actions, for building and bundling
 
 # Setup

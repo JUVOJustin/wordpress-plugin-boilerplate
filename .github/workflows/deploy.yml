@@ -42,7 +42,7 @@ jobs:
           find . -name "composer.json" -type f -delete && find . -name "composer.lock" -type f -delete
           find . -name "package.json" -type f -delete && find . -name "package-lock.json" -type f -delete
           find . -name "constants.php" && find . -name "README.md"
-          rm -rf  phpunit.xml.dist phpcs.xml phpstan.neon phpcs-report.xml
+          rm -rf  phpunit.xml.dist phpcs.xml phpstan.neon phpcs-report.xml eslint.config.js bud.config.js
           rm -rf .git && find . -name ".gitignore" -type f -delete
           rm -rf .github
           rm -rf tests
