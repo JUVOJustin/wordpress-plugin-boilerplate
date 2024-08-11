@@ -2,13 +2,10 @@
 <ruleset>
 
     <!-- Strip the filepaths down to the relevant bit. -->
+    <arg value="sp"/>
     <arg name="basepath" value="."/>
-
-    <!-- Show progress, show the error codes for each message (source). -->
-    <arg value="ps" />
-
-    <!-- Check up to 8 files simultaneously. -->
     <arg name="parallel" value="8" />
+    <arg name="colors"/>
 
     <!-- Specify the standard to use -->
     <rule ref="WordPress">
