@@ -45,10 +45,10 @@
     "post-update-cmd": [
       "@strauss"
     ],
-    "static-analyse": "@php ./vendor/bin/phpstan analyse",
-    "phpstan-ci": "@php ./vendor/bin/phpstan analyse --error-format=checkstyle | cs2pr",
+    "phpstan": "@php ./vendor/bin/phpstan analyse",
+    "phpstan:ci": "@php ./vendor/bin/phpstan analyse --error-format=checkstyle | cs2pr",
     "phpcs": "@php ./vendor/bin/phpcs --report-full",
-    "phpcs-ci": "@php ./vendor/bin/phpcs --report-full --report-checkstyle=./phpcs-report.xml",
+    "phpcs:ci": "@phpcs --report-checkstyle=./phpcs-report.xml",
     "phpcbf": "@php ./vendor/bin/phpcbf"
   },
   "extra": {
