@@ -2,10 +2,13 @@
   "name": "demo-plugin",
   "type": "module",
   "devDependencies": {
-    "@roots/bud": "^6.23.1",
-    "@roots/bud-preset-recommend": "^6.23.1",
-    "@roots/bud-preset-wordpress": "^6.23.1",
-    "@roots/bud-sass": "^6.23.1"
+    "@roots/bud": "^6.23.2",
+    "@roots/bud-eslint": "^6.23.2",
+    "@roots/bud-preset-recommend": "^6.23.2",
+    "@roots/bud-preset-wordpress": "^6.23.2",
+    "@roots/bud-sass": "^6.23.2",
+    "@roots/eslint-config": "^6.23.2",
+    "@wordpress/eslint-plugin": "^20.2.0"
   },
   "scripts": {
     "development": "npx bud build development",

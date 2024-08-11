@@ -61,8 +61,8 @@ export default async bud => {
 	 */
 	bud.assets(
 		{
-			from: bud.path( `@src / static` ),
-			to: bud.path( `@dist / static` ),
+			from: bud.path( '@src/static' ),
+			to: bud.path( '@dist/static' ),
 			noErrorOnMissing: true,
 		}
 	)
@@ -89,4 +89,9 @@ export default async bud => {
 			'@': bud.path( '@src' ),
 		}
 	)
+
+	bud.eslint
+		.setFailOnError(bud.isProduction)
+		.setFailOnWarning(false)
+		.setFix(true)
 }
