@@ -82,7 +82,7 @@ class Demo_Plugin {
 	 */
 	private function set_locale(): void {
 
-		$plugin_i18n = new i18n();
+		$plugin_i18n = new I18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 	}
