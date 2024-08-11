@@ -42,6 +42,7 @@ jobs:
 
       - name: Build assets
         run: |
+          npm run prettier:fix
           npm run production
 
       - name: PHPSTAN

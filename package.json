@@ -12,6 +12,8 @@
   },
   "scripts": {
     "development": "npx bud build development",
-    "production": "npx bud build production"
+    "production": "npx bud build production",
+    "prettier": "npx prettier resources --check",
+    "prettier:fix": "npm run prettier -- --write"
   }
 }
