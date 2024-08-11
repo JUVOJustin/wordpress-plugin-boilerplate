@@ -90,8 +90,9 @@ export default async bud => {
 		}
 	)
 
+
 	bud.eslint
-		.setFailOnError(bud.isProduction)
-		.setFailOnWarning(false)
-		.setFix(true)
+		.setFailOnError( bud.isProduction )
+		.setFailOnWarning( false )
+		.setFix( true )
 }
