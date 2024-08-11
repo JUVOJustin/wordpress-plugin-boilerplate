@@ -1,4 +1,9 @@
 <?php
+/**
+ * WP_CLI Setup command integration
+ *
+ * @package Demo_Plugin
+ */
 
 namespace Demo_Plugin\Cli;
 
@@ -9,14 +14,43 @@ use WP_CLI;
 use WP_CLI\ExitException;
 use function WP_CLI\Utils\format_items;
 
+/**
+ * Class Setup
+ *
+ * This class is responsible for performing the initial setup of the plugin.
+ */
 class Setup {
 
+	/**
+	 * Plugin name
+	 *
+	 * @var string
+	 */
 	protected string $name;
-	protected string $namespace;
-	protected string $slug;
-	protected string $path;
 
 	/**
+	 * Plugin Namespace
+	 *
+	 * @var string
+	 */
+	protected string $namespace;
+
+	/**
+	 * Plugin Slug
+	 *
+	 * @var string
+	 */
+	protected string $slug;
+
+	/**
+	 * Plugin Path
+	 *
+	 * @var string|false
+	 */
+	protected $path;
+
+	/**
+	 * Init Class and set root path of plugin
 	 */
 	public function __construct() {
 		$this->path = realpath( __DIR__ . '/../../' );
@@ -28,12 +62,12 @@ class Setup {
 	 * @param string[] $args
 	 * @param string[] $assoc_args
 	 *
-	 * @throws ExitException
+	 * @throws ExitException CLI ended with error.
 	 * @when before_wp_load
 	 */
 	public function __invoke( array $args, array $assoc_args ): void {
 
-		// if setup file still exists, assume setup has to be made
+		// if setup file still exists, assume setup has to be made.
 		if ( ! file_exists( $this->path . '/setup.php' ) ) {
 			WP_CLI::confirm( 'Are you sure you want to rerun the setup?' );
 		}
@@ -44,7 +78,7 @@ class Setup {
 		}
 
 		// Namespace
-		$namespace       = $this->toPascalSnakeCase( $this->name );
+		$namespace       = $this->to_pascal_snake_case( $this->name );
 		$this->namespace = $this->ask( "Enter the namespace in Camel_Snake Case (e.g., 'My_Awesome_Plugin'). Leave empty for default '" . $namespace . "':", $namespace );
 
 		// Slug
@@ -78,11 +112,11 @@ class Setup {
 
 		// Replace in files
 		if (
-			! $this->replaceInFiles( 'demo-plugin', $this->slug, array( '.*\.php', '.*\.js', '.*\.json', '.*\.github\/.*\.yml' ) )
-			|| ! $this->replaceInFiles( 'demo_plugin', str_replace( '-', '_', $this->slug ), array( '.*\.php' ) )
-			|| ! $this->replaceInFiles( 'Demo_Plugin', $this->namespace, array( '.*\.php', '.*\.json', '.*\.github\/.*\.yml' ) )
-			|| ! $this->replaceInFiles( 'DEMO_PLUGIN', strtoupper( $this->namespace ), array( '.*\.php', '.*\.json' ) )
-			|| ! $this->replaceInFiles( 'Demo Plugin', $this->name, array( '.*\.php', '.*README\.txt' ) )
+			! $this->replace_in_files( 'demo-plugin', $this->slug, array( '.*\.php', '.*\.js', '.*\.json', '.*\.github\/.*\.yml', '.*\.neon' ) )
+			|| ! $this->replace_in_files( 'demo_plugin', str_replace( '-', '_', $this->slug ), array( '.*\.php' ) )
+			|| ! $this->replace_in_files( 'Demo_Plugin', $this->namespace, array( '.*\.php', '.*\.json', '.*\.github\/.*\.yml' ) )
+			|| ! $this->replace_in_files( 'DEMO_PLUGIN', strtoupper( $this->namespace ), array( '.*\.php', '.*\.json' ) )
+			|| ! $this->replace_in_files( 'Demo Plugin', $this->name, array( '.*\.php', '.*README\.txt' ) )
 		) {
 			WP_CLI::error( 'Error replacing in files.' );
 		}
@@ -93,30 +127,31 @@ class Setup {
 		$progress->tick();
 
 		// Remove setup from autoloader
-		$this->removeSetupFromAutoload();
+		$this->remove_setup_from_autoload();
 		$progress->tick();
 
 		// Fix paths
 		exec( 'composer dump-autoload && composer update 2>&1', $output, $code );
-		if ( $code !== 0 ) {
+		if ( 0 !== $code ) {
 			WP_CLI::error( 'Error running composer update' );
 		}
 		$progress->tick();
 
 		exec( 'npm install 2>&1', $output, $code );
-		if ( $code !== 0 ) {
+		if ( 0 !== $code ) {
 			WP_CLI::error( 'Error running npm install' );
 		}
 		$progress->tick();
 
 		exec( 'npm run production 2>&1', $output, $code );
-		if ( $code !== 0 ) {
+		if ( 0 !== $code ) {
 			WP_CLI::error( 'Error running npm run production' );
 		}
 		$progress->tick();
 
 		// Cleanup setup folder
-		if ( file_exists( $this->path . '/setup.php' ) && ! unlink( $this->path . '/setup.php' ) ) {
+		if ( file_exists( $this->path . '/setup.php' ) ) {
+			wp_delete_file( $this->path . '/setup.php' );
 			WP_CLI::error( 'Error removing setup file' );
 		}
 
@@ -129,7 +164,7 @@ class Setup {
 	 * Rename files
 	 *
 	 * @return void
-	 * @throws ExitException
+	 * @throws ExitException CLI ended with error.
 	 */
 	private function rename_files(): void {
 		if (
@@ -141,13 +176,15 @@ class Setup {
 	}
 
 	/**
-	 * @param string $string
+	 * Converts a given value into pascal snake case
+	 *
+	 * @param string $value The value to convert to pascal snake case.
 	 *
 	 * @return string
 	 */
-	private function toPascalSnakeCase( string $string ): string {
+	private function to_pascal_snake_case( string $value ): string {
 		// Split the string into words based on spaces or underscores
-		$words = preg_split( '/[\s_]+/', $string );
+		$words = preg_split( '/[\s_]+/', $value );
 
 		// Capitalize the first letter of each word and then join them with an underscore
 		return implode( '_', array_map( 'ucfirst', $words ) );
@@ -156,13 +193,14 @@ class Setup {
 	/**
 	 * Replace string in files using regex
 	 *
-	 * @param string   $find
-	 * @param string   $replace
-	 * @param string[] $filePatterns array of regex patterns
+	 * @param string $find The string to replace.
+	 * @param string $replace The value to replace the $find string with.
+	 * @param string[] $file_patterns array of regex patterns that determine which files to check.
 	 *
 	 * @return bool
+	 * @throws ExitException CLI ended with error.
 	 */
-	private function replaceInFiles( string $find, string $replace, array $filePatterns ): bool {
+	private function replace_in_files( string $find, string $replace, array $file_patterns ): bool {
 
 		$dir    = new RecursiveDirectoryIterator( $this->path, FilesystemIterator::SKIP_DOTS );
 		$filter = new \RecursiveCallbackFilterIterator(
@@ -187,21 +225,21 @@ class Setup {
 		);
 		$ite    = new \RecursiveIteratorIterator( $filter );
 
-		foreach ( $filePatterns as $filePattern ) {
+		foreach ( $file_patterns as $file_pattern ) {
 
-			$files = new RegexIterator( $ite, "/^{$filePattern}$/", RegexIterator::GET_MATCH );
+			$files = new RegexIterator( $ite, "/^{$file_pattern}$/", RegexIterator::GET_MATCH );
 			foreach ( $files as $file ) {
 
 				$file = $file[0];
 
-				$fileContents = file_get_contents( $file );
-				if ( empty( $fileContents ) ) {
+				$file_contents = file_get_contents( $file );
+				if ( empty( $file_contents ) ) {
 					\WP_CLI::log( "Skipping file '$file', since it is empty" );
 					continue;
 				}
 
-				$fileContents = str_replace( $find, $replace, $fileContents );
-				if ( ! file_put_contents( $file, $fileContents ) ) {
+				$file_contents = str_replace( $find, $replace, $file_contents );
+				if ( ! file_put_contents( $file, $file_contents ) ) {
 					\WP_CLI::error( "Error replacing in file: $file" );
 				}
 			}
@@ -215,43 +253,43 @@ class Setup {
 	 *
 	 * @return void
 	 */
-	private function removeSetupFromAutoload(): void {
+	private function remove_setup_from_autoload(): void {
 
 		// Path to your composer.json
-		$composerJsonPath = $this->path . '/composer.json';
+		$composer_json_path = $this->path . '/composer.json';
 
 		// Load the current composer.json into an array
-		$composerConfig = json_decode( file_get_contents( $composerJsonPath ), true );
+		$composer_config = wp_json_file_decode(file_get_contents( $composer_json_path ), ['associative' => true]);
 
 		// Remove the script from the autoload.files section
-		if ( isset( $composerConfig['autoload']['files'] ) ) {
-			$key = array_search( 'setup.php', $composerConfig['autoload']['files'] );
-			if ( $key !== false ) {
-				unset( $composerConfig['autoload']['files'][ $key ] );
+		if ( isset( $composer_config['autoload']['files'] ) ) {
+			$key = array_search( 'setup.php', $composer_config['autoload']['files'], true );
+			if ( false !== $key ) {
+				unset( $composer_config['autoload']['files'][ $key ] );
 			}
 
 			// If the files array is empty, remove it
-			if ( empty( $composerConfig['autoload']['files'] ) ) {
-				unset( $composerConfig['autoload']['files'] );
+			if ( empty( $composer_config['autoload']['files'] ) ) {
+				unset( $composer_config['autoload']['files'] );
 			}
 		}
 
 		// Save the modified composer.json
-		file_put_contents( $composerJsonPath, json_encode( $composerConfig, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
+		file_put_contents( $composer_json_path, wp_json_encode( $composer_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
 	}
 
 	/**
 	 * Ask an open question and return the answer
 	 *
-	 * @param string      $question
-	 * @param string|null $default
+	 * @param string      $question The question prompted to the user.
+	 * @param string|null $default_value Default value used when empty answer provided.
 	 *
 	 * @return string
 	 */
-	private function ask( string $question, ?string $default = null ): string {
+	private function ask( string $question, ?string $default_value = null ): string {
 		WP_CLI::log( WP_CLI::colorize( '%4' . $question . '%n' ) );
 		$output = trim( fgets( STDIN ) ); // Get input from user
 
-		return $output ? $output : $default;
+		return $output ? $output : $default_value;
 	}
 }

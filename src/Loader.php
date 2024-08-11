@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Register all actions, filters, shortcodes and cli commands for the plugin
+ *
+ * @package    Demo_Plugin
+ */
 
 namespace Demo_Plugin;
 
@@ -52,7 +56,6 @@ class Loader {
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-
 		$this->actions    = array();
 		$this->filters    = array();
 		$this->shortcodes = array();
@@ -89,9 +92,9 @@ class Loader {
 	/**
 	 * Add a new WP-CLI command to the collection to be registered with WordPress.
 	 *
-	 * @param string  $name
-	 * @param object  $instance
-	 * @param mixed[] $args
+	 * @param string              $name The name of the cli command you want to register.
+	 * @param object              $instance A reference to the instance of the object on which the callback is defined.
+	 * @param array<string,mixed> $args An associative array with additional registration parameters.
 	 *
 	 * @return void
 	 */
@@ -137,7 +140,7 @@ class Loader {
 	 * @param object $component A reference to the instance of the object on which the filter is defined.
 	 * @param string $callback The name of the function definition on the $component.
 	 * @param int    $priority Optional. The priority at which the function should be fired. Default is 10.
-	 * @param int    $accepted_args Optional. The number of arguments that should be passed to the $callback. Default is 1
+	 * @param int    $accepted_args Optional. The number of arguments that should be passed to the $callback. Default is 1.
 	 *
 	 * @since    1.0.0
 	 */

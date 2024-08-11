@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The plugin bootstrap file
  *
@@ -8,7 +7,7 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @link              https://juvo-design.de
+ * @link              https://justin-vogt.com
  * @since             1.0.0
  * @package           Demo_Plugin
  *
@@ -27,6 +26,7 @@
 use Demo_Plugin\Activator;
 use Demo_Plugin\Deactivator;
 use Demo_Plugin\Demo_Plugin;
+use Demo_Plugin\Uninstallor;
 
 if ( ! defined( 'WPINC' ) ) {
 	die;
@@ -35,8 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Plugin absolute path
  */
-define( 'DEMO_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
-define( 'DEMO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+require plugin_dir_path( __FILE__ ) . 'constants.php';
 
 /**
  * Use Composer PSR-4 Autoloading
@@ -47,19 +46,27 @@ require plugin_dir_path( __FILE__ ) . 'vendor/vendor-prefixed/autoload.php';
 /**
  * The code that runs during plugin activation.
  */
-function activate_demo_plugin() {
+function activate_demo_plugin(): void {
 	Activator::activate();
 }
 
 /**
  * The code that runs during plugin deactivation.
  */
-function deactivate_demo_plugin() {
+function deactivate_demo_plugin(): void {
 	Deactivator::deactivate();
+}
+
+/**
+ * The code that runs during plugin uninstallation.
+ */
+function uninstall_demo_plugin(): void {
+	Uninstallor::uninstall();
 }
 
 register_activation_hook( __FILE__, 'activate_demo_plugin' );
 register_deactivation_hook( __FILE__, 'deactivate_demo_plugin' );
+register_uninstall_hook( __FILE__, 'uninstall_demo_plugin' );
 
 /**
  * Begins execution of the plugin.
@@ -70,7 +77,7 @@ register_deactivation_hook( __FILE__, 'deactivate_demo_plugin' );
  *
  * @since    1.0.0
  */
-function run_demo_plugin() {
+function run_demo_plugin(): void {
 	$plugin = new Demo_Plugin();
 	$plugin->run();
 }

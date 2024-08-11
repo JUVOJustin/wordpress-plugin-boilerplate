@@ -11,7 +11,7 @@
   ],
   "require-dev": {
     "composer/installers": "^v2",
-    "phpstan/phpstan": "^1.7",
+    "phpstan/phpstan": "^1.11.9",
     "php-stubs/acf-pro-stubs": "^6",
     "szepeviktor/phpstan-wordpress": "^1.1",
     "phpstan/extension-installer": "^1.1",
@@ -46,7 +46,8 @@
       "@strauss"
     ],
     "static-analyse": "@php ./vendor/bin/phpstan analyse",
-    "phpcs": "@php ./vendor/bin/phpcs"
+    "phpcs": "@php ./vendor/bin/phpcs",
+    "phpcbf": "@php ./vendor/bin/phpcbf"
   },
   "extra": {
     "installer-paths": {

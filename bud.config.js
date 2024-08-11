@@ -1,8 +1,10 @@
 /**
  * Build configuration for bud.js
  *
+ * @package Demo_Plugin
  * @param {import('@roots/bud').Bud} bud
  */
+
 export default async bud => {
 
 	/**

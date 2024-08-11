@@ -1,4 +1,15 @@
 <?php
+/**
+ * The file that defines the core plugin class
+ *
+ * A class definition that includes attributes and functions used across both the
+ * public-facing side of the site and the admin area.
+ *
+ * @link       http://example.com
+ * @since      1.0.0
+ *
+ * @package    Demo_Plugin
+ */
 
 namespace Demo_Plugin;
 
@@ -13,7 +24,6 @@ namespace Demo_Plugin;
  *
  * @since      1.0.0
  * @package    Demo_Plugin
- * @subpackage Demo_Plugin/includes
  * @author     Justin Vogt <mail@juvo-design.de>
  */
 class Demo_Plugin {
@@ -28,7 +38,7 @@ class Demo_Plugin {
 	 *
 	 * @var Loader
 	 */
-	protected $loader;
+	protected Loader $loader;
 
 	/**
 	 * Define the core functionality of the plugin.
@@ -123,7 +133,7 @@ class Demo_Plugin {
 	/**
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
-	 * @return    Loader    Orchestrates the hooks of the plugin.
+	 * @return Loader Orchestrates the hooks of the plugin.
 	 */
 	public function get_loader(): Loader {
 		return $this->loader;
@@ -132,27 +142,39 @@ class Demo_Plugin {
 	/**
 	 * Enqueue a bud entrypoint
 	 *
-	 * @param string  $entry
-	 * @param mixed[] $localize_data
+	 * @param string              $entry Name if the entrypoint defined in bud.js .
+	 * @param array<string,mixed> $localize_data Array of associated data. See https://developer.wordpress.org/reference/functions/wp_localize_script/ .
 	 */
 	private function enqueue_bud_entrypoint( string $entry, array $localize_data = array() ): void {
 		$entrypoints_manifest = DEMO_PLUGIN_PATH . '/dist/entrypoints.json';
 
+		// Try to get WordPress filesystem. If not possible load it.
+		global $wp_filesystem;
+		if ( ! is_a( $wp_filesystem, 'WP_Filesystem_Base' ) ) {
+			require_once ABSPATH . '/wp-admin/includes/file.php';
+			WP_Filesystem();
+		}
+
+		$filesystem = new \WP_Filesystem_Direct( false );
+		if ( ! $filesystem->exists( $entrypoints_manifest ) ) {
+			return;
+		}
+
 		// parse json file
-		$entrypoints = json_decode( file_get_contents( $entrypoints_manifest ) );
+		$entrypoints = json_decode( $filesystem->get_contents( $entrypoints_manifest ) );
 
 		// Iterate entrypoint groups
 		foreach ( $entrypoints as $key => $bundle ) {
 
 			// Only process the entrypoint that should be enqueued per call
-			if ( $key != $entry ) {
+			if ( $key !== $entry ) {
 				continue;
 			}
 
 			// Iterate js and css files
 			foreach ( $bundle as $type => $files ) {
 				foreach ( $files as $file ) {
-					if ( $type == 'js' ) {
+					if ( 'js' === $type ) {
 						wp_enqueue_script(
 							self::PLUGIN_NAME . "/$file",
 							DEMO_PLUGIN_URL . 'dist/' . $file,
@@ -170,7 +192,7 @@ class Demo_Plugin {
 						}
 					}
 
-					if ( $type == 'css' ) {
+					if ( 'css' === $type ) {
 						wp_enqueue_style(
 							self::PLUGIN_NAME . "/$file",
 							DEMO_PLUGIN_URL . 'dist/' . $file,
@@ -181,21 +203,5 @@ class Demo_Plugin {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Generates a unique but deterministic key usable for object caching. The key is prefixed by the plugin name
-	 *
-	 * @param mixed[] $matching_data Pass any data that should be used to match the cache
-	 *
-	 * @return string
-	 */
-	public static function generate_cache_key( array $matching_data ): string {
-		foreach ( $matching_data as $key => $value ) {
-			$matching_data[ $key ] = serialize( $value );
-		}
-
-		$matching_data = implode( '-', $matching_data );
-		return self::PLUGIN_NAME . '-' . md5( $matching_data );
 	}
 }

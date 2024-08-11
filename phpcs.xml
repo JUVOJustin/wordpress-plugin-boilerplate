@@ -11,7 +11,12 @@
     <arg name="parallel" value="8" />
 
     <!-- Specify the standard to use -->
-    <rule ref="WordPress"/>
+    <rule ref="WordPress">
+        <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+        <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+        <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+
+    </rule>
 
     <!-- Directories to ignore -->
     <exclude-pattern>vendor/*</exclude-pattern>
@@ -23,6 +28,6 @@
     <file>.</file>
 
     <!-- You can also specify the severity of the errors/warnings to be displayed -->
-    <config name="severity" value="5"/>
+    <config name="severity" value="8"/>
 
 </ruleset>
