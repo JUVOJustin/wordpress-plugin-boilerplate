@@ -36,8 +36,8 @@ export default async bud => {
 	 */
 	bud.entry(
 		{
-			"demo-plugin-frontend": [` / frontend / js / app.js`, ` / frontend / scss / app.scss`],
-			"demo-plugin-admin": [` / admin / js / app.js`, ` / admin / scss / app.scss`]
+			"demo-plugin-frontend": ['/frontend/js/app.js', '/frontend/scss/app.scss'],
+			"demo-plugin-admin": ['/admin/js/app.js', '/admin/scss/app.scss']
 		}
 	)
 
