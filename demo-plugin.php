@@ -77,8 +77,8 @@ register_uninstall_hook( __FILE__, 'uninstall_demo_plugin' );
  *
  * @since    1.0.0
  */
-function run_demo_plugin(): void {
+function run_demo_plugin(string $plugin): void {
 	$plugin = new Demo_Plugin();
 	$plugin->run();
 }
-run_demo_plugin();
+run_demo_plugin(123);
