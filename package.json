@@ -8,12 +8,14 @@
     "@roots/bud-preset-wordpress": "^6.23.2",
     "@roots/bud-sass": "^6.23.2",
     "@roots/eslint-config": "^6.23.2",
-    "@wordpress/eslint-plugin": "^20.2.0"
+    "@wordpress/eslint-plugin": "^20.2.0",
+    "@wordpress/prettier-config": "^4.5.0"
   },
   "scripts": {
     "development": "npx bud build development",
     "production": "npx bud build production",
     "prettier": "npx prettier resources --check",
     "prettier:fix": "npm run prettier -- --write"
-  }
+  },
+  "prettier": "@wordpress/prettier-config"
 }
