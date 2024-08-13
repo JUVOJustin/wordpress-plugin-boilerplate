@@ -151,7 +151,7 @@ class Setup {
 
 		// Cleanup setup folder
 		if ( file_exists( $this->path . '/setup.php' ) ) {
-			wp_delete_file( $this->path . '/setup.php' );
+			unlink( $this->path . '/setup.php' );
 			WP_CLI::error( 'Error removing setup file' );
 		}
 
