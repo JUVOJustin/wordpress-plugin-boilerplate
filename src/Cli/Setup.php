@@ -60,12 +60,12 @@ class Setup {
 	 * Initial plugin setup
 	 *
 	 * @param string[] $args Unnamed arguments passed from the command calling.
-	 * @param string[] $assoc_args  Named arguments passed from the command.
+	 * @param string[] $assoc_args Named arguments passed from the command.
 	 *
 	 * @throws ExitException CLI ended with error.
 	 * @when before_wp_load
 	 */
-	public function __invoke( array $args, array $assoc_args ): void {
+	public function __invoke( array $args, array $assoc_args ): void { // phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 
 		// if setup file still exists, assume setup has to be made.
 		if ( ! file_exists( $this->path . '/setup.php' ) ) {
@@ -112,10 +112,35 @@ class Setup {
 
 		// Replace in files
 		if (
-			! $this->replace_in_files( 'demo-plugin', $this->slug, array( '.*\.php', '.*\.js', '.*\.json', '.*\.github\/.*\.yml', '.*\.neon' ) )
+			! $this->replace_in_files(
+				'demo-plugin',
+				$this->slug,
+				array(
+					'.*\.php',
+					'.*\.js',
+					'.*\.json',
+					'.*\.github\/.*\.yml',
+					'.*\.neon',
+				)
+			)
 			|| ! $this->replace_in_files( 'demo_plugin', str_replace( '-', '_', $this->slug ), array( '.*\.php' ) )
-			|| ! $this->replace_in_files( 'Demo_Plugin', $this->namespace, array( '.*\.php', '.*\.json', '.*\.github\/.*\.yml' ) )
-			|| ! $this->replace_in_files( 'DEMO_PLUGIN', strtoupper( $this->namespace ), array( '.*\.php', '.*\.json' ) )
+			|| ! $this->replace_in_files(
+				'Demo_Plugin',
+				$this->namespace,
+				array(
+					'.*\.php',
+					'.*\.json',
+					'.*\.github\/.*\.yml',
+				)
+			)
+			|| ! $this->replace_in_files(
+				'DEMO_PLUGIN',
+				strtoupper( $this->namespace ),
+				array(
+					'.*\.php',
+					'.*\.json',
+				)
+			)
 			|| ! $this->replace_in_files( 'Demo Plugin', $this->name, array( '.*\.php', '.*README\.txt' ) )
 		) {
 			WP_CLI::error( 'Error replacing in files.' );
@@ -131,6 +156,7 @@ class Setup {
 		$progress->tick();
 
 		// Fix paths
+		// phpcs:disable WordPress.PHP.DiscouragedPHPFunctions.system_calls_exec
 		exec( 'composer dump-autoload && composer update 2>&1', $output, $code );
 		if ( 0 !== $code ) {
 			WP_CLI::error( 'Error running composer update' );
@@ -148,10 +174,11 @@ class Setup {
 			WP_CLI::error( 'Error running npm run production' );
 		}
 		$progress->tick();
+		// phpcs:enable
 
 		// Cleanup setup folder
 		if ( file_exists( $this->path . '/setup.php' ) ) {
-			unlink( $this->path . '/setup.php' );
+			unlink( $this->path . '/setup.php' ); // phpcs:disable WordPress.WP.AlternativeFunctions
 			WP_CLI::error( 'Error removing setup file' );
 		}
 
@@ -167,12 +194,14 @@ class Setup {
 	 * @throws ExitException CLI ended with error.
 	 */
 	private function rename_files(): void {
+		// phpcs:disable WordPress.WP.AlternativeFunctions.rename_rename
 		if (
-			! rename( $this->path . '/src/Demo_Plugin.php', $this->path . "/src/$this->namespace.php" )
-			|| ! rename( $this->path . '/demo-plugin.php', $this->path . "/$this->slug.php" )
+			! rename( $this->path . '/src/Demo_Plugin.php', $this->path . "/src/$this->namespace.php" ) // phpcs:disable WordPress.WP.AlternativeFunctions.rename_rename
+			|| ! rename( $this->path . '/demo-plugin.php', $this->path . "/$this->slug.php" ) // phpcs:disable WordPress.WP.AlternativeFunctions.rename_rename
 		) {
 			WP_CLI::error( 'Error renaming files.' );
 		}
+		// phpcs:enable
 	}
 
 	/**
@@ -205,7 +234,7 @@ class Setup {
 		$dir    = new RecursiveDirectoryIterator( $this->path, FilesystemIterator::SKIP_DOTS );
 		$filter = new \RecursiveCallbackFilterIterator(
 			$dir,
-			function ( $current, $key, $iterator ) {
+			function ( $current ) {
 				$path = str_replace( $current->getFilename(), '', $current->getPathname() );
 				// Directly check for 'vendor' or 'node_modules' in the path
 				if ( strpos( $path, 'vendor' ) !== false || strpos( $path, 'node_modules' ) !== false ) {
@@ -232,6 +261,7 @@ class Setup {
 
 				$file = $file[0];
 
+				// phpcs:disable WordPress.WP.AlternativeFunctions
 				$file_contents = file_get_contents( $file );
 				if ( empty( $file_contents ) ) {
 					\WP_CLI::log( "Skipping file '$file', since it is empty" );
@@ -242,6 +272,7 @@ class Setup {
 				if ( ! file_put_contents( $file, $file_contents ) ) {
 					\WP_CLI::error( "Error replacing in file: $file" );
 				}
+				// phpcs:enable
 			}
 		}
 
@@ -259,7 +290,7 @@ class Setup {
 		$composer_json_path = $this->path . '/composer.json';
 
 		// Load the current composer.json into an array
-		$composer_config = json_decode( file_get_contents( $composer_json_path ), true );
+		$composer_config = json_decode( file_get_contents( $composer_json_path ), true );                                      // phpcs:disable WordPress.WP.AlternativeFunctions
 
 		// Remove the script from the autoload.files section
 		if ( isset( $composer_config['autoload']['files'] ) ) {
@@ -275,7 +306,7 @@ class Setup {
 		}
 
 		// Save the modified composer.json
-		file_put_contents( $composer_json_path, json_encode( $composer_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) );
+		file_put_contents( $composer_json_path, json_encode( $composer_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) ); // phpcs:disable WordPress.WP.AlternativeFunctions
 	}
 
 	/**
