@@ -12,6 +12,7 @@
         <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
         <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
         <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+        <exclude name="Universal.Operators.DisallowShortTernary.Found"/>
     </rule>
 
     <!-- Directories to ignore -->
