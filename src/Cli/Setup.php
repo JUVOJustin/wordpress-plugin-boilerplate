@@ -178,8 +178,10 @@ class Setup {
 
 		// Cleanup setup folder
 		if ( file_exists( $this->path . '/setup.php' ) ) {
-			unlink( $this->path . '/setup.php' ); // phpcs:disable WordPress.WP.AlternativeFunctions
-			WP_CLI::error( 'Error removing setup file' );
+			$removed = unlink( $this->path . '/setup.php' ); // phpcs:disable WordPress.WP.AlternativeFunctions
+			if ( ! $removed ) {
+				WP_CLI::error( 'Error removing setup file' );
+			}
 		}
 
 		// All done
