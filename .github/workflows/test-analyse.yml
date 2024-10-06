@@ -8,6 +8,10 @@ on:
       - '**'
   pull_request_target:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   call-install-deps:
     uses: ./.github/workflows/install-deps.yml
