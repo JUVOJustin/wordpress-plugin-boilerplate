@@ -9,6 +9,7 @@ export default {
     },
     globals: {
         "jQuery": "readonly",
-        "$": "readonly"
+        "$": "readonly",
+        "demo_plugin": "readonly"
     }
 };
