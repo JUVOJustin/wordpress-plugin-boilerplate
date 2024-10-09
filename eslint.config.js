@@ -6,5 +6,9 @@ export default {
     ],
     rules: {
         'no-console': 'error',
+    },
+    globals: {
+        "jQuery": "readonly",
+        "$": "readonly"
     }
 };
