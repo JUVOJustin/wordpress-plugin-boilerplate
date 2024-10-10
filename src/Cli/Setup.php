@@ -123,10 +123,10 @@ class Setup {
 					'.*\.neon',
 				)
 			)
-			|| ! $this->replace_in_files( 
+			|| ! $this->replace_in_files(
 				'demo_plugin',
 				str_replace( '-', '_', $this->slug ),
-				array( 
+				array(
 					'.*\.php',
 					'.*\.eslint\/.*\.js',
 				)
