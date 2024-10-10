@@ -128,7 +128,7 @@ class Setup {
 				str_replace( '-', '_', $this->slug ),
 				array(
 					'.*\.php',
-					'eslint\/.*\.js',
+					'eslint.*\.js',
 				)
 			)
 			|| ! $this->replace_in_files(
