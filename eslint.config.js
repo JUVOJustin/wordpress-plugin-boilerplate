@@ -6,6 +6,9 @@ export default {
     ],
     rules: {
         'no-console': 'error',
+        camelcase: ['error', {
+            allow: ['^demo_plugin'] // Allow global with plugin name to not be camelCased
+        }],
     },
     globals: {
         "jQuery": "readonly",
