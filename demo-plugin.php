@@ -67,7 +67,7 @@ function uninstall_demo_plugin(): void {
 register_activation_hook( __FILE__, 'activate_demo_plugin' );
 register_deactivation_hook( __FILE__, 'deactivate_demo_plugin' );
 register_uninstall_hook( __FILE__, 'uninstall_demo_plugin' );
-add_action('activated_plugin', [Activator::class, 'network_activation'], 10, 2);
+add_action( 'activated_plugin', array( Activator::class, 'network_activation' ), 10, 2 );
 
 /**
  * Begins execution of the plugin.

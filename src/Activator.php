@@ -29,20 +29,23 @@ class Activator {
 	 * Add logic to the activation on a network site.
 	 *
 	 * @param string $plugin Plugin file loaded.
-	 * @param bool $network_wide Indicates if loaded network wide.
+	 * @param bool   $network_wide Indicates if loaded network wide.
 	 * @return void
 	 */
 	public static function network_activation( string $plugin, bool $network_wide ): void {
 
-		if ( !str_contains($plugin, Demo_Plugin::PLUGIN_NAME) || !$network_wide) {
+		if ( ! str_contains( $plugin, Demo_Plugin::PLUGIN_NAME ) || ! $network_wide ) {
 			return;
 		}
 
-		//Network deactivate
-		//deactivate_plugins( $plugin,false, true );
+		// phpcs:disable Squiz.PHP.CommentedOutCode.Found
 
-		//Activate on single site
-		//activate_plugins( $plugin );
+		// Network deactivate
+		// deactivate_plugins( $plugin, false, true );
 
+		// Activate on single site
+		// activate_plugins( $plugin );
+
+		// phpcs:enable
 	}
 }
