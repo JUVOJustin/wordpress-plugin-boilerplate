@@ -18,13 +18,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: call-install-deps
 
+    permissions:
+      contents: write
+
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v2.1.4
 
-      - name: Load Cache
-        uses: actions/cache@v3
+      - name: Restore Cache
+        uses: actions/cache/restore@v4
         with:
           path: |
             vendor
@@ -39,25 +42,31 @@ jobs:
           find . -name "composer.json" -type f -delete && find . -name "composer.lock" -type f -delete
           find . -name "package.json" -type f -delete && find . -name "package-lock.json" -type f -delete
           find . -name "constants.php" && find . -name "README.md"
+          rm -rf  phpunit.xml.dist phpcs.xml phpstan.neon phpcs-report.xml eslint.config.js bud.config.js
           rm -rf .git && find . -name ".gitignore" -type f -delete
           rm -rf .github
           rm -rf tests
+          rm -rf bin
         shell: bash
+
+      - name: Run wordpress plugin check
+        uses: wordpress/plugin-check-action@v1
 
       # Update Version
       - name: Set env
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - name: Update Version in WordPress files
         run: |
-          sed -i -E 's/([[:blank:]]*\*[[:blank:]]*Version:[[:blank:]]*).*/\1${{ env.RELEASE_VERSION }}/' ${{ github.event.repository.name }}.php
-          sed -i -E 's/([[:blank:]]*\$version[[:blank:]]*=[[:blank:]]*")(.*)(".*)/\1${{ env.RELEASE_VERSION }}\3/' ${{ github.event.repository.name }}.php
+          sed -i -E "s/(const PLUGIN_VERSION = ')[^']*(';)/\1${{ env.RELEASE_VERSION }}\2/" src/Demo_Plugin.php
+          sed -i -E 's/([[:blank:]]*\*[[:blank:]]*Version:[[:blank:]]*).*/\1${{ env.RELEASE_VERSION }}/' demo-plugin.php
           sed -i -E 's/Stable tag: .*/Stable tag: ${{ env.RELEASE_VERSION }}/' README.txt
 
       - name: Update resources
         uses: test-room-7/action-update-file@v1
         with:
           file-path: |
-            ${{ github.event.repository.name }}.php
+            src/Demo_Plugin.php
+            demo-plugin.php
             README.txt
           commit-msg: Update Version in WordPress specific files
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -67,10 +76,11 @@ jobs:
         run: |
           cd ..
           sudo apt-get install zip
-          zip -r ${{ github.event.repository.name }}-${{ env.RELEASE_VERSION }}.zip ./*
+          zip -r demo-plugin-${{ env.RELEASE_VERSION }}.zip ./*
 
       - name: Release
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "../${{ github.event.repository.name }}-${{ env.RELEASE_VERSION }}.zip"
+          omitBodyDuringUpdate: true
+          artifacts: "../demo-plugin-${{ env.RELEASE_VERSION }}.zip"

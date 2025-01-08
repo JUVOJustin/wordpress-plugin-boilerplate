@@ -10,37 +10,85 @@
     }
   ],
   "require-dev": {
-    "composer/installers": "^1.0",
-    "phpstan/phpstan": "^1.7",
-    "php-stubs/acf-pro-stubs": "^6.0",
+    "composer/installers": "^v2",
+    "phpstan/phpstan": "^1.11.9",
+    "php-stubs/acf-pro-stubs": "^6",
     "szepeviktor/phpstan-wordpress": "^1.1",
     "phpstan/extension-installer": "^1.1",
-    "phpunit/phpunit": "^9",
-    "wp-phpunit/wp-phpunit": "^6.1",
-    "yoast/phpunit-polyfills": "^1.0"
+    "yoast/phpunit-polyfills": "^1.0",
+    "php-stubs/wp-cli-stubs": "^2",
+    "wp-cli/wp-cli": "^2",
+    "wp-coding-standards/wpcs": "^3.1"
+
   },
+  "minimum-stability": "stable",
+  "prefer-stable": true,
   "autoload": {
     "psr-4": {
       "Demo_Plugin\\": "src/"
-    }
+    },
+    "files": [
+      "setup.php"
+    ]
   },
   "scripts": {
-    "post-create-project-cmd": "php setup.php",
-    "static-analyse": "@php ./vendor/bin/phpstan analyse"
+    "post-create-project-cmd": [
+      "composer exec -- wp setup"
+    ],
+    "prefix-namespaces": [
+      "sh -c 'test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/latest/download/strauss.phar'",
+      "@php bin/strauss.phar",
+      "@php composer dump-autoload"
+    ],
+    "post-install-cmd": [
+      "@prefix-namespaces"
+    ],
+    "post-update-cmd": [
+      "@prefix-namespaces"
+    ],
+    "phpstan": "@php ./vendor/bin/phpstan analyse",
+    "phpstan:ci": "@php ./vendor/bin/phpstan analyse --error-format=checkstyle | cs2pr",
+    "phpcs": "@php ./vendor/bin/phpcs --report-full",
+    "phpcs:ci": "@phpcs --report-checkstyle=./phpcs-report.xml",
+    "phpcbf": "@php ./vendor/bin/phpcbf"
   },
   "extra": {
     "installer-paths": {
       "vendor/{$vendor}/{$name}/": [
         "type:wordpress-plugin"
       ]
+    },
+    "strauss": {
+      "target_directory": "vendor/vendor-prefixed",
+      "namespace_prefix": "Demo_Plugin\\Dependencies\\",
+      "classmap_prefix": "Demo_Plugin",
+      "constant_prefix": "DEMO_PLUGIN",
+      "exclude_from_copy": {
+        "packages": [
+          "timber/timber",
+          "twig/twig"
+        ]
+      },
+      "exclude_from_prefix": {
+        "packages": [
+          "timber/timber",
+          "twig/twig"
+        ]
+      },
+      "delete_vendor_files": true
     }
   },
   "config": {
-    "optimize-autoloader": true,
-    "classmap-authoritative": true,
+    "platform": {
+      "php": "8.0"
+    },
     "allow-plugins": {
       "phpstan/extension-installer": true,
-      "composer/installers": true
+      "composer/installers": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true
     }
+  },
+  "require": {
+    "php": ">=8.0"
   }
 }

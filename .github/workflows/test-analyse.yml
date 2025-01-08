@@ -1,6 +1,16 @@
 name: Test/Analyse
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '**'
+  pull_request_target:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   call-install-deps:
@@ -15,10 +25,16 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
+      - name: Setup php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          tools: cs2pr
 
       - name: Load Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             vendor
@@ -30,10 +46,20 @@ jobs:
 
       - name: Build assets
         run: |
+          npm run prettier:fix
           npm run production
 
       - name: PHPSTAN
-        run: composer run static-analyse
+        run: composer run phpstan:ci
+
+      - name: PHPCS
+        id: phpcs
+        continue-on-error: true
+        run: composer run phpcs:ci
+
+      - name: Show PHPCS results in PR
+        if: ${{ always() && steps.phpcs.outcome == 'failure' }}
+        run: cs2pr ./phpcs-report.xml --graceful-warnings
 
 #      - name: Run integration Tests
 #        run: |

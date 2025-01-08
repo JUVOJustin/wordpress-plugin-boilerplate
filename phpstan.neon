@@ -1,14 +1,11 @@
 parameters:
-    level: 5
+    level: 6
     reportUnmatchedIgnoredErrors: false
     paths:
+        - demo-plugin.php
         - src/
     ignoreErrors:
-        # Uses func_get_args()
-        - '#^Function apply_filters(_ref_array)? invoked with [34567] parameters, 2 required\.$#'
-        - '#.*class Frm.*#'
     scanDirectories:
-    scanFiles:
-        - %rootDir%/../../php-stubs/acf-pro-stubs/acf-pro-stubs.php
+        - vendor
     bootstrapFiles:
         - constants.php

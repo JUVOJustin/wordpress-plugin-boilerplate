@@ -8,3 +8,6 @@ dist/
 /tests/cypress/videos/
 /tests/setup/plugins
 /tests/setup/vendor
+bin/*
+!bin/.gitkeep
+/phpcs-report.xml
