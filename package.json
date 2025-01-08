@@ -2,11 +2,11 @@
   "name": "demo-plugin",
   "type": "module",
   "devDependencies": {
-    "@roots/bud": "^6.23.3",
-    "@roots/bud-eslint": "^6.23.3",
-    "@roots/bud-preset-recommend": "^6.23.3",
-    "@roots/bud-preset-wordpress": "^6.23.3",
-    "@roots/bud-sass": "^6.23.3",
+    "@roots/bud": "^6.24.0",
+    "@roots/bud-eslint": "^6.24.0",
+    "@roots/bud-preset-recommend": "^6.24.0",
+    "@roots/bud-preset-wordpress": "^6.24.0",
+    "@roots/bud-sass": "^6.24.0",
     "@roots/eslint-config": "^6.23.2",
     "@wordpress/eslint-plugin": "^21",
     "@wordpress/prettier-config": "^4.5.0"
