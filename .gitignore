@@ -1,3 +1,4 @@
+.ddev
 /vendor/
 /node_modules/
 setup.sh
