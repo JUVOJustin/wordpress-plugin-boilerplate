@@ -37,6 +37,7 @@ if ( ! defined( 'WPINC' ) ) {
  */
 define( 'DEMO_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DEMO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+add_action('activated_plugin', [Activator::class, 'network_activation'], 10, 2);
 
 /**
  * Use Composer PSR-4 Autoloading
