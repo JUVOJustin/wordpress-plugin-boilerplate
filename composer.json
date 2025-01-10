@@ -61,8 +61,8 @@
     "strauss": {
       "target_directory": "vendor/vendor-prefixed",
       "namespace_prefix": "Demo_Plugin\\Dependencies\\",
-      "classmap_prefix": "Demo_Plugin",
-      "constant_prefix": "DEMO_PLUGIN",
+      "classmap_prefix": "Demo_Plugin_",
+      "constant_prefix": "DEMO_PLUGIN_",
       "exclude_from_copy": {
         "packages": [
           "timber/timber",
