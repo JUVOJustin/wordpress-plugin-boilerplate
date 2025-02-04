@@ -151,7 +151,7 @@ class Demo_Plugin {
 		// Try to get WordPress filesystem. If not possible load it.
 		global $wp_filesystem;
 		if ( ! is_a( $wp_filesystem, 'WP_Filesystem_Base' ) ) {
-			require_once ABSPATH . '/wp-admin/includes/file.php';
+			require_once ABSPATH . 'wp-admin/includes/file.php'; // @phpstan-ignore requireOnce.fileNotFound
 			WP_Filesystem();
 		}
 
