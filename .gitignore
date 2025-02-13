@@ -1,5 +1,6 @@
 .ddev
 /vendor/
+/vendor-prefixed/
 /node_modules/
 setup.sh
 .idea

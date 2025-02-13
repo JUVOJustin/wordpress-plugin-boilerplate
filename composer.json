@@ -19,11 +19,13 @@
     "php-stubs/wp-cli-stubs": "^2",
     "wp-cli/wp-cli": "^2",
     "wp-coding-standards/wpcs": "^3.1.0"
-
   },
   "minimum-stability": "stable",
   "prefer-stable": true,
   "autoload": {
+    "classmap": [
+      "vendor-prefixed/"
+    ],
     "psr-4": {
       "Demo_Plugin\\": "src/"
     },
@@ -59,14 +61,14 @@
       ]
     },
     "strauss": {
-      "target_directory": "vendor/vendor-prefixed",
+      "target_directory": "vendor-prefixed",
       "namespace_prefix": "Demo_Plugin\\Dependencies\\",
       "classmap_prefix": "Demo_Plugin_",
       "constant_prefix": "DEMO_PLUGIN_",
       "exclude_from_copy": {
         "packages": [
-          "timber/timber",
-          "twig/twig"
+          "phpstan/phpstan",
+          "szepeviktor/phpstan-wordpress"
         ]
       },
       "exclude_from_prefix": {
