@@ -7,5 +7,6 @@ parameters:
     ignoreErrors:
     scanDirectories:
         - vendor
+        - vendor-prefixed
     bootstrapFiles:
         - constants.php
