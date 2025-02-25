@@ -38,6 +38,7 @@ jobs:
         with:
           path: |
             vendor
+            vendor-prefixed
             node_modules
             dist
           key: deps-dev-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}

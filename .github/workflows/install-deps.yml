@@ -24,7 +24,9 @@ jobs:
         id: cache-composer
         uses: actions/cache@v4
         with:
-          path: vendor
+          path: |
+            vendor
+            vendor-prefixed
           key: composer-${{ inputs.mode }}-${{ hashFiles('composer.lock') }}
 
       - if: steps.cache-composer.outputs.cache-hit != 'true'
@@ -93,6 +95,7 @@ jobs:
         with:
           path: |
             vendor
+            vendor-prefixed
             node_modules
             dist
           key: deps-${{ inputs.mode }}-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
