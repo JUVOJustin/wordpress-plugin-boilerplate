@@ -80,8 +80,7 @@
           "timber/timber",
           "twig/twig"
         ]
-      },
-      "delete_vendor_files": true
+      }
     }
   },
   "config": {
