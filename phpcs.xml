@@ -18,6 +18,7 @@
 
     <!-- Directories to ignore -->
     <exclude-pattern>vendor/*</exclude-pattern>
+    <exclude-pattern>vendor-prefixed/*</exclude-pattern>
     <exclude-pattern>node_modules/*</exclude-pattern>
     <exclude-pattern>bin/*</exclude-pattern>
     <exclude-pattern>dist/*</exclude-pattern>
