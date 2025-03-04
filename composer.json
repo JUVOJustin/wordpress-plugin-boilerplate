@@ -38,6 +38,7 @@
       "composer exec -- wp setup"
     ],
     "prefix-namespaces": [
+      "mkdir -p vendor-prefixed",
       "sh -c 'test -f ./bin/strauss.phar || curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/latest/download/strauss.phar'",
       "@php bin/strauss.phar",
       "@php composer dump-autoload"
@@ -49,8 +50,7 @@
       "@prefix-namespaces"
     ],
     "clean:vendor": [
-      "rm -rf vendor",
-      "find vendor-prefixed -mindepth 1 ! -name .gitkeep -exec rm -rf {} +"
+      "rm -rf vendor && rm -rf vendor-prefixed"
     ],
     "phpstan": "@php ./vendor/bin/phpstan analyse",
     "phpstan:ci": "@php ./vendor/bin/phpstan analyse --error-format=checkstyle | cs2pr",
