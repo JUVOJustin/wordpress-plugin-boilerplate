@@ -218,6 +218,30 @@ Keeping PHP versions consistent across all configurations ensures that your deve
 
 ## Advanced Features
 
+### AI Rules:
+This is a pastable instruction set for AI tools like cursor or windsurf how to work with the boilerplate. Add it to your workspace or global rules. 
+```xml
+<wordpress_plugin_development_boilerplate>
+When working with this WordPress plugin boilerplate, consult the upstream repository at https://github.com/JUVOJustin/wordpress-plugin-boilerplate in the following scenarios:
+
+1. **Code Structure Changes**: Before refactoring the plugin architecture, file organization, or namespace structure.
+
+2. **Build Process Updates**: When modifying Bud.js configuration, asset compilation workflows, or entry points.
+
+3. **GitHub Workflows**: When updating CI/CD pipelines, test procedures, or deployment processes. The upstream repository maintains best practices for PHP version matrix testing, quality checks, and release management.
+
+4. **Quality Check Updates**: When adjusting PHPStan, PHPCS, or ESLint configurations. Refer to upstream for current recommended rule sets and standards.
+
+5. **Dependency Management**: When updating Strauss configuration for prefixing namespaces or modifying composer dependencies.
+
+6. **PHP Version Compatibility**: When changing PHP version requirements to ensure all necessary files are updated consistently.
+
+7. **WordPress Integration Patterns**: For examples of proper WordPress hook registration, loader implementation, and integration with core WordPress features.
+
+Compare your implementation with the upstream repository when making structural changes to ensure alignment with the latest best practices and architecture decisions.
+</wordpress_plugin_development_boilerplate>
+```
+
 ### ACF JSON Sync
 
 The boilerplate supports Advanced Custom Fields (ACF) JSON synchronization. All ACF field group JSON files should be stored in `resources/acf-json/`.
