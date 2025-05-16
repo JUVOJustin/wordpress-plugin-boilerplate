@@ -15,13 +15,13 @@ This boilerplate is a fork of [WordPress Boilerplate](https://github.com/DevinVi
 # Setup
 
 ## Step 1: Create Your Project
-Run the following command to create your project. This will download the boilerplate and automatically run the script for initial configuration:
+Run the following command to create your project in the current folder. This will download the boilerplate and automatically run the script for initial configuration:
 
 ```bash
-composer create-project juvo/wordpress-plugin-boilerplate path/to/your-new-plugin
+composer create-project juvo/wordpress-plugin-boilerplate .
 ```
 
-The plugin folder will be created and the setup script will run automatically.
+The boilerplate will be set up in the current directory, and the setup script will run automatically.
 
 ## Step 2: Configure Your Plugin (Automatic Prompt)
 Upon project creation, you'll be guided through a series of prompts to configure your plugin:
