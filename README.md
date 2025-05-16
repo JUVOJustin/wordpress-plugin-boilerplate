@@ -335,3 +335,6 @@ private function load_dependencies(): void {
 ### Wrapping Up
 
 That's it! Your plugin is now ready for development. Dive into creating your next remarkable WordPress plugin with ease and efficiency.
+
+---
+This plugin was created using the [wordpress-plugin-boilerplate](https://github.com/JUVOJustin/wordpress-plugin-boilerplate). Consult the upstream repository for changes, updates or IDE setups. LLM instructions can be found here: https://github.com/JUVOJustin/wordpress-plugin-boilerplate/wiki/LLM-Rule-instructions. Keep this reference, to allow later updates.
