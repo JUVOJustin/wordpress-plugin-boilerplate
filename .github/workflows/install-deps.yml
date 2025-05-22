@@ -45,6 +45,8 @@ jobs:
       - if: steps.cache-composer.outputs.cache-hit != 'true'
         name: Install Composer dependencies on cache miss
         run: |
+          mkdir -p vendor-prefixed
+          mkdir -p bin
           if [ "${{ inputs.mode }}" = "dev" ]; then
             composer install --prefer-dist --no-interaction --no-progress
           else
