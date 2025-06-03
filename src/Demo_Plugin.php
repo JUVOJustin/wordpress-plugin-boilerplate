@@ -81,10 +81,11 @@ class Demo_Plugin {
 	 * @access   private
 	 */
 	private function set_locale(): void {
-
-		$plugin_i18n = new I18n();
-
-		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
+		load_plugin_textdomain(
+			'demo-plugin',
+			false,
+			dirname(plugin_basename(__FILE__), 2) . '/languages/'
+		);
 	}
 
 	/**
