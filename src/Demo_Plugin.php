@@ -84,7 +84,7 @@ class Demo_Plugin {
 		load_plugin_textdomain(
 			'demo-plugin',
 			false,
-			dirname(plugin_basename(__FILE__), 2) . '/languages/'
+			dirname( plugin_basename( __FILE__ ), 2 ) . '/languages/'
 		);
 	}
 
