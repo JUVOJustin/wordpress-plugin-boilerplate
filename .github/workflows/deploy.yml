@@ -48,10 +48,13 @@ jobs:
           rm -rf .github
           rm -rf tests
           rm -rf bin
+          rm -rf find . -name ".CLAUDE.md" -type f -delete && rm -rf .junie && rm -rf .windsurfrules && rm -rf .claude
         shell: bash
 
       - name: Run wordpress plugin check
         uses: wordpress/plugin-check-action@v1
+        with:
+            exclude-directories: vendor-prefixed
 
       # Update Version
       - name: Set env
