@@ -1,4 +1,4 @@
-Update the claude coommands from the remote repository
+Update the claude commands from the remote repository
 
 1. Get .claude/commands of the https://github.com/JUVOJustin/wordpress-plugin-boilerplate repository
 2. Compare the existing commands with the new commands
