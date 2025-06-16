@@ -11,6 +11,7 @@ This boilerplate is a fork of [WordPress Boilerplate](https://github.com/DevinVi
 - [Bud.js](https://bud.js.org/) for simple bundling and build of assets
 - ESLint built in
 - Ready-made Github actions for building and bundling
+- Ready-made prompts as Claude commands for common tasks (compatible with any LLM)
 
 # Setup
 
