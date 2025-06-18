@@ -1,4 +1,4 @@
-Bring this repository (currently on an older snapshot of the boiler‑plate) in line with the latest upstream coding‑standard and CI configuration.
+QA: Bring this repository (currently on an older snapshot of the boilerplate) in line with the latest upstream coding‑standard and CI configuration.
 
 # Authoritative sources
 Download these files verbatim and treat them as canonical:
