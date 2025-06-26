@@ -40,7 +40,9 @@ jobs:
 
       - name: Clean up development files (Prod)
         run: |
-          find . -name "composer.json" -type f -delete && find . -name "composer.lock" -type f -delete
+          # Keep root composer.json but remove others
+          find . -path ./composer.json -prune -o -name "composer.json" -type f -exec rm -f {} \;
+          find . -name "composer.lock" -type f -delete
           find . -name "package.json" -type f -delete && find . -name "package-lock.json" -type f -delete
           find . -name "constants.php" && find . -name "README.md"
           rm -rf  phpunit.xml.dist phpcs.xml phpstan.neon phpcs-report.xml eslint.config.js bud.config.js
