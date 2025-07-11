@@ -44,7 +44,7 @@ jobs:
           find . -path ./composer.json -prune -o -name "composer.json" -type f -exec rm -f {} \;
           find . -name "composer.lock" -type f -delete
           find . -name "package.json" -type f -delete && find . -name "package-lock.json" -type f -delete
-          find . -name "constants.php" && find . -name "README.md"
+          find . -name "constants.php" -type f -delete && find . -name "README.md" -type f -delete
           rm -rf  phpunit.xml.dist phpcs.xml phpstan.neon phpcs-report.xml eslint.config.js bud.config.js
           rm -rf .git && find . -name ".gitignore" -type f -delete
           rm -rf .github
