@@ -46,27 +46,27 @@ require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 /**
  * The code that runs during plugin activation.
  */
-function activate_demo_plugin(): void {
+function demo_plugin_activate(): void {
 	Activator::activate();
 }
 
 /**
  * The code that runs during plugin deactivation.
  */
-function deactivate_demo_plugin(): void {
+function demo_plugin_deactivate(): void {
 	Deactivator::deactivate();
 }
 
 /**
  * The code that runs during plugin uninstallation.
  */
-function uninstall_demo_plugin(): void {
+function demo_plugin_uninstall(): void {
 	Uninstallor::uninstall();
 }
 
-register_activation_hook( __FILE__, 'activate_demo_plugin' );
-register_deactivation_hook( __FILE__, 'deactivate_demo_plugin' );
-register_uninstall_hook( __FILE__, 'uninstall_demo_plugin' );
+register_activation_hook( __FILE__, 'demo_plugin_activate' );
+register_deactivation_hook( __FILE__, 'demo_plugin_deactivate' );
+register_uninstall_hook( __FILE__, 'demo_plugin_uninstall' );
 add_action( 'activated_plugin', array( Activator::class, 'network_activation' ), 10, 2 );
 
 /**
@@ -78,8 +78,8 @@ add_action( 'activated_plugin', array( Activator::class, 'network_activation' ),
  *
  * @since    1.0.0
  */
-function run_demo_plugin(): void {
+function demo_plugin_run(): void {
 	$plugin = new Demo_Plugin();
 	$plugin->run();
 }
-run_demo_plugin();
+demo_plugin_run();
