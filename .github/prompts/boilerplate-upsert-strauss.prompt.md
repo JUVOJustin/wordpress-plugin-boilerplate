@@ -2,9 +2,9 @@
 mode: agent
 ---
 
-Boilerplate: Update strauss prefixing package from the remote repository
+Update strauss prefixing package from the remote repository
 
-1. Get composer.json of the https://github.com/JUVOJustin/wordpress-plugin-boilerplate repository
+1. Get composer.json of the https://github.com/JUVOJustin/wordpress-plugin-boilerplate repository. 
 2. Check scripts.prefix-namespaces in the composer.json
 3. Extract the url from the script. It typically looks like: `https://github.com/BrianHenryIE/strauss/releases/download/0.22.2/strauss.phar` or `https://github.com/BrianHenryIE/strauss/releases/latest/download/strauss.phar`
 4. Compare the version with the local version. 
