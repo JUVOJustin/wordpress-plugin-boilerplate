@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The file that defines the core plugin class
  *
@@ -26,183 +27,189 @@ namespace Demo_Plugin;
  * @package    Demo_Plugin
  * @author     Justin Vogt <mail@juvo-design.de>
  */
-class Demo_Plugin {
+class Demo_Plugin
+{
+    const PLUGIN_NAME    = 'demo-plugin';
+    const PLUGIN_VERSION = '1.0.0';
 
+    /**
+     * The loader that's responsible for maintaining and registering all hooks that power
+     * the plugin
+     *
+     * @var Loader
+     */
+    protected Loader $loader;
 
-	const PLUGIN_NAME    = 'demo-plugin';
-	const PLUGIN_VERSION = '1.0.0';
+    /**
+     * Define the core functionality of the plugin.
+     *
+     * Set the plugin name and the plugin version that can be used throughout the plugin.
+     * Load the dependencies, define the locale, and set the hooks for the admin area and
+     * the public-facing side of the site.
+     *
+     * @since    1.0.0
+     */
+    public function __construct()
+    {
 
-	/**
-	 * The loader that's responsible for maintaining and registering all hooks that power
-	 * the plugin
-	 *
-	 * @var Loader
-	 */
-	protected Loader $loader;
+        $this->load_dependencies();
+        $this->set_locale();
+        $this->define_admin_hooks();
+        $this->define_public_hooks();
+    }
 
-	/**
-	 * Define the core functionality of the plugin.
-	 *
-	 * Set the plugin name and the plugin version that can be used throughout the plugin.
-	 * Load the dependencies, define the locale, and set the hooks for the admin area and
-	 * the public-facing side of the site.
-	 *
-	 * @since    1.0.0
-	 */
-	public function __construct() {
+    /**
+     * Load the required dependencies for this plugin.
+     *
+     * Create an instance of the loader which will be used to register the hooks
+     * with WordPress.
+     *
+     * @since    1.0.0
+     * @access   private
+     */
+    private function load_dependencies(): void
+    {
 
-		$this->load_dependencies();
-		$this->set_locale();
-		$this->define_admin_hooks();
-		$this->define_public_hooks();
-	}
+        $this->loader = new Loader();
+    }
 
-	/**
-	 * Load the required dependencies for this plugin.
-	 *
-	 * Create an instance of the loader which will be used to register the hooks
-	 * with WordPress.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 */
-	private function load_dependencies(): void {
+    /**
+     * Define the locale for this plugin for internationalization.
+     *
+     * Uses the i18n class in order to set the domain and to register the hook
+     * with WordPress.
+     *
+     * @since    1.0.0
+     * @access   private
+     */
+    private function set_locale(): void
+    {
+        load_plugin_textdomain(
+            'demo-plugin',
+            false,
+            dirname(plugin_basename(__FILE__), 2) . '/languages/'
+        );
+    }
 
-		$this->loader = new Loader();
-	}
+    /**
+     * Register all of the hooks related to the admin area functionality
+     * of the plugin.
+     */
+    private function define_admin_hooks(): void
+    {
 
-	/**
-	 * Define the locale for this plugin for internationalization.
-	 *
-	 * Uses the i18n class in order to set the domain and to register the hook
-	 * with WordPress.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 */
-	private function set_locale(): void {
-		load_plugin_textdomain(
-			'demo-plugin',
-			false,
-			dirname( plugin_basename( __FILE__ ), 2 ) . '/languages/'
-		);
-	}
+        add_action(
+            'admin_enqueue_scripts',
+            function () {
+                $this->enqueue_bud_entrypoint('demo-plugin-admin');
+            },
+            100
+        );
 
-	/**
-	 * Register all of the hooks related to the admin area functionality
-	 * of the plugin.
-	 */
-	private function define_admin_hooks(): void {
+        // Add Setup Command
+        $this->loader->add_cli('setup', new Cli\Setup());
+    }
 
-		add_action(
-			'admin_enqueue_scripts',
-			function () {
-				$this->enqueue_bud_entrypoint( 'demo-plugin-admin' );
-			},
-			100
-		);
+    /**
+     * Register all of the hooks related to the public-facing functionality
+     * of the plugin.
+     *
+     * @since    1.0.0
+     * @access   private
+     */
+    private function define_public_hooks(): void
+    {
 
-		// Add Setup Command
-		$this->loader->add_cli( 'setup', new Cli\Setup() );
-	}
+        add_action(
+            'wp_enqueue_scripts',
+            function () {
+                $this->enqueue_bud_entrypoint('demo-plugin-frontend');
+            },
+            100
+        );
+    }
 
-	/**
-	 * Register all of the hooks related to the public-facing functionality
-	 * of the plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 */
-	private function define_public_hooks(): void {
+    /**
+     * Run the loader to execute all of the hooks with WordPress.
+     */
+    public function run(): void
+    {
+        $this->loader->run();
+    }
 
-		add_action(
-			'wp_enqueue_scripts',
-			function () {
-				$this->enqueue_bud_entrypoint( 'demo-plugin-frontend' );
-			},
-			100
-		);
-	}
+    /**
+     * The reference to the class that orchestrates the hooks with the plugin.
+     *
+     * @return Loader Orchestrates the hooks of the plugin.
+     */
+    public function get_loader(): Loader
+    {
+        return $this->loader;
+    }
 
-	/**
-	 * Run the loader to execute all of the hooks with WordPress.
-	 */
-	public function run(): void {
-		$this->loader->run();
-	}
+    /**
+     * Enqueue a bud entrypoint
+     *
+     * @param string              $entry Name if the entrypoint defined in bud.js .
+     * @param array<string,mixed> $localize_data Array of associated data. See https://developer.wordpress.org/reference/functions/wp_localize_script/ .
+     */
+    private function enqueue_bud_entrypoint(string $entry, array $localize_data = array()): void
+    {
+        $entrypoints_manifest = DEMO_PLUGIN_PATH . '/dist/entrypoints.json';
 
-	/**
-	 * The reference to the class that orchestrates the hooks with the plugin.
-	 *
-	 * @return Loader Orchestrates the hooks of the plugin.
-	 */
-	public function get_loader(): Loader {
-		return $this->loader;
-	}
+        // Try to get WordPress filesystem. If not possible load it.
+        global $wp_filesystem;
+        if (! is_a($wp_filesystem, 'WP_Filesystem_Base')) {
+            require_once ABSPATH . 'wp-admin/includes/file.php'; // @phpstan-ignore requireOnce.fileNotFound
+            WP_Filesystem();
+        }
 
-	/**
-	 * Enqueue a bud entrypoint
-	 *
-	 * @param string              $entry Name if the entrypoint defined in bud.js .
-	 * @param array<string,mixed> $localize_data Array of associated data. See https://developer.wordpress.org/reference/functions/wp_localize_script/ .
-	 */
-	private function enqueue_bud_entrypoint( string $entry, array $localize_data = array() ): void {
-		$entrypoints_manifest = DEMO_PLUGIN_PATH . '/dist/entrypoints.json';
+        $filesystem = new \WP_Filesystem_Direct(false);
+        if (! $filesystem->exists($entrypoints_manifest)) {
+            return;
+        }
 
-		// Try to get WordPress filesystem. If not possible load it.
-		global $wp_filesystem;
-		if ( ! is_a( $wp_filesystem, 'WP_Filesystem_Base' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/file.php'; // @phpstan-ignore requireOnce.fileNotFound
-			WP_Filesystem();
-		}
+        // parse json file
+        $entrypoints = json_decode($filesystem->get_contents($entrypoints_manifest));
 
-		$filesystem = new \WP_Filesystem_Direct( false );
-		if ( ! $filesystem->exists( $entrypoints_manifest ) ) {
-			return;
-		}
+        // Iterate entrypoint groups
+        foreach ($entrypoints as $key => $bundle) {
+            // Only process the entrypoint that should be enqueued per call
+            if ($key !== $entry) {
+                continue;
+            }
 
-		// parse json file
-		$entrypoints = json_decode( $filesystem->get_contents( $entrypoints_manifest ) );
+            // Iterate js and css files
+            foreach ($bundle as $type => $files) {
+                foreach ($files as $file) {
+                    if ('js' === $type) {
+                        wp_enqueue_script(
+                            self::PLUGIN_NAME . "/$file",
+                            DEMO_PLUGIN_URL . 'dist/' . $file,
+                            $bundle->dependencies ?? array(),
+                            self::PLUGIN_VERSION,
+                            true,
+                        );
 
-		// Iterate entrypoint groups
-		foreach ( $entrypoints as $key => $bundle ) {
+                        // Maybe localize js
+                        if (! empty($localize_data)) {
+                            wp_localize_script(self::PLUGIN_NAME . "/$file", str_replace('-', '_', self::PLUGIN_NAME), $localize_data);
 
-			// Only process the entrypoint that should be enqueued per call
-			if ( $key !== $entry ) {
-				continue;
-			}
+                            // Unset after localize since we only need to localize one script per bundle so on next iteration will be skipped
+                            unset($localize_data);
+                        }
+                    }
 
-			// Iterate js and css files
-			foreach ( $bundle as $type => $files ) {
-				foreach ( $files as $file ) {
-					if ( 'js' === $type ) {
-						wp_enqueue_script(
-							self::PLUGIN_NAME . "/$file",
-							DEMO_PLUGIN_URL . 'dist/' . $file,
-							$bundle->dependencies ?? array(),
-							self::PLUGIN_VERSION,
-							true,
-						);
-
-						// Maybe localize js
-						if ( ! empty( $localize_data ) ) {
-							wp_localize_script( self::PLUGIN_NAME . "/$file", str_replace( '-', '_', self::PLUGIN_NAME ), $localize_data );
-
-							// Unset after localize since we only need to localize one script per bundle so on next iteration will be skipped
-							unset( $localize_data );
-						}
-					}
-
-					if ( 'css' === $type ) {
-						wp_enqueue_style(
-							self::PLUGIN_NAME . "/$file",
-							DEMO_PLUGIN_URL . 'dist/' . $file,
-							array(),
-							self::PLUGIN_VERSION,
-						);
-					}
-				}
-			}
-		}
-	}
+                    if ('css' === $type) {
+                        wp_enqueue_style(
+                            self::PLUGIN_NAME . "/$file",
+                            DEMO_PLUGIN_URL . 'dist/' . $file,
+                            array(),
+                            self::PLUGIN_VERSION,
+                        );
+                    }
+                }
+            }
+        }
+    }
 }

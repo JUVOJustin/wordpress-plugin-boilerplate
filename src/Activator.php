@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Fired during plugin activation
  *
@@ -15,37 +16,39 @@ namespace Demo_Plugin;
  * @link https://developer.wordpress.org/plugins/plugin-basics/uninstall-methods/
  * @package    Demo_Plugin
  */
-class Activator {
+class Activator
+{
+    /**
+     * This is the general callback run during the 'register_activation_hook' hook.
+     *
+     * @return void
+     */
+    public static function activate(): void
+    {
+    }
 
-	/**
-	 * This is the general callback run during the 'register_activation_hook' hook.
-	 *
-	 * @return void
-	 */
-	public static function activate(): void {
-	}
+    /**
+     * Add logic to the activation on a network site.
+     *
+     * @param string $plugin Plugin file loaded.
+     * @param bool   $network_wide Indicates if loaded network wide.
+     * @return void
+     */
+    public static function network_activation(string $plugin, bool $network_wide): void
+    {
 
-	/**
-	 * Add logic to the activation on a network site.
-	 *
-	 * @param string $plugin Plugin file loaded.
-	 * @param bool   $network_wide Indicates if loaded network wide.
-	 * @return void
-	 */
-	public static function network_activation( string $plugin, bool $network_wide ): void {
-
-		if ( ! str_contains( $plugin, Demo_Plugin::PLUGIN_NAME ) || ! $network_wide ) {
-			return;
-		}
+        if (! str_contains($plugin, Demo_Plugin::PLUGIN_NAME) || ! $network_wide) {
+            return;
+        }
 
 		// phpcs:disable Squiz.PHP.CommentedOutCode.Found
 
-		// Network deactivate
-		// deactivate_plugins( $plugin, false, true );
+        // Network deactivate
+        // deactivate_plugins( $plugin, false, true );
 
-		// Activate on single site
-		// activate_plugins( $plugin );
+        // Activate on single site
+        // activate_plugins( $plugin );
 
 		// phpcs:enable
-	}
+    }
 }
