@@ -1,9 +1,13 @@
 .ddev
+
 /vendor/
 /vendor-prefixed/
 /node_modules/
 setup.sh
+
 .idea
+.vscode
+
 dist/
 .budfiles/
 /tests/cypress/screenshots/
