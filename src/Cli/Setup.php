@@ -119,7 +119,7 @@ class Setup {
 					'.*\.php',
 					'.*\.js',
 					'.*\.json',
-					'.*\.github\/.*\.yml',
+					'.*\.github\/.*\.(yml|md)',
 					'.*\.neon',
 				)
 			)
@@ -129,6 +129,7 @@ class Setup {
 				array(
 					'.*\.php',
 					'.*eslint.*\.js',
+					'.*\.github\/.*\.(yml|md)',
 				)
 			)
 			|| ! $this->replace_in_files(
@@ -137,7 +138,7 @@ class Setup {
 				array(
 					'.*\.php',
 					'.*\.json',
-					'.*\.github\/.*\.yml',
+					'.*\.github\/.*\.(yml|md)',
 				)
 			)
 			|| ! $this->replace_in_files(
@@ -146,9 +147,10 @@ class Setup {
 				array(
 					'.*\.php',
 					'.*\.json',
+					'.*\.github\/.*\.(yml|md)',
 				)
 			)
-			|| ! $this->replace_in_files( 'Demo Plugin', $this->name, array( '.*\.php', '.*README\.txt' ) )
+			|| ! $this->replace_in_files( 'Demo Plugin', $this->name, array( '.*\.php', '.*README\.txt', '.*\.github\/.*\.(yml|md)' ) )
 		) {
 			WP_CLI::error( 'Error replacing in files.' );
 		}
