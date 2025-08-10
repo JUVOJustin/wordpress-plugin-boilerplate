@@ -1,3 +1,7 @@
+---
+mode: agent
+---
+
 QA: Run phpcs and phpstan defined in the plugins composer.json.
 
 * DO NOT run any unconfigured tool

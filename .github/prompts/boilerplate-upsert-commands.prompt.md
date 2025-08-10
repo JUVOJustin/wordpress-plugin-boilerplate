@@ -1,3 +1,7 @@
+---
+mode: agent
+---
+
 Boilerplate: Update the claude commands from the remote repository
 
 1. Get .claude/commands of the https://github.com/JUVOJustin/wordpress-plugin-boilerplate repository

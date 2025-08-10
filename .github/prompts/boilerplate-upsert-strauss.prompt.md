@@ -1,3 +1,7 @@
+---
+mode: agent
+---
+
 Boilerplate: Update strauss prefixing package from the remote repository
 
 1. Get composer.json of the https://github.com/JUVOJustin/wordpress-plugin-boilerplate repository
