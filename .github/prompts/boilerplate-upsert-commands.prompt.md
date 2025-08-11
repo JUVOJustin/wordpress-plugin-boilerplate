@@ -8,4 +8,10 @@ Add remote prompts to this workspace
 2. Compare the existing prompts in `.github/prompts` with the new prompts. 
 3. Add new prompts only present in the remote repository
 4. Update prompts present in both repositories. If the difference is too big, ask the user to confirm. Generally the remote repository is the source of truth.
-5. Ask the user to confirm the removal of prompts only present in the local repository
+5. Add the following markdown header to prompts:
+```md
+---
+mode: agent
+---
+```
+6. Ask the user to confirm the removal of prompts only present in the local repository
