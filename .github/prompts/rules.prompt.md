@@ -14,5 +14,6 @@ Add the remote rules to this workspace
 applyTo: '**'
 ---
 ```
-7. Add links to all files into `.github/copilot-instructions.md` together with a brief description when to read each file. Add the reference like this: `@.github/instructions/quality-assurance/phpstan.instructions.md Use when working on phpstan`
+6. Only copy rules about local deveopment if they apply to the current setup. Example: If project uses ddev for development copy rules about ddev.
+7. Add links to all files into `.github/copilot-instructions.md` together with a brief description when to read each file. Add the reference like this: `@.github/instructions/local-development/ddev.md Read when executing php,npm,yarn,composer commands or working with ddev local environment.`
 8. Ask the user to confirm the removal of rules only present in the local repository
