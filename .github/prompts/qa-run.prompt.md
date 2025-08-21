@@ -2,7 +2,7 @@
 mode: agent
 ---
 
-Run phpcs and phpstan defined in the plugins composer.json.
+Run phpcs and phpstan defined in the composer.json.
 
 * DO NOT run any unconfigured tool
 * ALWAYS run commands defined in composer.json to run the tools. DO NOT use the binaries directly
