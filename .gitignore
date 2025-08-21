@@ -17,3 +17,5 @@ dist/
 bin/*
 !bin/.gitkeep
 /phpcs-report.xml
+
+/lib/
