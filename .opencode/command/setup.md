@@ -3,6 +3,7 @@ description: (Re-)Setup this plugin
 ---
 
 Always evaluate the shell output since some commands require user input or might break.
+Never commit or push any changes to version control.
 
 It is extremely important to always follow this order:
 
