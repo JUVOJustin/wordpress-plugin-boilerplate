@@ -1,8 +1,8 @@
 ---
-mode: agent
+description: Upsert Q&A tools from the boilerplate
 ---
 
-Bring this repository (currently on an older snapshot of the boilerplate) in line with the latest upstream coding‑standard and CI configuration.
+Bring this project (currently on an older snapshot of the boilerplate) in line with the latest upstream coding‑standard and CI configuration.
 
 # Authoritative sources
 Download these files verbatim and treat them as canonical:

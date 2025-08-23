@@ -1,5 +1,6 @@
 ---
-mode: agent
+description: Sync wordpress rules with wordpress-dev-llm-rules repo
+agent: build
 ---
 
 Add the remote rules to this workspace

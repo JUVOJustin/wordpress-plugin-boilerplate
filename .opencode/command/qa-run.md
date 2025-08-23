@@ -1,5 +1,5 @@
 ---
-mode: agent
+description: Run phpcs and phpstan defined in the composer.json.
 ---
 
 Run phpcs and phpstan defined in the composer.json.
