@@ -4,7 +4,7 @@ description: Run phpcs and phpstan defined in the composer.json.
 
 Run phpcs and phpstan defined in the composer.json.
 
-* DO NOT run any unconfigured tool
+* DO NOT run or install any unconfigured tool
 * ALWAYS run commands defined in composer.json to run the tools. DO NOT use the binaries directly
 * If phpcs reports issues first run phpcbf to apply autofixing
 * ALWAYS fix Errors
