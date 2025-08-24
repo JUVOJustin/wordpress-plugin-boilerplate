@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Fired during plugin deactivation
  *
@@ -14,13 +15,14 @@ namespace Demo_Plugin;
  *
  * @package    Demo_Plugin
  */
-class Deactivator {
-
-	/**
-	 * This is the general callback run during the 'register_deactivation_hook' hook.
-	 *
-	 * @return void
-	 */
-	public static function deactivate(): void {
-	}
+class Deactivator
+{
+    /**
+     * This is the general callback run during the 'register_deactivation_hook' hook.
+     *
+     * @return void
+     */
+    public static function deactivate(): void
+    {
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The plugin bootstrap file
  *
@@ -28,46 +29,49 @@ use Demo_Plugin\Deactivator;
 use Demo_Plugin\Demo_Plugin;
 use Demo_Plugin\Uninstallor;
 
-if ( ! defined( 'WPINC' ) ) {
-	die;
+if (! defined('WPINC')) {
+    die;
 }
 
 /**
  * Plugin absolute path
  */
-define( 'DEMO_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
-define( 'DEMO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define('DEMO_PLUGIN_PATH', plugin_dir_path(__FILE__));
+define('DEMO_PLUGIN_URL', plugin_dir_url(__FILE__));
 
 /**
  * Use Composer PSR-4 Autoloading
  */
-require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+require plugin_dir_path(__FILE__) . 'vendor/autoload.php';
 
 /**
  * The code that runs during plugin activation.
  */
-function demo_plugin_activate(): void {
-	Activator::activate();
+function demo_plugin_activate(): void
+{
+    Activator::activate();
 }
 
 /**
  * The code that runs during plugin deactivation.
  */
-function demo_plugin_deactivate(): void {
-	Deactivator::deactivate();
+function demo_plugin_deactivate(): void
+{
+    Deactivator::deactivate();
 }
 
 /**
  * The code that runs during plugin uninstallation.
  */
-function demo_plugin_uninstall(): void {
-	Uninstallor::uninstall();
+function demo_plugin_uninstall(): void
+{
+    Uninstallor::uninstall();
 }
 
-register_activation_hook( __FILE__, 'demo_plugin_activate' );
-register_deactivation_hook( __FILE__, 'demo_plugin_deactivate' );
-register_uninstall_hook( __FILE__, 'demo_plugin_uninstall' );
-add_action( 'activated_plugin', array( Activator::class, 'network_activation' ), 10, 2 );
+register_activation_hook(__FILE__, 'demo_plugin_activate');
+register_deactivation_hook(__FILE__, 'demo_plugin_deactivate');
+register_uninstall_hook(__FILE__, 'demo_plugin_uninstall');
+add_action('activated_plugin', array( Activator::class, 'network_activation' ), 10, 2);
 
 /**
  * Begins execution of the plugin.
@@ -78,8 +82,9 @@ add_action( 'activated_plugin', array( Activator::class, 'network_activation' ),
  *
  * @since    1.0.0
  */
-function demo_plugin_run(): void {
-	$plugin = new Demo_Plugin();
-	$plugin->run();
+function demo_plugin_run(): void
+{
+    $plugin = new Demo_Plugin();
+    $plugin->run();
 }
 demo_plugin_run();
