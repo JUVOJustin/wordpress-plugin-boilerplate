@@ -51,7 +51,7 @@ jobs:
           rm -rf tests
           rm -rf bin
           find . -name "CLAUDE.md" -type f -delete && find . -name ".mcp.json" -type f -delete && rm -rf .claude
-          find . -name "AGENTS.md" -type f -delete && rm -rf .junie && rm -rf .windsurfrules && rm -rf .claude
+          find . -name "AGENTS.md" -type f -delete && rm -rf .junie && rm -rf .windsurfrules && rm -rf .claude && rm -rf .opencode
           rm -rf node_modules  # Remove node_modules from production bundle
         shell: bash
 
