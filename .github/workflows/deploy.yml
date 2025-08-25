@@ -26,6 +26,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v2.1.4
 
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: latest
+          coverage: none
+          tools: wp-cli
+
       - name: Restore Cache
         uses: actions/cache/restore@v4
         with:
@@ -38,17 +45,8 @@ jobs:
           fail-on-cache-miss: true
         id: cache
 
-      - name: Install WP-CLI
-        run: |
-          wget https://github.com/wp-cli/wp-cli/releases/download/v2.10.0/wp-cli-2.10.0.phar -O wp-cli.phar
-          chmod +x wp-cli.phar
-          sudo mv wp-cli.phar /usr/local/bin/wp
-          wp --info
-        shell: bash
-
-      - name: Install WP-CLI dist-archive package
-        run: wp package install wp-cli/dist-archive-command
-        shell: bash
+      - name: Install latest version of dist-archive-command
+        run: wp package install wp-cli/dist-archive-command:@stable
 
       - name: Run wordpress plugin check
         uses: wordpress/plugin-check-action@v1
@@ -75,13 +73,15 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       # Create plugin distribution archive using WP-CLI
-      - shell: bash
+      - name: Build plugin
         run: |
-          wp dist-archive ./ ../demo-plugin-${{ env.RELEASE_VERSION }}.zip
+          wp dist-archive . ./demo-plugin-${{ env.RELEASE_VERSION }}.zip
+          mkdir tmp-build
+          unzip demo-plugin-${{ env.RELEASE_VERSION }}.zip -d tmp-build
 
       - name: Release
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
           omitBodyDuringUpdate: true
-          artifacts: "../demo-plugin-${{ env.RELEASE_VERSION }}.zip"
+          artifacts: "./demo-plugin-${{ env.RELEASE_VERSION }}.zip"
