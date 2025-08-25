@@ -41,7 +41,6 @@ AGENTS.md
 tests/
 
 # Build artifacts and cache
-dist/
 .budfiles/
 phpcs-report.xml
 lib/
