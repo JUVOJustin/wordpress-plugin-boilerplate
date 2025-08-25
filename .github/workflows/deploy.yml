@@ -57,12 +57,13 @@ jobs:
           sed -i -E 's/Stable tag: .*/Stable tag: ${{ env.RELEASE_VERSION }}/' README.txt
 
         # Create plugin distribution archive using WP-CLI
+        # Unzip again for wordpress plugin check
       - name: Build plugin
         run: |
           wp dist-archive . ./demo-plugin-${{ env.RELEASE_VERSION }}.zip --plugin-dirname=demo-plugin
           mkdir tmp-build
-          unzip demo-plugin-${{ env.RELEASE_VERSION }}.zip -d tmp-build
-    
+          unzip demo-plugin-${{ env.RELEASE_VERSION }}.zip -d tmp-build # Un
+
       - name: Run plugin check
         uses: wordpress/plugin-check-action@v1.0.6
         with:
