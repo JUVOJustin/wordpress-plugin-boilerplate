@@ -54,6 +54,18 @@ jobs:
           sed -i -E 's/([[:blank:]]*\*[[:blank:]]*Version:[[:blank:]]*).*/\1${{ env.RELEASE_VERSION }}/' demo-plugin.php
           sed -i -E 's/Stable tag: .*/Stable tag: ${{ env.RELEASE_VERSION }}/' README.txt
 
+        # Create plugin distribution archive using WP-CLI
+      - name: Build plugin
+        run: |
+          wp dist-archive . ./demo-plugin-${{ env.RELEASE_VERSION }}.zip --plugin-dirname=demo-plugin
+          mkdir tmp-build
+          unzip demo-plugin-${{ env.RELEASE_VERSION }}.zip -d tmp-build
+    
+      - name: Run plugin check
+        uses: wordpress/plugin-check-action@v1.0.6
+        with:
+          build-dir: './tmp-build/demo-plugin'
+
       - name: Update resources
         uses: test-room-7/action-update-file@v1
         with:
@@ -63,23 +75,6 @@ jobs:
             README.txt
           commit-msg: Update Version in WordPress specific files
           github-token: ${{ secrets.GITHUB_TOKEN }}
-
-        # Create plugin distribution archive using WP-CLI
-      - name: Build plugin
-        run: |
-          wp dist-archive . ./demo-plugin-${{ env.RELEASE_VERSION }}.zip
-          mkdir tmp-build
-          unzip demo-plugin-${{ env.RELEASE_VERSION }}.zip -d tmp-build
-    
-      - name: Run plugin check
-        uses: wordpress/plugin-check-action@v1.0.6
-        with:
-          build-dir: './tmp-build/demo-plugin'
-
-      - name: Run wordpress plugin check
-        uses: wordpress/plugin-check-action@v1
-        with:
-            exclude-directories: vendor-prefixed
             
       - name: Release
         uses: ncipollo/release-action@v1
