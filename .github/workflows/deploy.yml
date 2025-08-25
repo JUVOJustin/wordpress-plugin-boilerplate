@@ -38,21 +38,16 @@ jobs:
           fail-on-cache-miss: true
         id: cache
 
-      - name: Clean up development files (Prod)
+      - name: Install WP-CLI
         run: |
-          # Keep root composer.json but remove others
-          find . -path ./composer.json -prune -o -name "composer.json" -type f -exec rm -f {} \;
-          find . -name "composer.lock" -type f -delete
-          find . -name "package.json" -type f -delete && find . -name "package-lock.json" -type f -delete
-          find . -name "constants.php" -type f -delete && find . -name "README.md" -type f -delete
-          rm -rf  phpunit.xml.dist phpcs.xml phpstan.neon phpcs-report.xml eslint.config.js bud.config.js
-          rm -rf .git && find . -name ".gitignore" -type f -delete
-          rm -rf .github
-          rm -rf tests
-          rm -rf bin
-          find . -name "CLAUDE.md" -type f -delete && find . -name ".mcp.json" -type f -delete && rm -rf .claude
-          find . -name "AGENTS.md" -type f -delete && rm -rf .junie && rm -rf .windsurfrules && rm -rf .claude && rm -rf .opencode
-          rm -rf node_modules  # Remove node_modules from production bundle
+          wget https://github.com/wp-cli/wp-cli/releases/download/v2.10.0/wp-cli-2.10.0.phar -O wp-cli.phar
+          chmod +x wp-cli.phar
+          sudo mv wp-cli.phar /usr/local/bin/wp
+          wp --info
+        shell: bash
+
+      - name: Install WP-CLI dist-archive package
+        run: wp package install wp-cli/dist-archive-command
         shell: bash
 
       - name: Run wordpress plugin check
@@ -79,12 +74,10 @@ jobs:
           commit-msg: Update Version in WordPress specific files
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      # Zip everything
+      # Create plugin distribution archive using WP-CLI
       - shell: bash
         run: |
-          cd ..
-          sudo apt-get install zip
-          zip -r demo-plugin-${{ env.RELEASE_VERSION }}.zip ./*
+          wp dist-archive ./ ../demo-plugin-${{ env.RELEASE_VERSION }}.zip
 
       - name: Release
         uses: ncipollo/release-action@v1
