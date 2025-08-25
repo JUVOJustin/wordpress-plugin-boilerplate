@@ -39,7 +39,6 @@ AGENTS.md
 
 # Test files
 tests/
-bin/
 
 # Build artifacts and cache
 dist/
