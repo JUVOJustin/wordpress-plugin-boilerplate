@@ -30,7 +30,7 @@ class Demo_Plugin {
 
 
 	const PLUGIN_NAME    = 'demo-plugin';
-	const PLUGIN_VERSION = '1.0.26';
+	const PLUGIN_VERSION = '1.0.0';
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
