@@ -29,8 +29,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: latest
-          coverage: none
+          php-version: '8.0'
           tools: wp-cli
 
       - name: Restore Cache
@@ -48,12 +47,7 @@ jobs:
       - name: Install latest version of dist-archive-command
         run: wp package install wp-cli/dist-archive-command:@stable
 
-      - name: Run wordpress plugin check
-        uses: wordpress/plugin-check-action@v1
-        with:
-            exclude-directories: vendor-prefixed
-
-      # Update Version
+        # Update Version
       - name: Set env
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - name: Update Version in WordPress files
@@ -72,13 +66,23 @@ jobs:
           commit-msg: Update Version in WordPress specific files
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      # Create plugin distribution archive using WP-CLI
+        # Create plugin distribution archive using WP-CLI
       - name: Build plugin
         run: |
           wp dist-archive . ./demo-plugin-${{ env.RELEASE_VERSION }}.zip
           mkdir tmp-build
           unzip demo-plugin-${{ env.RELEASE_VERSION }}.zip -d tmp-build
+    
+      - name: Run plugin check
+        uses: wordpress/plugin-check-action@v1.0.6
+        with:
+          build-dir: './tmp-build/demo-plugin'
 
+      - name: Run wordpress plugin check
+        uses: wordpress/plugin-check-action@v1
+        with:
+            exclude-directories: vendor-prefixed
+            
       - name: Release
         uses: ncipollo/release-action@v1
         with:
