@@ -48,7 +48,3 @@ app.entry({
 	frontend: ['resources/frontend/js/frontend.js', 'resources/frontend/css/frontend.scss'],
 });
 ```
-
-## WordPress Instructions
-* When working on wordpress code like plugins or themes read and follow: @https://raw.githubusercontent.com/JUVOJustin/wordpress-llm-rules/main/base.md
-* When building queries read and follow: @https://raw.githubusercontent.com/JUVOJustin/wordpress-llm-rules/main/queries.md
