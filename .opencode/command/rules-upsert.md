@@ -4,7 +4,7 @@ description: Sync wordpress rules with wordpress-dev-llm-rules repo
 
 Add remote rules to this workspace
 
-1. Download https://github.com/JUVOJustin/wordpress-dev-llm-rules/archive/refs/heads/main.zip inside to the current workspace that you can access. ALWAYS remove the downloaded assets at end. The rules are stored inside a `rules` folder ofthe archive. 
+1. Download https://github.com/JUVOJustin/wordpress-dev-llm-rules/archive/refs/heads/main.zip inside to the current workspace that you can access. ALWAYS remove the downloaded assets afterwards. The rules are stored inside a `rules` folder of the archive. 
 2. Compare the existing rules in `.github/instructions` with the upstream rules downloaded. The upstream rules are not in a github copilot compatible format. Rename them to `{filename}.instructions.md`.
 3. Add new rules from the upstream
 4. Update rules present in both places. If the difference is too big, ask the user to confirm. Generally the upstream is the source of truth.
