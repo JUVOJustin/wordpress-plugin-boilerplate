@@ -15,5 +15,5 @@ Add remote rules to this workspace
 applyTo: '**'
 ---
 ```
-7. Add links to all files into `AGENTS.md` together with a brief description when to read each file. Add the reference like this: `Read when executing php,npm,yarn,composer commands or working with ddev local environment: @.github/instructions/local-development/ddev.md`
+7. Add references of rules to `AGENTS.md` together with a brief description when to read each file. Add the reference like this: `Read when executing php,npm,yarn,composer commands or working with ddev local environment: @.github/instructions/local-development/ddev.md`
 8. Ask the user to confirm the removal of rules only present in the local project
