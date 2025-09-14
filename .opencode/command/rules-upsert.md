@@ -15,5 +15,5 @@ Add remote rules to this workspace
 applyTo: '**'
 ---
 ```
-7. Add links to all files into `.github/copilot-instructions.md` together with a brief description when to read each file. Add the reference like this: `.github/instructions/local-development/ddev.md Read when executing php,npm,yarn,composer commands or working with ddev local environment.`
+7. Add links to all files into `AGENTS.md` together with a brief description when to read each file. Add the reference like this: `@.github/instructions/local-development/ddev.md Read when executing php,npm,yarn,composer commands or working with ddev local environment.`
 8. Ask the user to confirm the removal of rules only present in the local project

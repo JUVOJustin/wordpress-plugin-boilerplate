@@ -12,7 +12,6 @@ This repository is a modern WordPress plugin boilerplate with strict conventions
 - **Frontend/admin assets**: Place in `resources/admin/` and `resources/frontend/`.
 - **Use Bud.js for asset compilation**. Entry points are defined in `bud.config.js`.
 	- Build: `npm run development` (watch) or `npm run production` (minify).
-- **ACF JSON sync**: Store field group JSON in `resources/acf-json/`. Enable via filters in your main class or a dedicated config class (see `Integrations/ACF/Config.php`).
 
 ### Quality Assurance & Workflows
 - **Static analysis**: Use PHPStan (`phpstan.neon`), PHPCS (`phpcs.xml`), and ESLint (`eslint.config.js`).
