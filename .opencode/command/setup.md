@@ -11,7 +11,7 @@ It is extremely important to always follow this order:
     `!opencode run "/commands-upsert"`
 
     If the "commands-upsert" command is unknown to opencode: 
-    Ask to download it from https://raw.githubusercontent.com/JUVOJustin/wordpress-plugin-boilerplate/refs/heads/main/.opencode/command/commands-upsert.md and save it in `.opencode/command`. Keep the file content exactly as is. Continue with step 2 afterwards.
+    Ask to download it from https://raw.githubusercontent.com/JUVOJustin/wordpress-plugin-boilerplate/refs/heads/main/.opencode/command/commands-upsert.md and save it in `.opencode/command/commands-upsert.md`. Keep the file content exactly as is. Execute the command and continue with the next step.
 
 2. Setup rules
     `!opencode run "/rules-upsert"`

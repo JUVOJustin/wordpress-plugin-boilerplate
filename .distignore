@@ -1,0 +1,47 @@
+# WordPress Plugin Distribution Ignore File
+# This file specifies which files and directories should be excluded from the plugin distribution zip
+
+# Development dependencies
+node_modules
+
+# Development configuration files
+composer.lock
+package.json
+package-lock.json
+phpunit.xml.dist
+phpcs.xml
+phpstan.neon
+phpcs-report.xml
+eslint.config.js
+bud.config.js
+constants.php
+
+# Documentation and development files
+README.md
+CLAUDE.md
+AGENTS.md
+
+# Version control and CI/CD
+.git/
+.github/
+.gitignore
+
+# IDE and editor files
+.idea/
+.vscode/
+.claude/
+.junie/
+.windsurfrules/
+.opencode/
+.mcp.json
+
+# Test files
+tests/
+
+# Build artifacts and cache
+.budfiles/
+phpcs-report.xml
+lib/
+
+# Development setup files
+setup.php
