@@ -9,3 +9,5 @@ Run phpcs and phpstan defined in the composer.json.
 * If phpcs reports issues first run phpcbf to apply autofixing
 * ALWAYS fix Errors
 * DO NOT automatically fix warnings. After fixing the errors ask the user if warnings should be fixed too
+
+Use @.github/instructions/quality-assurance/phpstan.instructions.md for guidance how to solve phpstan errors.
