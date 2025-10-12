@@ -41,15 +41,18 @@ applyTo: '**'
 
   * If `base.md` content already exists, update it.
   * If differences are large, confirm before overwriting.
+  * ALWAYS prepend the prompt with a clear h2 heading "WordPress basic coding rules".
 * Remove `base.md` after integration.
 
 ## **7. Reference Rules in AGENTS.md**
-Add brief references in `AGENTS.md` describing when to read each rule, e.g.:
+Add brief references in `AGENTS.md` newly added section describing when to read each rule, e.g.:
 
 ```
 Read when executing php, npm, yarn, composer commands or working with ddev local environment: 
 @.github/instructions/local-development/ddev.md
 ```
+
+ALWAYS include the file reference with a leading "@" and in plain text without any quote enclosing.
 
 ## **8. Confirm Rule Removals**
 Before deleting rules that exist only locally (not upstream), confirm with the user.
