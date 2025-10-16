@@ -108,7 +108,7 @@ class Setup {
 		);
 
 		// Further operations like composer update, npm install, etc.
-		$progress = \WP_CLI\Utils\make_progress_bar( 'Setup', 7 );
+		$progress = \WP_CLI\Utils\make_progress_bar( 'Setup', 8 );
 
 		// Replace in files
 		if (
@@ -158,6 +158,10 @@ class Setup {
 
 		// rename main files
 		$this->rename_files();
+		$progress->tick();
+
+		// Remove setup CLI command from main plugin class
+		$this->remove_setup_from_main_class();
 		$progress->tick();
 
 		// Remove setup from autoloader
@@ -213,6 +217,26 @@ class Setup {
 			WP_CLI::error( 'Error renaming files.' );
 		}
 		// phpcs:enable
+	}
+
+	/**
+	 * Remove setup CLI command registration from main plugin class
+	 *
+	 * @return void
+	 */
+	private function remove_setup_from_main_class(): void {
+		$main_class_file = $this->path . "/src/$this->namespace.php";
+
+		$file_contents = file_get_contents( $main_class_file ); // phpcs:disable WordPress.WP.AlternativeFunctions
+
+		if ( false === $file_contents ) {
+			return;
+		}
+
+		$pattern = '/\s*\/\/ <setup-cli-start>.*?\/\/ <\/setup-cli-end>\s*\n/s';
+		$file_contents = preg_replace( $pattern, '', $file_contents );
+
+		file_put_contents( $main_class_file, $file_contents ); // phpcs:disable WordPress.WP.AlternativeFunctions
 	}
 
 	/**

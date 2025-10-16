@@ -102,8 +102,9 @@ class Demo_Plugin {
 			100
 		);
 
-		// Add Setup Command
+		// <setup-cli-start>
 		$this->loader->add_cli( 'setup', new Cli\Setup() );
+		// </setup-cli-end>
 	}
 
 	/**

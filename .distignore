@@ -42,6 +42,3 @@ tests/
 .budfiles/
 phpcs-report.xml
 lib/
-
-# Development setup files
-setup.php
