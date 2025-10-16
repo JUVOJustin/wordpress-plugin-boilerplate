@@ -108,7 +108,7 @@ class Setup {
 		);
 
 		// Further operations like composer update, npm install, etc.
-		$progress = \WP_CLI\Utils\make_progress_bar( 'Setup', 8 );
+		$progress = \WP_CLI\Utils\make_progress_bar( 'Setup', 9 );
 
 		// Replace in files
 		if (
@@ -196,6 +196,15 @@ class Setup {
 				WP_CLI::error( 'Error removing setup file' );
 			}
 		}
+
+		// Remove Setup.php
+		if ( file_exists( $this->path . '/src/Cli/Setup.php' ) ) {
+			$removed = unlink( $this->path . '/src/Cli/Setup.php' ); // phpcs:disable WordPress.WP.AlternativeFunctions
+			if ( ! $removed ) {
+				WP_CLI::error( 'Error removing Setup.php file' );
+			}
+		}
+		$progress->tick();
 
 		// All done
 		$progress->finish();
