@@ -42,7 +42,7 @@ After configuration, the setup will finalize by updating files, renaming relevan
 - Replacing placeholders with your specified details.
 - Renaming files to match your plugin's namespace and slug.
 - Running `composer update` and `npm install` to install dependencies.
-- Cleaning up by removing the `setup.php` file.
+- Cleaning up by removing the `setup.php` file and the setup cli command.
 
 At this point, the plugin is set up and good to go. Now it's your time to adjust plugin and readme headers according to your needs.
 
@@ -79,7 +79,6 @@ public function __construct() {
     $this->loader = new Loader();
     $this->define_admin_hooks();
     $this->define_public_hooks();
-    $this->define_shortcodes();
 }
 
 private function define_admin_hooks() {
