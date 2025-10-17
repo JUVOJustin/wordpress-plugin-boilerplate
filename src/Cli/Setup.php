@@ -182,9 +182,9 @@ class Setup {
 		}
 		$progress->tick();
 
-		exec( 'npm run production 2>&1', $output, $code );
+		exec( 'npm run build 2>&1', $output, $code );
 		if ( 0 !== $code ) {
-			WP_CLI::error( 'Error running npm run production' );
+			WP_CLI::error( 'Error running npm run build' );
 		}
 		$progress->tick();
 		// phpcs:enable
