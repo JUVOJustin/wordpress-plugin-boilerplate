@@ -97,7 +97,7 @@ class Demo_Plugin {
 		add_action(
 			'admin_enqueue_scripts',
 			function () {
-				$this->enqueue_bud_entrypoint( 'demo-plugin-admin' );
+				$this->enqueue_entrypoint( 'demo-plugin-admin' );
 			},
 			100
 		);
@@ -119,7 +119,7 @@ class Demo_Plugin {
 		add_action(
 			'wp_enqueue_scripts',
 			function () {
-				$this->enqueue_bud_entrypoint( 'demo-plugin-frontend' );
+				$this->enqueue_entrypoint( 'demo-plugin-frontend' );
 			},
 			100
 		);
@@ -147,7 +147,53 @@ class Demo_Plugin {
 	 * @param string              $entry Name if the entrypoint defined in bud.js .
 	 * @param array<string,mixed> $localize_data Array of associated data. See https://developer.wordpress.org/reference/functions/wp_localize_script/ .
 	 */
-	private function enqueue_bud_entrypoint( string $entry, array $localize_data = array() ): void {
+	private function enqueue_entrypoint(string $entry, array $localize_data = array() ): void {
+
+		$asset_file = DEMO_PLUGIN_PATH . "/build/{$entry}.asset.php";
+		$js_file = DEMO_PLUGIN_URL . "build/{$entry}.js";
+		$css_file = DEMO_PLUGIN_URL . "/build/{$entry}.css";
+
+		if (!file_exists($asset_file)) {
+			return;
+		}
+
+		$asset = require $asset_file;
+		if (!isset($asset['dependencies'], $asset['version'])) {
+			return;
+		}
+
+		if (!file_exists($js_file)) {
+			wp_enqueue_script(
+				self::PLUGIN_NAME . "/{$entry}",
+				$js_file,
+				$asset['dependencies'],
+				$asset['version'],
+				true
+			);
+
+			// Potentially add localize data
+			if (!empty($localize_data)) {
+				wp_localize_script(
+					self::PLUGIN_NAME . "/{$entry}",
+					str_replace('-', '_', self::PLUGIN_NAME),
+					$localize_data
+				);
+			}
+		}
+
+		if (file_exists($css_file)) {
+			wp_enqueue_style(
+				self::PLUGIN_NAME . "/{$entry}",
+				$css_file,
+				[],
+				$asset['version']
+			);
+		}
+
+
+
+
+
 		$entrypoints_manifest = DEMO_PLUGIN_PATH . '/dist/entrypoints.json';
 
 		// Try to get WordPress filesystem. If not possible load it.
