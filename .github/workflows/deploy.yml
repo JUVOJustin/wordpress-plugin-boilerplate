@@ -24,7 +24,6 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v2.1.4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -78,7 +77,7 @@ jobs:
             README.txt
           commit-msg: Update Version in WordPress specific files
           github-token: ${{ secrets.GITHUB_TOKEN }}
-            
+
       - name: Release
         uses: ncipollo/release-action@v1
         with:

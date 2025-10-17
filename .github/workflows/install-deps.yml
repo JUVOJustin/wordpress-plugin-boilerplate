@@ -13,10 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v2.1.4
-
-      - name: Setup php
-        uses: shivammathur/setup-php@v2
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.0'
 
@@ -60,16 +61,9 @@ jobs:
           composer dump-autoload --optimize
         shell: bash
 
-      # Install node dependencies
-      - id: cache-npm
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: npm-dev-${{ hashFiles('package-lock.json') }} # Always -dev- because we need dev dependencies also for build
       - name: Install npm dependencies
         if: steps.cache-npm.outputs.cache-hit != 'true'
         run: npm ci
-        shell: bash
 
       # Install dev composer resources
       #    - if: inputs.mode == 'dev'
