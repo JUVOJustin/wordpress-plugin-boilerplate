@@ -49,8 +49,8 @@ jobs:
 
       - name: Build assets
         run: |
-          npm run prettier:fix
-          npm run production
+          npm run lint:style && npm run lint:js
+          npm run build
 
       - name: PHPSTAN
         run: composer run phpstan:ci

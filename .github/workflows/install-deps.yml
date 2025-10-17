@@ -81,7 +81,7 @@ jobs:
       # Build Assets for production and remove unused dev ressources
       - if: inputs.mode == 'prod'
         run: |
-          npm run production
+          npm run build
           rm -rf node_modules && npm ci --omit=dev
         shell: bash
 

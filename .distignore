@@ -13,7 +13,7 @@ phpcs.xml
 phpstan.neon
 phpcs-report.xml
 eslint.config.js
-bud.config.js
+webpack.config.js
 constants.php
 
 # Documentation and development files
