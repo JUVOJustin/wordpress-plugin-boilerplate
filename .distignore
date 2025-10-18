@@ -12,8 +12,8 @@ phpunit.xml.dist
 phpcs.xml
 phpstan.neon
 phpcs-report.xml
-eslint.config.js
-bud.config.js
+.eslintrc
+webpack.config.js
 constants.php
 
 # Documentation and development files

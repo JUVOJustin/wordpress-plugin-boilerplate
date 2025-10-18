@@ -1,4 +1,4 @@
-name: CI
+name: Build
 
 on:
   push:
@@ -24,13 +24,6 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v2.1.4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.0'
-          tools: wp-cli
 
       - name: Restore Cache
         uses: actions/cache/restore@v4
@@ -40,9 +33,14 @@ jobs:
             vendor-prefixed
             node_modules
             dist
-          key: deps-prod-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
+          key: deps-prod-${{ runner.os }}-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
           fail-on-cache-miss: true
-        id: cache
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          tools: wp-cli
 
       - name: Install latest version of dist-archive-command
         run: wp package install wp-cli/dist-archive-command:@stable
@@ -78,7 +76,7 @@ jobs:
             README.txt
           commit-msg: Update Version in WordPress specific files
           github-token: ${{ secrets.GITHUB_TOKEN }}
-            
+
       - name: Release
         uses: ncipollo/release-action@v1
         with:

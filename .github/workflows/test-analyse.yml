@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - '**'
-    tags-ignore:
-      - '**'
-  pull_request_target:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -19,36 +16,58 @@ jobs:
       mode: 'dev'
     secrets: inherit
 
-  test:
+  test-js:
     runs-on: ubuntu-latest
     needs: call-install-deps
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup php
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.0'
-          tools: cs2pr
+      - uses: actions/checkout@v4
 
       - name: Load Cache
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+          key: node-dev-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          fail-on-cache-miss: true
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      - name: Lint JS
+        run: npm run lint:js
+
+      - name: Lint Style
+        run: npm run lint:style
+
+      - name: Build assets
+        run: npm run build
+
+#      - name: Run integration Tests
+#        run: |
+#          npm run test:e2e
+
+  test-php:
+    runs-on: ubuntu-latest
+    needs: call-install-deps
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Load Cache
+        uses: actions/cache/restore@v4
         with:
           path: |
             vendor
             vendor-prefixed
-            node_modules
-            dist
-          key: deps-dev-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
+          key: composer-dev-${{ runner.os }}-${{ hashFiles('composer.lock') }}
           fail-on-cache-miss: true
-        id: cache
 
-      - name: Build assets
-        run: |
-          npm run prettier:fix
-          npm run production
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          tools: cs2pr
 
       - name: PHPSTAN
         run: composer run phpstan:ci
@@ -61,7 +80,3 @@ jobs:
       - name: Show PHPCS results in PR
         if: ${{ always() && steps.phpcs.outcome == 'failure' }}
         run: cs2pr ./phpcs-report.xml --graceful-warnings
-
-#      - name: Run integration Tests
-#        run: |
-#          npm run test:e2e
