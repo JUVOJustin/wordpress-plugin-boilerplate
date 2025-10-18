@@ -12,7 +12,7 @@ phpunit.xml.dist
 phpcs.xml
 phpstan.neon
 phpcs-report.xml
-eslint.config.js
+.eslintrc
 webpack.config.js
 constants.php
 
