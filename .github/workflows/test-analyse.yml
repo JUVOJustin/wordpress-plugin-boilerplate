@@ -22,9 +22,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v6
-        with:
-          node-version: '22'
 
       - name: Load Cache
         uses: actions/cache/restore@v4
@@ -33,6 +30,10 @@ jobs:
             node_modules
           key: deps-dev-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
           fail-on-cache-miss: true
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
 
       - name: Lint JS
         run: npm run lint:js
@@ -53,10 +54,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.0'
-          tools: cs2pr
 
       - name: Load Cache
         uses: actions/cache/restore@v4
@@ -66,6 +63,11 @@ jobs:
             vendor-prefixed
           key: deps-dev-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
           fail-on-cache-miss: true
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          tools: cs2pr
 
       - name: PHPSTAN
         run: composer run phpstan:ci
