@@ -10,8 +10,8 @@ This repository is a modern WordPress plugin boilerplate with strict conventions
 
 ### Asset Management
 - **Frontend/admin assets**: Place in `resources/admin/` and `resources/frontend/`.
-- **Use Bud.js for asset compilation**. Entry points are defined in `bud.config.js`.
-	- Build: `npm run development` (watch) or `npm run production` (minify).
+- **Use "@wordpress/scripts" for asset compilation**. Entry points are defined in `webpack.config.js`.
+	- Build: `npm run start` (watch) or `npm run build` (minify).
 
 ### Quality Assurance & Workflows
 - **Static analysis**: Use PHPStan (`phpstan.neon`), PHPCS (`phpcs.xml`), and ESLint (`eslint.config.js`).
@@ -27,7 +27,7 @@ This repository is a modern WordPress plugin boilerplate with strict conventions
 ### Key Files & Directories
 - `src/` — All PHP source code
 - `resources/` — All assets (JS, CSS, images, ACF JSON)
-- `bud.config.js` — Asset build config
+- `webpack.config.js` — Asset build config
 - `.github/workflows/` — CI/CD pipelines
 - `composer.json` — Dependency and PHP version management
 - `phpstan.neon`, `phpcs.xml`, `eslint.config.js` — QA configs

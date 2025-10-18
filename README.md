@@ -12,10 +12,10 @@ This boilerplate is a fork of [WordPress Boilerplate](https://github.com/DevinVi
 - Easy Shortcode, CLI Command Registration through the loader
 - PHPStan with ready-made Github actions
 - PHPCS with ready-made Github actions
-- [Bud.js](https://bud.js.org/) for simple bundling and build of assets
+- [@wordpress/scripts](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/) for simple bundling and build of assets
 - ESLint built in
 - Ready-made Github actions for building and bundling
-- Ready-made [openocde](https://opencode.ai) commands for common tasks (compatible with any LLM)
+- Ready-made [opencode](https://opencode.ai) commands for common tasks (compatible with any LLM)
 
 # Setup
 
@@ -116,33 +116,20 @@ resources/
 │   ├── js/
 │   └── images/
 ├── acf-json/         # ACF field group JSON files
-└── bud.config.js     # Bud.js configuration
+└── webpack.config.js     # webpack/wp-scripts configuration
 ```
 
 ### Asset Compilation
 
-The boilerplate uses [Bud.js](https://bud.js.org/) for asset compilation and bundling. The configuration is in `bud.config.js`.
+The boilerplate uses [@wordpress/scripts](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/) for asset compilation and bundling.
 
 To compile assets:
 ```
-npm run development        # Watch for changes during development and compile assets
-npm run production         # For production. Compiles assets and minifies them
+npm run start        # Watch for changes during development and compile assets
+npm run build         # For production. Compiles assets and minifies them
 ```
 
-### Adding New Entry Points
-
-To add a new entry point for scripts or styles, modify the `bud.config.js` file:
-
-```js
-// Example of adding a new entry point
-app.entry({
-  admin: ['resources/admin/js/admin.js', 'resources/admin/css/admin.scss'],
-  frontend: ['resources/frontend/js/frontend.js', 'resources/frontend/css/frontend.scss'],
-  customFeature: ['resources/frontend/js/custom-feature.js', 'resources/frontend/css/custom-feature.scss'],
-});
-```
-
-Then ensure your plugin loads these assets appropriately using the loader pattern.
+To add a new entry point for scripts or styles, modify the `webpack.config.js` file.
 
 ## Quality Assurance and Workflows
 
