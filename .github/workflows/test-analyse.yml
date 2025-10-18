@@ -27,7 +27,10 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: |
+            vendor
+            vendor-prefixed
             node_modules
+            dist
           key: deps-dev-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
           fail-on-cache-miss: true
 
@@ -61,6 +64,8 @@ jobs:
           path: |
             vendor
             vendor-prefixed
+            node_modules
+            dist
           key: deps-dev-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
           fail-on-cache-miss: true
 
