@@ -6,10 +6,10 @@
   "scripts": {
     "start": "wp-scripts start",
     "build": "wp-scripts build",
-    "lint:style": "wp-scripts lint-style",
-    "lint:js": "wp-scripts lint-js",
-    "lint:fix:js": "wp-scripts lint-js --fix",
-    "lint:fix:style": "wp-scripts lint-style --fix",
+    "lint:style": "wp-scripts lint-style ./resources",
+    "lint:js": "wp-scripts lint-js ./resources",
+    "lint:fix:js": "wp-scripts lint-js ./resources --fix",
+    "lint:fix:style": "wp-scripts lint-style ./resources --fix",
     "format": "wp-scripts format ./resources",
     "packages-update": "wp-scripts packages-update"
   }
