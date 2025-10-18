@@ -28,7 +28,7 @@ jobs:
         with:
           path: |
             node_modules
-          key: deps-dev-${{ runner.os }}-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
+          key: node-dev-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
           fail-on-cache-miss: true
 
       - uses: actions/setup-node@v6
@@ -61,7 +61,7 @@ jobs:
           path: |
             vendor
             vendor-prefixed
-          key: deps-dev-${{ runner.os }}-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
+          key: composer-dev-${{ runner.os }}-${{ hashFiles('composer.lock') }}
           fail-on-cache-miss: true
 
       - uses: shivammathur/setup-php@v2
