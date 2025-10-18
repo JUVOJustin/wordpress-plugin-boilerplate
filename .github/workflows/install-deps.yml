@@ -23,7 +23,7 @@ jobs:
             vendor-prefixed
             node_modules
             build
-          key: deps-${{ inputs.mode }}-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
+          key: deps-${{ inputs.mode }}-${{ runner.os }}-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
 
       - if: steps.cache-all.outputs.cache-hit != 'true'
         uses: actions/setup-node@v6
@@ -44,7 +44,7 @@ jobs:
           path: |
             vendor
             vendor-prefixed
-          key: composer-${{ inputs.mode }}-${{ hashFiles('composer.lock') }}
+          key: composer-${{ inputs.mode }}-${{ runner.os }}-${{ hashFiles('composer.lock') }}
 
       # Set auth for ressources if required
 #      - if: steps.cache-composer.outputs.cache-hit != 'true'

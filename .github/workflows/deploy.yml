@@ -39,7 +39,7 @@ jobs:
             vendor-prefixed
             node_modules
             dist
-          key: deps-prod-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
+          key: deps-prod-${{ runner.os }}-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
           fail-on-cache-miss: true
 
       - name: Install latest version of dist-archive-command
