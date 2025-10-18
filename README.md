@@ -12,8 +12,7 @@ This boilerplate is a fork of [WordPress Boilerplate](https://github.com/DevinVi
 - Easy Shortcode, CLI Command Registration through the loader
 - PHPStan with ready-made Github actions
 - PHPCS with ready-made Github actions
-- [@wordpress/scripts](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/) for simple bundling and build of assets
-- ESLint built in
+- [@wordpress/scripts](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/) for simple bundling, linting and formatting of JS and CSS/SCSS files
 - Ready-made Github actions for building and bundling
 - Ready-made [opencode](https://opencode.ai) commands for common tasks (compatible with any LLM)
 
@@ -139,7 +138,7 @@ The boilerplate comes with the following quality assurance tools configured:
 
 1. **PHP CodeSniffer (PHPCS)**: Enforces WordPress coding standards
 2. **PHPStan**: Provides static analysis to catch potential bugs
-3. **ESLint**: Ensures JavaScript code quality
+3. **@wp-scripts**: Enables bundling, linting and formatting if JS and CSS/SCSS files
 4. **GitHub Actions**: Automates testing and building processes
 
 These checks run automatically in GitHub pipelines when you push code to your repository.

@@ -40,11 +40,3 @@ private function define_admin_hooks() {
 		$this->loader->add_action('admin_enqueue_scripts', $admin, 'enqueue_scripts');
 }
 ```
-
-### Example: Adding a Bud.js Entry Point
-```js
-app.entry({
-	admin: ['resources/admin/js/admin.js', 'resources/admin/css/admin.scss'],
-	frontend: ['resources/frontend/js/frontend.js', 'resources/frontend/css/frontend.scss'],
-});
-```
