@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - '**'
-    tags-ignore:
+  pull_request:
+    branches:
       - '**'
-  pull_request_target:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
