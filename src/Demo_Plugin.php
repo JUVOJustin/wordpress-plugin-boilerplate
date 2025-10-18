@@ -159,9 +159,6 @@ class Demo_Plugin {
 		$filesystem = new \WP_Filesystem_Direct( false );
 
 		$asset_file = DEMO_PLUGIN_PATH . "/build/{$entry}.asset.php";
-		$js_file    = DEMO_PLUGIN_URL . "build/{$entry}.js";
-		$css_file   = DEMO_PLUGIN_URL . "/build/{$entry}.css";
-
 		if ( ! $filesystem->exists( $asset_file ) ) {
 			return;
 		}
@@ -171,10 +168,10 @@ class Demo_Plugin {
 			return;
 		}
 
-		if ( ! $filesystem->exists( $js_file ) ) {
+		if ( ! $filesystem->exists( DEMO_PLUGIN_PATH . "build/{$entry}.js" ) ) {
 			wp_enqueue_script(
 				self::PLUGIN_NAME . "/{$entry}",
-				$js_file,
+				DEMO_PLUGIN_URL . "build/{$entry}.js",
 				$asset['dependencies'],
 				$asset['version'],
 				true
@@ -190,10 +187,10 @@ class Demo_Plugin {
 			}
 		}
 
-		if ( $filesystem->exists( $css_file ) ) {
+		if ( $filesystem->exists( DEMO_PLUGIN_PATH . "build/{$entry}.css" ) ) {
 			wp_enqueue_style(
 				self::PLUGIN_NAME . "/{$entry}",
-				$css_file,
+				DEMO_PLUGIN_URL . "build/{$entry}.css",
 				array(),
 				$asset['version']
 			);
