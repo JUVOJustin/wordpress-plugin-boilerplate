@@ -242,7 +242,7 @@ class Setup {
 			return;
 		}
 
-		$pattern = '/\s*\/\/ <setup-cli-start>.*?\/\/ <\/setup-cli-end>\s*\n/s';
+		$pattern       = '/\s*\/\/ <setup-cli-start>.*?\/\/ <\/setup-cli-end>\s*\n/s';
 		$file_contents = preg_replace( $pattern, '', $file_contents );
 
 		file_put_contents( $main_class_file, $file_contents ); // phpcs:disable WordPress.WP.AlternativeFunctions

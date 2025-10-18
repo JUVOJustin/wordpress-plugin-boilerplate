@@ -41,7 +41,6 @@ jobs:
             dist
           key: deps-prod-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
           fail-on-cache-miss: true
-        id: cache
 
       - name: Install latest version of dist-archive-command
         run: wp package install wp-cli/dist-archive-command:@stable

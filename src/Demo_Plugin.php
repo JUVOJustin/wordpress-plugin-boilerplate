@@ -147,7 +147,7 @@ class Demo_Plugin {
 	 * @param string              $entry Name if the entrypoint defined in bud.js .
 	 * @param array<string,mixed> $localize_data Array of associated data. See https://developer.wordpress.org/reference/functions/wp_localize_script/ .
 	 */
-	private function enqueue_entrypoint(string $entry, array $localize_data = array() ): void {
+	private function enqueue_entrypoint( string $entry, array $localize_data = array() ): void {
 
 		// Try to get WordPress filesystem. If not possible load it.
 		global $wp_filesystem;
@@ -159,19 +159,19 @@ class Demo_Plugin {
 		$filesystem = new \WP_Filesystem_Direct( false );
 
 		$asset_file = DEMO_PLUGIN_PATH . "/build/{$entry}.asset.php";
-		$js_file = DEMO_PLUGIN_URL . "build/{$entry}.js";
-		$css_file = DEMO_PLUGIN_URL . "/build/{$entry}.css";
+		$js_file    = DEMO_PLUGIN_URL . "build/{$entry}.js";
+		$css_file   = DEMO_PLUGIN_URL . "/build/{$entry}.css";
 
-		if (!$filesystem->exists($asset_file)) {
+		if ( ! $filesystem->exists( $asset_file ) ) {
 			return;
 		}
 
 		$asset = require $asset_file;
-		if (!isset($asset['dependencies'], $asset['version'])) {
+		if ( ! isset( $asset['dependencies'], $asset['version'] ) ) {
 			return;
 		}
 
-		if (!$filesystem->exists($js_file)) {
+		if ( ! $filesystem->exists( $js_file ) ) {
 			wp_enqueue_script(
 				self::PLUGIN_NAME . "/{$entry}",
 				$js_file,
@@ -181,20 +181,20 @@ class Demo_Plugin {
 			);
 
 			// Potentially add localize data
-			if (!empty($localize_data)) {
+			if ( ! empty( $localize_data ) ) {
 				wp_localize_script(
 					self::PLUGIN_NAME . "/{$entry}",
-					str_replace('-', '_', self::PLUGIN_NAME),
+					str_replace( '-', '_', self::PLUGIN_NAME ),
 					$localize_data
 				);
 			}
 		}
 
-		if ($filesystem->exists($css_file)) {
+		if ( $filesystem->exists( $css_file ) ) {
 			wp_enqueue_style(
 				self::PLUGIN_NAME . "/{$entry}",
 				$css_file,
-				[],
+				array(),
 				$asset['version']
 			);
 		}
