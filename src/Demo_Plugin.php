@@ -168,7 +168,7 @@ class Demo_Plugin {
 			return;
 		}
 
-		if ( ! $filesystem->exists( DEMO_PLUGIN_PATH . "build/{$entry}.js" ) ) {
+		if ( $filesystem->exists( DEMO_PLUGIN_PATH . "build/{$entry}.js" ) ) {
 			wp_enqueue_script(
 				self::PLUGIN_NAME . "/{$entry}",
 				DEMO_PLUGIN_URL . "build/{$entry}.js",
