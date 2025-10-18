@@ -25,12 +25,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.0'
-          tools: wp-cli
-
       - name: Restore Cache
         uses: actions/cache/restore@v4
         with:
@@ -41,6 +35,12 @@ jobs:
             dist
           key: deps-prod-${{ runner.os }}-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
           fail-on-cache-miss: true
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          tools: wp-cli
 
       - name: Install latest version of dist-archive-command
         run: wp package install wp-cli/dist-archive-command:@stable
