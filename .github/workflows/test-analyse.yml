@@ -29,6 +29,14 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Load Cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            node_modules
+          key: deps-dev-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
+          fail-on-cache-miss: true
+
       - name: Lint JS
         run: npm run lint:js
 
@@ -54,14 +62,13 @@ jobs:
           tools: cs2pr
 
       - name: Load Cache
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: |
             vendor
             vendor-prefixed
-          key: composer-dev-${{ hashFiles('composer.lock') }}
+          key: deps-dev-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
           fail-on-cache-miss: true
-        id: cache
 
       - name: PHPSTAN
         run: composer run phpstan:ci

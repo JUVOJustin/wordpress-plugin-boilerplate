@@ -13,14 +13,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v6
+
+      - name: Check for full cache
+        id: cache-all
+        uses: actions/cache@v4
+        with:
+          path: |
+            vendor
+            vendor-prefixed
+            node_modules
+            build
+          key: deps-${{ inputs.mode }}-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
+          lookup-only: true
+
+      - if: steps.cache-all.outputs.cache-hit != 'true'
+        uses: actions/setup-node@v6
         with:
           node-version: '22'
-      - uses: shivammathur/setup-php@v2
+
+      - if: steps.cache-all.outputs.cache-hit != 'true'
+        uses: shivammathur/setup-php@v2
         with:
           php-version: '8.0'
 
-      - name: Cache Composer packages
+      - if: steps.cache-all.outputs.cache-hit != 'true'
+        name: Cache Composer packages
         id: cache-composer
         uses: actions/cache@v4
         with:
@@ -28,11 +45,6 @@ jobs:
             vendor
             vendor-prefixed
           key: composer-${{ inputs.mode }}-${{ hashFiles('composer.lock') }}
-
-      - if: steps.cache-composer.outputs.cache-hit != 'true'
-        name: Validate composer.json and composer.lock
-        run: composer validate --strict
-        shell: bash
 
       # Set auth for ressources if required
 #      - if: steps.cache-composer.outputs.cache-hit != 'true'
@@ -42,9 +54,10 @@ jobs:
 #          ${{ secrets.ACF_KEY }} https://citation.media
 #        shell: bash
 
-      - if: steps.cache-composer.outputs.cache-hit != 'true'
+      - if: steps.cache-all.outputs.cache-hit != 'true' && steps.cache-composer.outputs.cache-hit != 'true'
         name: Install Composer dependencies on cache miss
         run: |
+          composer validate --strict
           mkdir -p vendor-prefixed
           mkdir -p bin
           if [ "${{ inputs.mode }}" = "dev" ]; then
@@ -54,42 +67,31 @@ jobs:
           fi
         shell: bash
 
-      - if: steps.cache-composer.outputs.cache-hit == 'true'
+      - if: steps.cache-all.outputs.cache-hit != 'true' && steps.cache-composer.outputs.cache-hit == 'true'
         name: Rebuild autoload on cache hit
         run: |
           composer dump-autoload --optimize
         shell: bash
 
-      - name: Install npm dependencies
+      # Install node deps. Caching of node_modules is not required since "actions/setup-node" has a built-in cache that make the command fast.
+      - if: steps.cache-all.outputs.cache-hit != 'true'
+        name: Install npm dependencies
         run: npm ci
 
-      # Install dev composer resources
-      #    - if: inputs.mode == 'dev'
-      #      name: Set Test Composer authentication (Dev)
-      #      env:
-      #        satispress_key: ${{ secrets.SATISPRESS_KEY }}
-      #      run: |
-      #        if [ "$satispress_key" != '' ]; then
-      #          cd ./tests/setup
-      #          composer config http-basic.plugins.juvo-design.de ${{ secrets.SATISPRESS_KEY }} satispress
-      #          npm run composer:test
-      #        fi
-      #      shell: bash
-
       # Build Assets for production and remove unused dev ressources
-      - if: inputs.mode == 'prod'
+      - if: steps.cache-all.outputs.cache-hit != 'true' && inputs.mode == 'prod'
         run: |
           npm run build
           rm -rf node_modules && npm ci --omit=dev
         shell: bash
 
-      - name: Cache all Deps
-        id: cache-deps
-        uses: actions/cache@v4
+      - if: steps.cache-all.outputs.cache-hit != 'true'
+        name: Save full cache
+        uses: actions/cache/save@v4
         with:
           path: |
             vendor
             vendor-prefixed
             node_modules
-            dist
+            build
           key: deps-${{ inputs.mode }}-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
