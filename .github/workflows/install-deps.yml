@@ -46,7 +46,8 @@ jobs:
         shell: bash
 
       ### Get NPM Cache and install node modules
-      - id: cache-npm
+      - name: Cache Composer packages
+        id: cache-npm
         uses: actions/cache@v4
         with:
          path: node_modules
