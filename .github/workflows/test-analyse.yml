@@ -28,7 +28,6 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: '22'
-          cache: 'npm'
 
       - name: Lint JS
         run: npm run lint:js
@@ -60,7 +59,7 @@ jobs:
           path: |
             vendor
             vendor-prefixed
-          key: composer-${{ inputs.mode }}-${{ hashFiles('composer.lock') }}
+          key: composer-dev-${{ hashFiles('composer.lock') }}
           fail-on-cache-miss: true
         id: cache
 
