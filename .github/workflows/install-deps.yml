@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check for full cache
+      - name: Get full cache
         id: cache-all
         uses: actions/cache@v4
         with:
@@ -24,7 +24,6 @@ jobs:
             node_modules
             build
           key: deps-${{ inputs.mode }}-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
-          lookup-only: true
 
       - if: steps.cache-all.outputs.cache-hit != 'true'
         uses: actions/setup-node@v6
@@ -84,14 +83,3 @@ jobs:
           npm run build
           rm -rf node_modules && npm ci --omit=dev
         shell: bash
-
-      - if: steps.cache-all.outputs.cache-hit != 'true'
-        name: Save full cache
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            vendor
-            vendor-prefixed
-            node_modules
-            build
-          key: deps-${{ inputs.mode }}-${{ hashFiles('composer.lock') }}-${{ hashFiles('package-lock.json') }}
