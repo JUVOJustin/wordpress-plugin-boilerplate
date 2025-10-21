@@ -193,7 +193,7 @@ The GitHub Actions workflows are configured to use PHP 8.0. When changing the PH
     tools: cs2pr
 ```
 
-2. Also update the PHP version in `.github/workflows/install-deps.yml`:
+2. Also update the PHP version in `.github/workflows/setup.yml`:
 
 ```yaml
 - name: Setup php
