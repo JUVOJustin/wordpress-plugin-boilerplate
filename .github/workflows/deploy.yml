@@ -23,8 +23,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Restore PHP dependencies cache
-        uses: actions/cache/restore@v4
+      - name: PHP dependencies cache
+        uses: actions/cache@v4
         with:
           path: |
             vendor
@@ -32,8 +32,8 @@ jobs:
           key: ${{ needs.setup.outputs.php-cache-key }}
           fail-on-cache-miss: true
 
-      - name: Restore Node dependencies cache
-        uses: actions/cache/restore@v4
+      - name: Node dependencies cache
+        uses: actions/cache@v4
         with:
           path: |
             node_modules
