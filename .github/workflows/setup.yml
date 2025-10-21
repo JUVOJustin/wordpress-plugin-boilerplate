@@ -50,7 +50,7 @@ jobs:
         with:
           path: |
             node_modules
-            dist
+            build
           key: ${{ steps.cache-keys.outputs.node-key }}
           restore-keys: |
             node-${{ inputs.mode }}-${{ runner.os }}-

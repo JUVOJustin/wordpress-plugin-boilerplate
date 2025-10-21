@@ -27,7 +27,7 @@ jobs:
         with:
           path: |
             node_modules
-            dist
+            build
           key: ${{ needs.setup.outputs.node-cache-key }}
           fail-on-cache-miss: true
 
