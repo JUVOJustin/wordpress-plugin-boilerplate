@@ -1,0 +1,92 @@
+name: Setup Environment
+
+on:
+  workflow_call:
+    inputs:
+      mode:
+        description: 'Either dev or prod'
+        required: true
+        default: 'dev'
+        type: string
+    outputs:
+      php-cache-key:
+        description: "The PHP dependencies cache key"
+        value: ${{ jobs.setup.outputs.php-cache-key }}
+      node-cache-key:
+        description: "The Node dependencies cache key"
+        value: ${{ jobs.setup.outputs.node-cache-key }}
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      php-cache-key: ${{ steps.cache-keys.outputs.php-key }}
+      node-cache-key: ${{ steps.cache-keys.outputs.node-key }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate cache keys
+        id: cache-keys
+        run: |
+          echo "php-key=php-${{ inputs.mode }}-${{ runner.os }}-${{ hashFiles('composer.lock') }}" >> $GITHUB_OUTPUT
+          echo "node-key=node-${{ inputs.mode }}-${{ runner.os }}-${{ hashFiles('package-lock.json') }}" >> $GITHUB_OUTPUT
+
+      - name: PHP Dependencies cache
+        uses: actions/cache@v4
+        id: php-cache
+        with:
+          path: |
+            vendor
+            vendor-prefixed
+          key: ${{ steps.cache-keys.outputs.php-key }}
+          restore-keys: |
+            php-${{ inputs.mode }}-${{ runner.os }}-
+            php-${{ runner.os }}-
+
+      - name: Node Dependencies cache
+        uses: actions/cache@v4
+        id: node-cache
+        with:
+          path: |
+            node_modules
+            dist
+          key: ${{ steps.cache-keys.outputs.node-key }}
+          restore-keys: |
+            node-${{ inputs.mode }}-${{ runner.os }}-
+            node-${{ runner.os }}-
+
+      - name: Setup PHP
+        if: steps.php-cache.outputs.cache-hit != 'true'
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: wp-cli
+
+      - name: Setup Node
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+
+      - name: Install Composer dependencies
+        if: steps.php-cache.outputs.cache-hit != 'true'
+        run: |
+          composer validate --strict
+          mkdir -p vendor-prefixed
+          mkdir -p bin
+          if [ "${{ inputs.mode }}" = "dev" ]; then
+            composer install --prefer-dist --no-interaction --no-progress
+          else
+            composer install --no-dev --prefer-dist --no-progress --no-suggest --ignore-platform-reqs --optimize-autoloader --classmap-authoritative
+          fi
+
+      - name: Install NPM dependencies
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Build assets (prod only)
+        if: inputs.mode == 'prod' && steps.node-cache.outputs.cache-hit != 'true'
+        run: |
+          npm run build
+          rm -rf node_modules && npm ci --omit=dev
