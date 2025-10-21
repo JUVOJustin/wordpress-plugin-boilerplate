@@ -67,7 +67,7 @@ jobs:
           rm -rf node_modules && npm ci --omit=dev
         shell: bash
 
-      - name: Get full cache
+      - name: Save full cache
         id: cache-all
         uses: actions/cache/save@v4
         with:
