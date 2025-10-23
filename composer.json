@@ -1,6 +1,6 @@
 {
   "name": "juvo/wordpress-plugin-boilerplate",
-  "description": "A boilerplate for WordPress plugin development. Supercharged with Autoloading, @wp-wpscripts, PHPStan and PHPCS.",
+  "description": "A boilerplate for WordPress plugin development. Supercharged with Autoloading, @wordpress/scripts, PHPStan and PHPCS.",
   "license": "GPL-3.0-or-later",
   "authors": [
     {
