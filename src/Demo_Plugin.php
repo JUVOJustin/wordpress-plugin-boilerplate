@@ -142,7 +142,7 @@ class Demo_Plugin {
 	}
 
 	/**
-	 * Enqueue a bud entrypoint
+	 * Enqueue a webpack entrypoint
 	 *
 	 * @param string              $entry Name of the entrypoint defined in webpack.config.js.
 	 * @param array<string,mixed> $localize_data Array of associated data. See https://developer.wordpress.org/reference/functions/wp_localize_script/ .
