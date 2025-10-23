@@ -182,9 +182,9 @@ class Setup {
 		}
 		$progress->tick();
 
-		exec( 'npm run production 2>&1', $output, $code );
+		exec( 'npm run build 2>&1', $output, $code );
 		if ( 0 !== $code ) {
-			WP_CLI::error( 'Error running npm run production' );
+			WP_CLI::error( 'Error running npm run build' );
 		}
 		$progress->tick();
 		// phpcs:enable
@@ -242,7 +242,7 @@ class Setup {
 			return;
 		}
 
-		$pattern = '/\s*\/\/ <setup-cli-start>.*?\/\/ <\/setup-cli-end>\s*\n/s';
+		$pattern       = '/\s*\/\/ <setup-cli-start>.*?\/\/ <\/setup-cli-end>\s*\n/s';
 		$file_contents = preg_replace( $pattern, '', $file_contents );
 
 		file_put_contents( $main_class_file, $file_contents ); // phpcs:disable WordPress.WP.AlternativeFunctions

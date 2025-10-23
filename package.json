@@ -1,21 +1,16 @@
 {
   "name": "demo-plugin",
-  "type": "module",
   "devDependencies": {
-    "@roots/bud": "^6.24.0",
-    "@roots/bud-eslint": "^6.24.0",
-    "@roots/bud-preset-recommend": "^6.24.0",
-    "@roots/bud-preset-wordpress": "^6.24.0",
-    "@roots/bud-sass": "^6.24.0",
-    "@roots/eslint-config": "^6.23.2",
-    "@wordpress/eslint-plugin": "^21",
-    "@wordpress/prettier-config": "^4.5.0"
+    "@wordpress/scripts": "^30.20.0"
   },
   "scripts": {
-    "development": "npx bud build development",
-    "production": "npx bud build production",
-    "prettier": "npx prettier resources --check",
-    "prettier:fix": "npm run prettier -- --write"
-  },
-  "prettier": "@wordpress/prettier-config"
+    "start": "wp-scripts start",
+    "build": "wp-scripts build",
+    "lint:style": "wp-scripts lint-style 'resources/**/*.{css,scss,sass}'",
+    "lint:js": "wp-scripts lint-js ./resources",
+    "lint:fix:js": "wp-scripts lint-js ./resources --fix",
+    "lint:fix:style": "wp-scripts lint-style 'resources/**/*.{css,scss,sass}' --fix",
+    "format": "wp-scripts format ./resources",
+    "packages-update": "wp-scripts packages-update"
+  }
 }

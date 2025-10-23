@@ -97,7 +97,7 @@ class Demo_Plugin {
 		add_action(
 			'admin_enqueue_scripts',
 			function () {
-				$this->enqueue_bud_entrypoint( 'demo-plugin-admin' );
+				$this->enqueue_entrypoint( 'demo-plugin-admin' );
 			},
 			100
 		);
@@ -119,7 +119,7 @@ class Demo_Plugin {
 		add_action(
 			'wp_enqueue_scripts',
 			function () {
-				$this->enqueue_bud_entrypoint( 'demo-plugin-frontend' );
+				$this->enqueue_entrypoint( 'demo-plugin-frontend' );
 			},
 			100
 		);
@@ -142,13 +142,12 @@ class Demo_Plugin {
 	}
 
 	/**
-	 * Enqueue a bud entrypoint
+	 * Enqueue a webpack entrypoint
 	 *
-	 * @param string              $entry Name if the entrypoint defined in bud.js .
+	 * @param string              $entry Name of the entrypoint defined in webpack.config.js.
 	 * @param array<string,mixed> $localize_data Array of associated data. See https://developer.wordpress.org/reference/functions/wp_localize_script/ .
 	 */
-	private function enqueue_bud_entrypoint( string $entry, array $localize_data = array() ): void {
-		$entrypoints_manifest = DEMO_PLUGIN_PATH . '/dist/entrypoints.json';
+	private function enqueue_entrypoint( string $entry, array $localize_data = array() ): void {
 
 		// Try to get WordPress filesystem. If not possible load it.
 		global $wp_filesystem;
@@ -158,52 +157,43 @@ class Demo_Plugin {
 		}
 
 		$filesystem = new \WP_Filesystem_Direct( false );
-		if ( ! $filesystem->exists( $entrypoints_manifest ) ) {
+
+		$asset_file = DEMO_PLUGIN_PATH . "/build/{$entry}.asset.php";
+		if ( ! $filesystem->exists( $asset_file ) ) {
 			return;
 		}
 
-		// parse json file
-		$entrypoints = json_decode( $filesystem->get_contents( $entrypoints_manifest ) );
+		$asset = require $asset_file;
+		if ( ! isset( $asset['dependencies'], $asset['version'] ) ) {
+			return;
+		}
 
-		// Iterate entrypoint groups
-		foreach ( $entrypoints as $key => $bundle ) {
+		if ( $filesystem->exists( DEMO_PLUGIN_PATH . "build/{$entry}.js" ) ) {
+			wp_enqueue_script(
+				self::PLUGIN_NAME . "/{$entry}",
+				DEMO_PLUGIN_URL . "build/{$entry}.js",
+				$asset['dependencies'],
+				$asset['version'],
+				true
+			);
 
-			// Only process the entrypoint that should be enqueued per call
-			if ( $key !== $entry ) {
-				continue;
+			// Potentially add localize data
+			if ( ! empty( $localize_data ) ) {
+				wp_localize_script(
+					self::PLUGIN_NAME . "/{$entry}",
+					str_replace( '-', '_', self::PLUGIN_NAME ),
+					$localize_data
+				);
 			}
+		}
 
-			// Iterate js and css files
-			foreach ( $bundle as $type => $files ) {
-				foreach ( $files as $file ) {
-					if ( 'js' === $type ) {
-						wp_enqueue_script(
-							self::PLUGIN_NAME . "/$file",
-							DEMO_PLUGIN_URL . 'dist/' . $file,
-							$bundle->dependencies ?? array(),
-							self::PLUGIN_VERSION,
-							true,
-						);
-
-						// Maybe localize js
-						if ( ! empty( $localize_data ) ) {
-							wp_localize_script( self::PLUGIN_NAME . "/$file", str_replace( '-', '_', self::PLUGIN_NAME ), $localize_data );
-
-							// Unset after localize since we only need to localize one script per bundle so on next iteration will be skipped
-							unset( $localize_data );
-						}
-					}
-
-					if ( 'css' === $type ) {
-						wp_enqueue_style(
-							self::PLUGIN_NAME . "/$file",
-							DEMO_PLUGIN_URL . 'dist/' . $file,
-							array(),
-							self::PLUGIN_VERSION,
-						);
-					}
-				}
-			}
+		if ( $filesystem->exists( DEMO_PLUGIN_PATH . "build/{$entry}.css" ) ) {
+			wp_enqueue_style(
+				self::PLUGIN_NAME . "/{$entry}",
+				DEMO_PLUGIN_URL . "build/{$entry}.css",
+				array(),
+				$asset['version']
+			);
 		}
 	}
 }
