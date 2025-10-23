@@ -138,7 +138,7 @@ The boilerplate comes with the following quality assurance tools configured:
 
 1. **PHP CodeSniffer (PHPCS)**: Enforces WordPress coding standards
 2. **PHPStan**: Provides static analysis to catch potential bugs
-3. **@wp-scripts**: Enables bundling, linting and formatting if JS and CSS/SCSS files
+3. **@wp-scripts**: Enables bundling, linting and formatting of JS and CSS/SCSS files
 4. **GitHub Actions**: Automates testing and building processes
 
 These checks run automatically in GitHub pipelines when you push code to your repository.
