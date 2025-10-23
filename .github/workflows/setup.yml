@@ -85,6 +85,9 @@ jobs:
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm ci
 
+      # This cache is basically just for transport to deploy job.
+      # Caches currently cannot be reused between branches and pull requests/releases.
+      # See https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching#restrictions-for-accessing-a-cache
       - name: Build assets (prod only)
         if: inputs.mode == 'prod' && steps.node-cache.outputs.cache-hit != 'true'
         run: |
