@@ -157,7 +157,7 @@ Changing the PHP version for your plugin requires updates in multiple places to 
 
 ### Composer Configuration
 
-The plugin's PHP version requirements must be updated in `composer.json` in two places:
+The plugin's PHP version requirements in `composer.json` define the **minimum** PHP version your plugin supports:
 
 1. The `require` section specifies the minimum PHP version:
 
@@ -167,7 +167,7 @@ The plugin's PHP version requirements must be updated in `composer.json` in two 
 }
 ```
 
-2. The `config.platform` section which controls what PHP version Composer uses for compatibility checks:
+2. The `config.platform` section controls what PHP version Composer uses for compatibility checks:
 
 ```json
 "config": {
@@ -176,6 +176,8 @@ The plugin's PHP version requirements must be updated in `composer.json` in two 
     }
 }
 ```
+
+**Note**: The minimum PHP version in composer.json (8.0) may differ from the PHP version used in GitHub Actions workflows (8.2 by default). This is intentional - the workflows use a newer version for testing and deployment, while maintaining compatibility with the minimum version specified in composer.json.
 
 After updating these values, run `composer update` to update your dependencies based on the new PHP version constraints.
 
