@@ -9,9 +9,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  DEFAULT_PHP_VERSION: '8.2'
-
 jobs:
   setup:
     uses: ./.github/workflows/setup.yml
