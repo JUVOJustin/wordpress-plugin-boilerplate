@@ -8,6 +8,11 @@ on:
         required: true
         default: 'dev'
         type: string
+      php-version:
+        description: 'PHP version to use'
+        required: false
+        default: '8.2'
+        type: string
     outputs:
       php-cache-key:
         description: "The PHP dependencies cache key"
@@ -60,7 +65,7 @@ jobs:
         if: steps.php-cache.outputs.cache-hit != 'true'
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: ${{ inputs.php-version }}
           tools: wp-cli
 
       - name: Setup Node

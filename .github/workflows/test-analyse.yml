@@ -9,11 +9,15 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  DEFAULT_PHP_VERSION: '8.2'
+
 jobs:
   setup:
     uses: ./.github/workflows/setup.yml
     with:
       mode: 'dev'
+      php-version: ${{ vars.PHP_VERSION || '8.2' }}
 
   test-js:
     runs-on: ubuntu-latest
@@ -58,7 +62,7 @@ jobs:
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.0'
+          php-version: ${{ vars.PHP_VERSION || '8.2' }}
           tools: cs2pr
 
       - name: PHPSTAN
