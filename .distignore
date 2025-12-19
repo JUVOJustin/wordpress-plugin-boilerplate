@@ -41,4 +41,4 @@ tests/
 # Build artifacts and cache
 .budfiles/
 phpcs-report.xml
-lib/
+/lib/
