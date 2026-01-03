@@ -205,12 +205,14 @@ class Demo_Plugin {
 	 * Block files are located in src/Blocks.
 	 * Uses the metadata collection API (WP 6.7+).
 	 *
+	 * @link https://make.wordpress.org/core/2024/10/17/new-block-type-registration-apis-to-improve-performance-in-wordpress-6-7/#full-example
+	 *
 	 * @return void
 	 */
 	private function register_blocks(): void {
 
 		$manifest_file = DEMO_PLUGIN_PATH . 'build/blocks-manifest.php';
-		$blocks_folder = DEMO_PLUGIN_PATH . 'build/blocks';
+		$blocks_folder = DEMO_PLUGIN_PATH . 'build/Blocks';
 
 		if ( ! is_readable( $manifest_file ) || ! is_dir( $blocks_folder ) ) {
 			return;
