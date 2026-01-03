@@ -55,6 +55,7 @@ class Demo_Plugin {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
+		$this->register_blocks();
 	}
 
 	/**
@@ -195,5 +196,26 @@ class Demo_Plugin {
 				$asset['version']
 			);
 		}
+	}
+
+	/**
+	 * Register gutenberg blocks
+	 *
+	 * Registers the Gutenberg block for editing seller contact information.
+	 * Block files are located in src/Blocks.
+	 * Uses the metadata collection API (WP 6.7+).
+	 *
+	 * @return void
+	 */
+	private function register_blocks(): void {
+
+		$manifest_file = DEMO_PLUGIN_PATH . 'build/blocks-manifest.php';
+		$blocks_folder = DEMO_PLUGIN_PATH . 'build/blocks';
+
+		if ( ! is_readable( $manifest_file ) || ! is_dir( $blocks_folder ) ) {
+			return;
+		}
+
+		wp_register_block_types_from_metadata_collection( $blocks_folder, $manifest_file );
 	}
 }
