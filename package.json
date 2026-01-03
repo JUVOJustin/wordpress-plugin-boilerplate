@@ -12,6 +12,7 @@
     "lint:fix:js": "wp-scripts lint-js ./resources --fix",
     "lint:fix:style": "wp-scripts lint-style 'resources/**/*.{css,scss,sass}' --fix",
     "format": "wp-scripts format ./resources",
-    "packages-update": "wp-scripts packages-update"
+    "packages-update": "wp-scripts packages-update",
+    "create-block": "npx @wordpress/create-block --no-plugin --target-dir='src/Blocks' --namespace='demo-plugin'"
   }
 }
