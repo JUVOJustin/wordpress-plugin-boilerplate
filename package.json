@@ -4,7 +4,7 @@
     "@wordpress/scripts": "^30.20.0"
   },
   "scripts": {
-    "start": "wp-scripts start",
+    "start": "wp-scripts start --blocks-manifest",
     "build": "wp-scripts build --blocks-manifest",
     "lint:style": "wp-scripts lint-style 'resources/**/*.{css,scss,sass}'",
     "lint:js": "wp-scripts lint-js ./resources",
