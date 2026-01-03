@@ -5,8 +5,7 @@
   },
   "scripts": {
     "start": "wp-scripts start",
-    "build": "wp-scripts build && npm run block-manifest",
-    "block-manifest": "wp-scripts build-blocks-manifest",
+    "build": "wp-scripts build --blocks-manifest",
     "lint:style": "wp-scripts lint-style 'resources/**/*.{css,scss,sass}'",
     "lint:js": "wp-scripts lint-js ./resources",
     "lint:fix:js": "wp-scripts lint-js ./resources --fix",
