@@ -105,6 +105,9 @@ class Demo_Plugin {
 		// <setup-cli-start>
 		$this->loader->add_cli( 'setup', new Cli\Setup() );
 		// </setup-cli-end>
+
+		// Register opencode CLI command for managing AI agent skills
+		$this->loader->add_cli( 'opencode', new Cli\Opencode() );
 	}
 
 	/**

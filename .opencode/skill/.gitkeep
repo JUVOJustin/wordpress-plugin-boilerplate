@@ -1,0 +1,2 @@
+# This directory stores AI agent skills fetched from Automattic/agent-skills
+# Use `wp opencode skill:setup` to install/update skills

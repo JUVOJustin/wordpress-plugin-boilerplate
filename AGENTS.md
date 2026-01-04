@@ -31,6 +31,8 @@ This repository is a modern WordPress plugin boilerplate with strict conventions
 - `.github/workflows/` — CI/CD pipelines
 - `composer.json` — Dependency and PHP version management
 - `phpstan.neon`, `phpcs.xml`, `eslint.config.js` — QA configs
+- `.opencode/command/` — AI agent command definitions
+- `.opencode/skill/` — AI agent skills (install with `wp opencode skill:setup`)
 
 ### Example: Registering an Admin Script
 ```php

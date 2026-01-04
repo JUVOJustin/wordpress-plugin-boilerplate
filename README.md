@@ -15,6 +15,7 @@ This boilerplate is a fork of [WordPress Boilerplate](https://github.com/DevinVi
 - [@wordpress/scripts](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/) for simple bundling, linting and formatting of JS and CSS/SCSS files
 - Ready-made Github actions for building and bundling
 - Ready-made [opencode](https://opencode.ai) commands for common tasks (compatible with any LLM)
+- Built-in CLI command for managing AI agent skills from [Automattic/agent-skills](https://github.com/Automattic/agent-skills)
 
 # Setup
 
@@ -321,6 +322,40 @@ private function load_dependencies(): void {
     new \Demo_Plugin\Integrations\ACF\Config();
 }
 ```
+
+## AI Agent Skills Management
+
+The boilerplate includes a WP-CLI command for managing AI agent skills from the [Automattic/agent-skills](https://github.com/Automattic/agent-skills) repository. These skills provide enhanced capabilities for AI coding agents like GitHub Copilot, Claude, and other LLM-powered tools.
+
+### Installing Skills
+
+To install or update AI agent skills, use the `opencode skill:setup` command:
+
+```bash
+# Install default skills (wp-interactivity-api, wp-project-triage, wp-block-development)
+wp opencode skill:setup
+
+# Install specific skills
+wp opencode skill:setup --skills=wp-interactivity-api,wp-block-development
+
+# Install a single skill
+wp opencode skill:setup --skills=wp-interactivity-api
+```
+
+### How It Works
+
+- Skills are fetched from the [Automattic/agent-skills](https://github.com/Automattic/agent-skills) repository
+- Installed skills are stored in `.opencode/skill/<skill-name>/` directory
+- If a skill already exists, running the command will update it to the latest version
+- Unknown skill names are rejected with a helpful error message
+
+### Default Skills
+
+The following skills are installed by default when no `--skills` argument is provided:
+
+- **wp-interactivity-api**: Skills for working with WordPress Interactivity API
+- **wp-project-triage**: Skills for project management and issue triage
+- **wp-block-development**: Skills for developing WordPress blocks
 
 ### Wrapping Up
 
