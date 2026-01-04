@@ -322,6 +322,82 @@ private function load_dependencies(): void {
 }
 ```
 
+## OpenCode Commands and Agent Skills
+
+This boilerplate includes [OpenCode](https://opencode.ai) commands to streamline common development tasks with any LLM agent.
+
+### Available OpenCode Commands
+
+OpenCode commands are stored in `.opencode/command/` and can be executed by LLM agents:
+
+- **`/qa-run`** — Run quality assurance tools (PHPStan, PHPCS, ESLint)
+- **`/qa-upsert`** — Update QA tools from the boilerplate
+- **`/rules-upsert`** — Sync WordPress development rules
+- **`/commands-upsert`** — Update OpenCode commands from the boilerplate
+- **`/strauss-upsert`** — Update Strauss namespace prefixing package
+- **`/readme-update`** — Update or create the README.md file
+- **`/agent-skills-sync`** — Sync WordPress agent skills from Automattic
+
+### WordPress Agent Skills
+
+This boilerplate can integrate specialized WordPress development skills from [Automattic/agent-skills](https://github.com/Automattic/agent-skills). These skills provide LLM agents with deep knowledge about specific WordPress development patterns.
+
+#### Installing Agent Skills
+
+Use the `/agent-skills-sync` command to install WordPress agent skills:
+
+```bash
+# Install default skills (wp-interactivity-api, wp-project-triage, wp-block-development)
+/agent-skills-sync
+
+# Install specific skills
+/agent-skills-sync wp-interactivity-api wp-performance
+
+# Install multiple skills
+/agent-skills-sync wp-block-themes wp-wpcli-and-ops
+```
+
+#### Available Skills
+
+Common agent skills include:
+
+- **`wp-interactivity-api`** — WordPress Interactivity API development (directives, store, state management)
+- **`wp-project-triage`** — Repository structure detection and analysis
+- **`wp-block-development`** — Gutenberg block development best practices
+- **`wp-block-themes`** — Block theme development patterns
+- **`wp-performance`** — WordPress performance optimization
+- **`wp-plugin-development`** — Plugin development best practices
+- **`wp-wpcli-and-ops`** — WP-CLI commands and operations
+
+Visit [Automattic/agent-skills](https://github.com/Automattic/agent-skills) for the complete list of available skills.
+
+#### How Skills Work
+
+Once synced, skills are stored in `.opencode/skill/<skill-name>/` and are:
+
+- **Packagist-friendly**: Fully vendored and included in Composer installs
+- **LLM-accessible**: Referenced in `AGENTS.md` for easy discovery
+- **Updateable**: Run `/agent-skills-sync` again to update to the latest versions
+- **Upstream-maintained**: Source of truth is the Automattic repository
+
+Skills provide LLM agents with:
+- Detailed procedures for specific WordPress tasks
+- Reference documentation and examples
+- Helper scripts (when applicable)
+- Best practices and debugging guidance
+
+#### Updating Skills
+
+To update all installed skills to their latest versions:
+
+```bash
+/agent-skills-sync
+```
+
+This will download the latest versions from upstream and update all previously synced skills. The upstream repository is always treated as the source of truth.
+
+**Note**: Do not manually edit files in `.opencode/skill/`. Any local changes will be overwritten on the next sync. To contribute improvements, submit PRs to [Automattic/agent-skills](https://github.com/Automattic/agent-skills).
+
 ### Wrapping Up
 
 That's it! Your plugin is now ready for development. Dive into creating your next remarkable WordPress plugin with ease and efficiency.

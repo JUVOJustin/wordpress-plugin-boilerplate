@@ -40,3 +40,42 @@ private function define_admin_hooks() {
 		$this->loader->add_action('admin_enqueue_scripts', $admin, 'enqueue_scripts');
 }
 ```
+
+### OpenCode Commands
+
+This repository includes OpenCode commands for common development tasks. These commands can be executed by any LLM agent:
+
+- `/qa-run` — Run quality assurance tools (PHPStan, PHPCS, ESLint)
+- `/qa-upsert` — Update QA tools from the boilerplate
+- `/rules-upsert` — Sync WordPress development rules
+- `/commands-upsert` — Update OpenCode commands from the boilerplate
+- `/strauss-upsert` — Update Strauss namespace prefixing package
+- `/readme-update` — Update or create the README.md file
+- `/agent-skills-sync` — Sync WordPress agent skills from Automattic/agent-skills
+
+### WordPress Agent Skills
+
+This project can integrate specialized WordPress agent skills from [Automattic/agent-skills](https://github.com/Automattic/agent-skills). Skills provide deep knowledge about specific WordPress development patterns.
+
+To install agent skills, use the `/agent-skills-sync` command. Once installed, skills are available at `.opencode/skill/<skill-name>/`.
+
+**Common skills:**
+- **wp-interactivity-api** — Use when building or debugging WordPress Interactivity API features (data-wp-* directives, @wordpress/interactivity store/state/actions)
+  - Read when working with: Interactivity API, directives, hydration, viewScriptModule
+  - Skill documentation: @.opencode/skill/wp-interactivity-api/SKILL.md
+- **wp-project-triage** — Use for deterministic inspection of WordPress repositories (plugin/theme/core)
+  - Read when: Starting work in a new WordPress repository, need to understand project structure
+  - Skill documentation: @.opencode/skill/wp-project-triage/SKILL.md
+- **wp-block-development** — Use when developing or debugging Gutenberg blocks
+  - Read when: Creating blocks, working with block.json, attributes, dynamic rendering
+  - Skill documentation: @.opencode/skill/wp-block-development/SKILL.md
+
+**To sync/update skills:** Run `/agent-skills-sync` command.
+
+**Additional available skills:**
+- `wp-block-themes` — Block theme development
+- `wp-performance` — WordPress performance optimization
+- `wp-plugin-development` — Plugin development best practices
+- `wp-wpcli-and-ops` — WP-CLI commands and operations
+
+Visit [Automattic/agent-skills](https://github.com/Automattic/agent-skills) for the complete list.
