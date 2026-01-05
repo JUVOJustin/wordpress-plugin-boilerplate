@@ -210,7 +210,7 @@ class Demo_Plugin {
 	 *
 	 * @return void
 	 */
-	private function register_blocks(): void {
+	public function register_blocks(): void {
 
 		$manifest_file = DEMO_PLUGIN_PATH . 'build/blocks-manifest.php';
 		$blocks_folder = DEMO_PLUGIN_PATH . 'build/Blocks';
