@@ -15,6 +15,7 @@ This boilerplate is a fork of [WordPress Boilerplate](https://github.com/DevinVi
 - [@wordpress/scripts](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/) for simple bundling, linting and formatting of JS and CSS/SCSS files
 - Ready-made Github actions for building and bundling
 - Ready-made [opencode](https://opencode.ai) commands for common tasks (compatible with any LLM)
+- Simple Gutenberg Block generation and automated loading
 
 # Setup
 
@@ -55,6 +56,7 @@ All plugin logic should go into the `src` folder. This separation helps maintain
 
 ```
 src/
+├── Blocks/        # Gutenberg Blocks
 ├── API/           # Rest API-specific functionality
 ├── CLI/           # CLI commands
 └── Integrations/  # Core plugin functions and utilities
@@ -129,6 +131,13 @@ npm run build         # For production. Compiles assets and minifies them
 ```
 
 To add a new entry point for scripts or styles, modify the `webpack.config.js` file.
+
+### Gutenberg Block Development
+Generate blocks using `npm run create-block`. This command scaffolds a new block in the `src/Blocks` directory.
+Under the hood the npm script uses `@wordpress/create-block` package.
+
+Blocks are automatically registered using `wp_register_block_types_from_metadata_collection` in the main plugin class.
+Scripts and styles for the blocks are enqueued and bundled automatically.
 
 ## Quality Assurance and Workflows
 

@@ -40,3 +40,7 @@ private function define_admin_hooks() {
 		$this->loader->add_action('admin_enqueue_scripts', $admin, 'enqueue_scripts');
 }
 ```
+
+### Block Generation
+To generate a new Gutenberg block the only thin needed is running `npm run create-block` and input the data when prompted.
+This will create a new block in the `src/Blocks/` folder. The block will be automatically registered and the assets enqueued.
