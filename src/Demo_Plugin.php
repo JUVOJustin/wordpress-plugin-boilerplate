@@ -200,10 +200,10 @@ class Demo_Plugin {
 	}
 
 	/**
-	 * Register gutenberg blocks
+	 * Register Gutenberg blocks.
 	 *
-	 * Registers the Gutenberg block for editing seller contact information.
-	 * Block files are located in src/Blocks.
+	 * Registers all Gutenberg blocks from the Blocks directory.
+	 * Block assets are loaded from the build/Blocks directory using a manifest file.
 	 * Uses the metadata collection API (WP 6.8+).
 	 *
 	 * @link https://make.wordpress.org/core/2025/03/13/more-efficient-block-type-registration-in-6-8/
