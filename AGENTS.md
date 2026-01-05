@@ -42,5 +42,5 @@ private function define_admin_hooks() {
 ```
 
 ### Block Generation
-To generate a new Gutenberg block the only thing needed is running `npm run create-block` and input the data when prompted.
+To generate a new Gutenberg block, simply run `npm run create-block` and enter the required information when prompted.
 This will create a new block in the `src/Blocks/` folder. The block will be automatically registered and the assets enqueued.
