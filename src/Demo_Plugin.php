@@ -56,7 +56,7 @@ class Demo_Plugin {
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 
-		$this->loader->add_action('init', $this, 'register_blocks');
+		$this->loader->add_action( 'init', $this, 'register_blocks' );
 	}
 
 	/**
