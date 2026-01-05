@@ -133,7 +133,7 @@ npm run build         # For production. Compiles assets and minifies them
 To add a new entry point for scripts or styles, modify the `webpack.config.js` file.
 
 ### Gutenberg Block Development
-Generate blocks using `npm run create-block`. This command scaffolds a new block in the `src/Blocks` directory.
+Generate blocks using `npm run create-block` and follow the interactive prompts. This command scaffolds a new block in the `src/Blocks` directory.
 Under the hood the npm script uses `@wordpress/create-block` package.
 
 Blocks are automatically registered using `wp_register_block_types_from_metadata_collection` in the main plugin class.
