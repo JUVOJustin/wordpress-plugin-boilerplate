@@ -1,6 +1,6 @@
 ---
 description: Upsert AC skills [skillnames], default to wp-interactivity-api, wp-block-development
-Input: $ARGUMENTS
+subtask: true
 ---
 
 **Goal:** Upsert skills provided by automattic https://github.com/Automattic/agent-skills into the current workspace.
@@ -13,16 +13,16 @@ Input: $ARGUMENTS
 
 ## **2. Add or Update Rules**
 
-Based on the input provided, determine which skills to sync:
+Based on the input provided, determine which skills to sync: "$ARGUMENTS"
 
-1. **No arguments (default)**:
+1. **No input (default)**:
     - wp-interactivity-api 
     - wp-project-triage 
     - wp-block-development
 
-2. Defined arguments:
+2. Defined input:
     - Always upsert wp-project-triage as it is a dependency for other skills.
-    - Upsert the skills $ARGUMENTS if they exist in the archive. Let the user know about missing skills after syncing the valid ones.
+    - Upsert the skills "$ARGUMENTS" if they exist in the archive. Let the user know about missing skills after syncing the valid ones.
 
 * Compare existing skills in @.opencode/skill with the extracted skills.
 * **Add** new skills that don’t exist in the workspace and should be added.
