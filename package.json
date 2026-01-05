@@ -12,6 +12,6 @@
     "lint:fix:style": "wp-scripts lint-style 'resources/**/*.{css,scss,sass}' --fix",
     "format": "wp-scripts format ./resources",
     "packages-update": "wp-scripts packages-update",
-    "create-block": "bash -lc \"mkdir -p src/Blocks && cd src/Blocks && npx @wordpress/create-block --no-plugin --namespace='demo-plugin' --textdomain='demo-plugin'\""
+    "create-block": "bash -lc \"mkdir -p src/Blocks && cd src/Blocks && npx @wordpress/create-block --no-plugin --namespace=demo-plugin --textdomain=demo-plugin\""
   }
 }
