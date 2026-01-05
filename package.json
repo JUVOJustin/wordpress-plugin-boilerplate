@@ -4,13 +4,14 @@
     "@wordpress/scripts": "^30.20.0"
   },
   "scripts": {
-    "start": "wp-scripts start",
-    "build": "wp-scripts build",
+    "start": "wp-scripts start --blocks-manifest",
+    "build": "wp-scripts build --blocks-manifest",
     "lint:style": "wp-scripts lint-style 'resources/**/*.{css,scss,sass}'",
     "lint:js": "wp-scripts lint-js ./resources",
     "lint:fix:js": "wp-scripts lint-js ./resources --fix",
     "lint:fix:style": "wp-scripts lint-style 'resources/**/*.{css,scss,sass}' --fix",
     "format": "wp-scripts format ./resources",
-    "packages-update": "wp-scripts packages-update"
+    "packages-update": "wp-scripts packages-update",
+    "create-block": "bash -lc \"mkdir -p src/Blocks && cd src/Blocks && npx @wordpress/create-block --no-plugin --namespace=demo-plugin --textdomain=demo-plugin\""
   }
 }

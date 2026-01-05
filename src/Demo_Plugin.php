@@ -55,6 +55,8 @@ class Demo_Plugin {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
+
+		$this->loader->add_action( 'init', $this, 'register_blocks' );
 	}
 
 	/**
@@ -195,5 +197,28 @@ class Demo_Plugin {
 				$asset['version']
 			);
 		}
+	}
+
+	/**
+	 * Register Gutenberg blocks.
+	 *
+	 * Registers all Gutenberg blocks from the Blocks directory.
+	 * Block assets are loaded from the build/Blocks directory using a manifest file.
+	 * Uses the metadata collection API (WP 6.8+).
+	 *
+	 * @link https://make.wordpress.org/core/2025/03/13/more-efficient-block-type-registration-in-6-8/
+	 *
+	 * @return void
+	 */
+	public function register_blocks(): void {
+
+		$manifest_file = DEMO_PLUGIN_PATH . 'build/blocks-manifest.php';
+		$blocks_folder = DEMO_PLUGIN_PATH . 'build/Blocks';
+
+		if ( ! is_readable( $manifest_file ) || ! is_dir( $blocks_folder ) ) {
+			return;
+		}
+
+		wp_register_block_types_from_metadata_collection( $blocks_folder, $manifest_file );
 	}
 }
