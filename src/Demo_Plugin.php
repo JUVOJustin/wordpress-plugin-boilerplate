@@ -55,7 +55,8 @@ class Demo_Plugin {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-		$this->register_blocks();
+
+		$this->loader->add_action('init', $this, 'register_blocks');
 	}
 
 	/**
@@ -203,9 +204,9 @@ class Demo_Plugin {
 	 *
 	 * Registers the Gutenberg block for editing seller contact information.
 	 * Block files are located in src/Blocks.
-	 * Uses the metadata collection API (WP 6.7+).
+	 * Uses the metadata collection API (WP 6.8+).
 	 *
-	 * @link https://make.wordpress.org/core/2024/10/17/new-block-type-registration-apis-to-improve-performance-in-wordpress-6-7/#full-example
+	 * @link https://make.wordpress.org/core/2025/03/13/more-efficient-block-type-registration-in-6-8/
 	 *
 	 * @return void
 	 */
