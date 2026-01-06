@@ -23,6 +23,7 @@
     <exclude-pattern>bin/*</exclude-pattern>
     <exclude-pattern>build/*</exclude-pattern>
     <exclude-pattern>.ddev/*</exclude-pattern>
+    <exclude-pattern>languages/*</exclude-pattern>
 
     <!-- Include all files from the root of the project -->
     <file>.</file>
