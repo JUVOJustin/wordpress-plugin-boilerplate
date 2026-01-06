@@ -206,6 +206,8 @@ class Demo_Plugin {
 	 * Block assets are loaded from the build/Blocks directory using a manifest file.
 	 * Uses the metadata collection API (WP 6.8+).
 	 *
+	 * JSON Translations are loaded automatically. Use `npm run i18n:compile` to generate translation files from .po files.
+	 *
 	 * @link https://make.wordpress.org/core/2025/03/13/more-efficient-block-type-registration-in-6-8/
 	 *
 	 * @return void
