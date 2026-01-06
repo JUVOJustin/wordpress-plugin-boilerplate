@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "wordpress-dev-docs": {
-      "type": "sse",
-      "url": "https://wordpress-dev-mcp.citation.media/sse"
-    }
-  }
-}
