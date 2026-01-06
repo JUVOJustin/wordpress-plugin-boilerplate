@@ -208,7 +208,11 @@ class Demo_Plugin {
 	 *
 	 * JSON Translations are loaded automatically. Use `npm run i18n:compile` to generate translation files from .po files.
 	 *
+	 * To localize scripts you need to use `wp_localize_script`.
+	 * The handle can be generated with `generate_block_asset_handle('demo-plugin/block-name', 'editorScript')`.
+	 *
 	 * @link https://make.wordpress.org/core/2025/03/13/more-efficient-block-type-registration-in-6-8/
+	 * @link https://developer.wordpress.org/reference/functions/generate_block_asset_handle/
 	 *
 	 * @return void
 	 */
