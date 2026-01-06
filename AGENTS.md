@@ -44,3 +44,8 @@ private function define_admin_hooks() {
 ### Block Generation
 To generate a new Gutenberg block, simply run `npm run create-block` and enter the required information when prompted.
 This will create a new block in the `src/Blocks/` folder. The block will be automatically registered and the assets enqueued.
+
+### i18n Support Translation
+1. Run `npm run i18n:extract` to extract translatable strings into the `.pot` file located in the `languages/` directory. Strings in the PHP/JS need to use functions like `__()` or `_e()` with the plugins text domain. Existing `.po` files will be updated automatically.
+2. From the `.pot` file, translate by creating `.po` files for each desired language.
+3. Run `npm run i18n:compile` to compile the `.po` files into `.mo`, '.json' and '.php' files for use by WordPress.
