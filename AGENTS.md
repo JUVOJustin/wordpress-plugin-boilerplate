@@ -45,6 +45,19 @@ private function define_admin_hooks() {
 To generate a new Gutenberg block, simply run `npm run create-block` and enter the required information when prompted.
 This will create a new block in the `src/Blocks/` folder. The block will be automatically registered and the assets enqueued.
 
+### Interactivity
+For "interactivity" use `@wordpress/interactivity`. It requires the view script to be a module. Register it with `"viewScriptModule": "file:./view.js"` in `block.json`.
+The modules are enqueued automatically bu if you need to load manually e.g. in Elementor or Bricks use:
+
+```php
+$block = WP_Block_Type_Registry::get_instance()->get_registered( "demo-plugin/my-block" );
+if ( $block && ! empty( $block->view_script_module_ids ) ) {
+    foreach ( $block->view_script_module_ids as $script_module_id ) {
+        wp_enqueue_script_module( $script_module_id );
+    }
+}
+```
+
 ### i18n/Translations Support 
 1. Run `npm run i18n:extract` to extract translatable strings into the `.pot` file located in the `languages/` directory. Strings in the PHP/JS need to use functions like `__()` or `_e()` with the plugin's text domain. Existing `.po` files will be updated automatically.
 2. From the `.pot` file, translate by creating `.po` files for each desired language.

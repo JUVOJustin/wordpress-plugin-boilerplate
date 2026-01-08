@@ -4,8 +4,8 @@
     "@wordpress/scripts": "^30.20.0"
   },
   "scripts": {
-    "start": "wp-scripts start --blocks-manifest",
-    "build": "wp-scripts build --blocks-manifest",
+    "start": "wp-scripts start --blocks-manifest --experimental-modules",
+    "build": "wp-scripts build --blocks-manifest --experimental-modules",
     "lint:style": "wp-scripts lint-style 'resources/**/*.{css,scss,sass}'",
     "lint:js": "wp-scripts lint-js ./resources",
     "lint:fix:js": "wp-scripts lint-js ./resources --fix",
