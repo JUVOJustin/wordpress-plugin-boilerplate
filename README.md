@@ -166,7 +166,7 @@ Changing the PHP version for your plugin requires updates in multiple places to 
 
 ### Composer Configuration
 
-The plugin's PHP version requirements must be updated in `composer.json` in two places:
+The plugin's PHP version requirements in `composer.json` define the **minimum** PHP version your plugin supports:
 
 1. The `require` section specifies the minimum PHP version:
 
@@ -176,7 +176,7 @@ The plugin's PHP version requirements must be updated in `composer.json` in two 
 }
 ```
 
-2. The `config.platform` section which controls what PHP version Composer uses for compatibility checks:
+2. The `config.platform` section controls what PHP version Composer uses for compatibility checks:
 
 ```json
 "config": {
@@ -186,34 +186,40 @@ The plugin's PHP version requirements must be updated in `composer.json` in two 
 }
 ```
 
+**Note**: The minimum PHP version in composer.json (8.0) may differ from the PHP version used in GitHub Actions workflows (8.2 by default). This is intentional - the workflows use a newer version for testing and deployment, while maintaining compatibility with the minimum version specified in composer.json.
+
 After updating these values, run `composer update` to update your dependencies based on the new PHP version constraints.
 
 ### GitHub Pipeline Configuration
 
-The GitHub Actions workflows are configured to use PHP 8.0. When changing the PHP version, you'll need to update it in these workflow files:
+The GitHub Actions workflows are now configured to use PHP 8.2 by default, but can be easily customized using GitHub repository variables.
 
-1. Edit `.github/workflows/test-analyse.yml` and update the PHP version:
+#### Default PHP Version
 
-```yaml
-- name: Setup php
-  uses: shivammathur/setup-php@v2
-  with:
-    php-version: '8.0'
-    tools: cs2pr
-```
+The default PHP version (8.2) is configured in all workflow files. This ensures consistent behavior across all pipelines without any additional configuration.
 
-2. Also update the PHP version in `.github/workflows/setup.yml`:
+#### Customizing PHP Version
 
-```yaml
-- name: Setup php
-  uses: shivammathur/setup-php@v2
-  with:
-    php-version: '8.0'
-```
+To use a different PHP version across all workflows:
 
-3. Check for PHP version constraints in static analysis configurations:
-   - `phpstan.neon.dist` might have PHP version specific settings
-   - `phpcs.xml.dist` might have PHP version specific ruleset configurations
+1. Go to your GitHub repository settings
+2. Navigate to **Settings** → **Secrets and variables** → **Actions** → **Variables** tab
+3. Create a new repository variable named `PHP_VERSION`
+4. Set the value to your desired PHP version (e.g., `8.0`, `8.1`, `8.3`)
+
+Once set, all workflows (test-analyse, deploy, and setup) will automatically use the specified PHP version. If the `PHP_VERSION` variable is not set, the workflows will fall back to the default version of 8.2.
+
+This approach provides:
+- **Single source of configuration**: Change PHP version in one place for all workflows
+- **Easy to maintain**: Clear default version visible in workflow files
+- **Flexible**: Override per repository without modifying workflow files
+- **Safe fallback**: Always uses the default if variable is not set
+
+#### Static Analysis Configuration
+
+When changing PHP versions, also check for PHP version constraints in static analysis configurations:
+- `phpstan.neon` might have PHP version specific settings
+- `phpcs.xml` might have PHP version specific ruleset configurations
 
 Keeping PHP versions consistent across all configurations ensures that your development, testing, and deployment environments all work with the same PHP constraints.
 
