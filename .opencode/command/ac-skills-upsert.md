@@ -19,6 +19,7 @@ Based on the input provided, determine which skills to sync: "$ARGUMENTS"
     - wp-interactivity-api 
     - wp-project-triage 
     - wp-block-development
+    - wp-phpstan
 
 2. Defined input:
     - Always upsert wp-project-triage as it is a dependency for other skills.

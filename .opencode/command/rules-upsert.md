@@ -17,7 +17,7 @@ description: Sync wordpress rules with wordpress-dev-llm-rules repo
   `{filename}.instructions.md`
 
 ## **3. Add or Update Rules**
-* **Add** new upstream rules that don’t exist locally.
+* **Add** new upstream rules that don’t exist locally and that no overlapping skill exists for in `.opencode/skill`.
 * **Update** existing rules when both sources have the same file.
 
   * If differences are large, confirm with the user before overwriting.
