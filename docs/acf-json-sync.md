@@ -1,0 +1,115 @@
+# ACF JSON Sync
+
+There is no ultimate way how to do it but throughout the year the following pattern has proven to be effective and flexible.
+
+All ACF field group JSON files should be stored in `resources/acf-json/`.
+
+To enable ACF JSON sync in your plugin:
+
+1. Create the `resources/acf-json` directory
+2. Add the following code to your `load_dependencies()` method in the main Demo_Plugin class:
+
+The code examples are based on ACF´s documentation for [local JSON](https://www.advancedcustomfields.com/resources/local-json/).
+
+## Option 1: Direct approach with anonymous functions
+
+```php
+/**
+ * Load the required dependencies for this plugin.
+ *
+ * @since    1.0.0
+ * @access   private
+ */
+private function load_dependencies(): void {
+    $this->loader = new Loader();
+    
+    // ACF JSON Support
+    add_filter(
+        'acf/settings/save_json',
+        function () {
+            if ( wp_get_environment_type() !== 'production' ) {
+                return DEMO_PLUGIN_PATH . 'resources/acf-json';
+            }
+            return '';
+        }
+    );
+    add_filter(
+        'acf/settings/load_json',
+        function ( $paths ) {
+            $paths[] = DEMO_PLUGIN_PATH . 'resources/acf-json';
+            return $paths;
+        }
+    );
+}
+```
+
+## Option 2: Separate class for managing multiple field groups
+
+For more complex setups with multiple field groups, create a dedicated class:
+
+```php
+<?php
+/**
+ * ACF Configuration.
+ *
+ * @package Demo_Plugin
+ */
+
+namespace Demo_Plugin\Integrations\ACF;
+
+/**
+ * ACF Configuration class.
+ */
+class Config {
+
+    /**
+     * Register all needed hooks.
+     */
+    public function __construct() {
+        // Whitelist specific field groups to save
+        add_filter( 'acf/settings/save_json/key=group_example1', array( $this, 'save_path' ) );
+        add_filter( 'acf/settings/save_json/key=group_example2', array( $this, 'save_path' ) );
+        add_filter( 'acf/settings/save_json/key=group_example3', array( $this, 'save_path' ) );
+        
+        // Add load path
+        add_filter( 'acf/settings/load_json', array( $this, 'load_path' ) );
+    }
+
+    /**
+     * Register the save path
+     *
+     * @return string The save path.
+     */
+    public function save_path(): string {
+        if ( wp_get_environment_type() !== 'production' ) {
+            return DEMO_PLUGIN_PATH . 'resources/acf-json';
+        }
+        return '';
+    }
+
+    /**
+     * Register the load path.
+     *
+     * @param array<string> $paths The current paths.
+     * @return array<string> The manipulated paths.
+     */
+    public function load_path( array $paths ): array {
+        // Optional: Remove default path
+        // unset( $paths[0] );
+        
+        $paths[] = DEMO_PLUGIN_PATH . 'resources/acf-json';
+        return $paths;
+    }
+}
+```
+
+Then initialize it in your main plugin class:
+
+```php
+private function load_dependencies(): void {
+    $this->loader = new Loader();
+    
+    // Initialize ACF configuration
+    new \Demo_Plugin\Integrations\ACF\Config();
+}
+```
