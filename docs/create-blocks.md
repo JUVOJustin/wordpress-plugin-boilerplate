@@ -1,6 +1,6 @@
 # Develop and Ship Blocks
 
-The boilerplate has builtin block support. This means it has an opinionated way to use blocks, but also automates a lot of the tedious tasks like registration and asset management.
+The project has builtin block support. This means it has an opinionated way to use blocks, but also automates a lot of the tedious tasks like registration and asset management.
 
 ## Create your first block
 
