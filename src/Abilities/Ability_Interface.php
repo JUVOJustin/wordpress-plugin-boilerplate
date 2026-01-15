@@ -42,9 +42,12 @@ interface Ability_Interface {
 	public static function get_description(): string;
 
 	/**
-	 * Get the ability category
+	 * Get the ability category class
 	 *
-	 * @return string Category slug this ability belongs to.
+	 * Returns a class implementing Ability_Category_Interface.
+	 * The Loader will automatically register the category.
+	 *
+	 * @return class-string<Ability_Category_Interface> Category class name.
 	 */
 	public static function get_category(): string;
 
@@ -63,17 +66,20 @@ interface Ability_Interface {
 	public static function get_output_schema(): array;
 
 	/**
-	 * Get ability metadata
+	 * Get ability annotations
 	 *
-	 * Includes annotations (readonly, destructive, idempotent) and show_in_rest.
-	 * Structure matches WP_Ability meta format.
+	 * Defines behavioral characteristics of the ability.
 	 *
-	 * @return array{
-	 *     annotations?: array{readonly?: bool|null, destructive?: bool|null, idempotent?: bool|null},
-	 *     show_in_rest?: bool
-	 * } Ability metadata.
+	 * @return array{readonly?: bool|null, destructive?: bool|null, idempotent?: bool|null} Ability annotations.
 	 */
-	public static function get_meta(): array;
+	public static function get_annotations(): array;
+
+	/**
+	 * Determine if ability should be exposed in REST API
+	 *
+	 * @return bool True to expose in REST API, false otherwise.
+	 */
+	public static function show_rest(): bool;
 
 	/**
 	 * Check if the current user can execute this ability

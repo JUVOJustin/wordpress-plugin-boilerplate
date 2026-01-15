@@ -4,7 +4,41 @@ Expose plugin functionality as structured capabilities for AI assistants and aut
 
 ## Quick Start
 
-### 1. Create Ability Class
+### 1. Create Category Class
+
+Create `src/Abilities/Categories/Data_Retrieval.php`:
+
+```php
+<?php
+
+namespace Demo_Plugin\Abilities\Categories;
+
+use Demo_Plugin\Abilities\Ability_Category_Interface;
+
+/**
+ * Category for abilities that retrieve data without modifications.
+ */
+class Data_Retrieval implements Ability_Category_Interface {
+
+    public static function get_slug(): string {
+        return 'data-retrieval';
+    }
+
+    public static function get_label(): string {
+        return __( 'Data Retrieval', 'demo-plugin' );
+    }
+
+    public static function get_description(): string {
+        return __( 'Abilities that retrieve and return data from the WordPress site.', 'demo-plugin' );
+    }
+
+    public static function get_meta(): array {
+        return array();
+    }
+}
+```
+
+### 2. Create Ability Class
 
 Create `src/Abilities/My_Ability.php`:
 
@@ -13,6 +47,7 @@ Create `src/Abilities/My_Ability.php`:
 
 namespace Demo_Plugin\Abilities;
 
+use Demo_Plugin\Abilities\Categories\Data_Retrieval;
 use WP_Error;
 
 class My_Ability implements Ability_Interface {
@@ -30,7 +65,7 @@ class My_Ability implements Ability_Interface {
     }
 
     public static function get_category(): string {
-        return 'demo-plugin';
+        return Data_Retrieval::class;
     }
 
     public static function get_input_schema(): array {
@@ -53,15 +88,16 @@ class My_Ability implements Ability_Interface {
         );
     }
 
-    public static function get_meta(): array {
+    public static function get_annotations(): array {
         return array(
-            'annotations'  => array(
-                'readonly'    => true,
-                'destructive' => false,
-                'idempotent'  => true,
-            ),
-            'show_in_rest' => true,
+            'readonly'    => true,
+            'destructive' => false,
+            'idempotent'  => true,
         );
+    }
+
+    public static function show_rest(): bool {
+        return true;
     }
 
     public static function check_permissions( mixed $input = null ): bool|WP_Error {
@@ -80,46 +116,39 @@ class My_Ability implements Ability_Interface {
 }
 ```
 
-### 2. Register Ability
+### 3. Register Ability
 
 In `Demo_Plugin.php`:
 
 ```php
-private function define_abilities(): void {
-    $this->loader->add_ability( Abilities\My_Ability::class );
-}
+$this->loader->add_ability( Abilities\My_Ability::class );
 ```
 
-## Interface Reference
+Categories are automatically registered via the Loader when abilities reference them.
+
+## Ability Interface Reference
 
 | Method | Returns | Purpose |
 |--------|---------|---------|
 | `get_name()` | `string` | Unique ID: `namespace/ability-name` |
 | `get_label()` | `string` | Display name |
 | `get_description()` | `string` | What the ability does |
-| `get_category()` | `string` | Category slug |
+| `get_category()` | `string` | Category class name |
 | `get_input_schema()` | `array` | JSON Schema for input |
 | `get_output_schema()` | `array` | JSON Schema for output |
-| `get_meta()` | `array` | Annotations + REST visibility |
+| `get_annotations()` | `array` | Behavioral hints (readonly, destructive, idempotent) |
+| `show_rest()` | `bool` | Expose via REST API |
 | `check_permissions($input)` | `bool\|WP_Error` | Permission check |
 | `execute($input)` | `mixed` | Main logic |
 
-## Meta Structure
+## Category Interface Reference
 
-Matches native `WP_Ability` meta format:
-
-```php
-public static function get_meta(): array {
-    return array(
-        'annotations'  => array(
-            'readonly'    => true,   // default: null
-            'destructive' => false,  // default: null
-            'idempotent'  => true,   // default: null
-        ),
-        'show_in_rest' => true,      // default: false
-    );
-}
-```
+| Method | Returns | Purpose |
+|--------|---------|---------|
+| `get_slug()` | `string` | Unique slug (lowercase, hyphens only) |
+| `get_label()` | `string` | Display name |
+| `get_description()` | `string` | Category purpose |
+| `get_meta()` | `array` | Optional metadata |
 
 ## Usage
 
