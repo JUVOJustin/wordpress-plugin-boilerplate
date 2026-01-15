@@ -56,14 +56,14 @@ class Loader {
 	/**
 	 * The array of abilities registered with WordPress.
 	 *
-	 * @var array<string, Ability_Interface> $abilities Ability class names keyed by ability name.
+	 * @var array<string, class-string<Ability_Interface>> $abilities Ability class names keyed by ability name.
 	 */
 	protected array $abilities;
 
 	/**
 	 * The array of ability categories to register with WordPress.
 	 *
-	 * @var array<string, Ability_Category_Interface> $ability_categories Category class names keyed by slug.
+	 * @var array<string, class-string<Ability_Category_Interface>> $ability_categories Category class names keyed by slug.
 	 */
 	protected array $ability_categories;
 
@@ -129,7 +129,7 @@ class Loader {
 	 *
 	 * Automatically collects category classes for registration.
 	 *
-	 * @param class-string<Ability_Interface> $ability_class Fully qualified class name implementing Ability_Interface.
+	 * @param string $ability_class Fully qualified class name implementing Ability_Interface.
 	 *
 	 * @return void
 	 */
