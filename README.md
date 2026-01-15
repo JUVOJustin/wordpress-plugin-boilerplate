@@ -56,8 +56,9 @@ All plugin logic should go into the `src` folder. This separation helps maintain
 
 ```
 src/
-├── Blocks/        # Gutenberg Blocks
+├── Abilities/     # Abilitis and their categories
 ├── API/           # Rest API-specific functionality
+├── Blocks/        # Gutenberg Blocks
 ├── CLI/           # CLI commands
 └── Integrations/  # Core plugin functions and utilities
     └── BricksBuilder/ # Bricks Builder integration

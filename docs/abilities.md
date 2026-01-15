@@ -1,10 +1,24 @@
 # WordPress Abilities API
 
-Expose plugin functionality as structured capabilities for AI assistants and automation tools. Requires **WordPress 6.9+**.
+## Why This Boilerplate Includes Abilities Support
+
+The project provides interfaces and Loader integration for the WordPress Abilities API to give you a head start when exposing your plugin's functionality.
+
+**What this integration offers:**
+
+- **Consistent structure** — The `Ability_Interface` enforces input/output schemas, permission checks, and annotations so every ability follows the same pattern.
+- **Automatic registration** — Categories are collected and registered automatically when you add an ability to the Loader.
+- **Type safety** — PHPStan and IDE autocompletion guide your implementation.
+- **No overhead when unused** — If you don't register abilities, no code runs. On WordPress < 6.9, the feature is silently skipped.
+
+To understand *what* the Abilities API is or *why* you might use it see the [official documentation](https://developer.wordpress.org/news/2025/11/introducing-the-wordpress-abilities-api/).
+
+---
+
 
 ## Quick Start
 
-### 1. Create Category Class
+### 1. Create Category Class (Optional)
 
 Create `src/Abilities/Categories/Data_Retrieval.php`:
 

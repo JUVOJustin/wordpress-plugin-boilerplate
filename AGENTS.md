@@ -45,6 +45,14 @@ private function define_admin_hooks() {
 To generate a new Gutenberg block, simply run `npm run create-block` and enter the required information when prompted.
 This will create a new block in the `src/Blocks/` folder. The block will be automatically registered and the assets enqueued.
 
+### Abilities API
+To expose plugin functionality via the Abilities API:
+1. Create a category class in `src/Abilities/` implementing `Ability_Category_Interface`.
+2. Create an ability class in `src/Abilities/` implementing `Ability_Interface`.
+3. Register the ability in @Demo_Plugin.php
+
+Categories are auto-registered when referenced by an ability. See @docs/abilities.md for full examples.
+
 ### i18n/Translations Support 
 1. Run `npm run i18n:extract` to extract translatable strings into the `.pot` file located in the `languages/` directory. Strings in the PHP/JS need to use functions like `__()` or `_e()` with the plugin's text domain. Existing `.po` files will be updated automatically.
 2. From the `.pot` file, translate by creating `.po` files for each desired language.
