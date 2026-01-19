@@ -1,0 +1,166 @@
+# Bundling using wp-scripts
+
+The project uses `@wordpress/scripts` (wp-scripts) for bundling and compiling frontend assets like JavaScript and CSS/SCSS. This tool simplifies the build process by providing a set of pre-configured webpack settings tailored for WordPress development.
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm run start` | Watch mode for development. Compiles assets on change. |
+| `npm run build` | Production build. Compiles and minifies assets. |
+| `npm run lint:js` | Lint JavaScript files in `resources/` |
+| `npm run lint:style` | Lint CSS/SCSS files in `resources/` |
+| `npm run lint:fix:js` | Lint and auto-fix JavaScript files |
+| `npm run lint:fix:style` | Lint and auto-fix CSS/SCSS files |
+| `npm run format` | Format JavaScript files using Prettier |
+| `npm run packages-update` | Update WordPress packages to latest versions |
+
+## Directory Structure
+
+```
+resources/
+├── admin/            # Admin-specific assets
+│   ├── js/
+│   │   └── app.js    # Admin JS entry point
+│   ├── scss/
+│   │   └── app.scss  # Admin styles entry point
+│   └── images/       # Images referenced in admin SCSS
+├── frontend/         # Frontend-specific assets
+│   ├── js/
+│   │   └── app.js    # Frontend JS entry point
+│   ├── scss/
+│   │   └── app.scss  # Frontend styles entry point
+│   └── images/       # Images referenced in frontend SCSS
+└── acf-json/         # ACF field group JSON files
+```
+
+## Entrypoints
+
+Entrypoints define what files webpack compiles. The default configuration includes two entrypoints in `webpack.config.js`:
+
+```javascript
+entry: {
+    'demo-plugin-frontend': [
+        path.resolve(__dirname, 'resources/frontend/js/app.js'),
+        path.resolve(__dirname, 'resources/frontend/scss/app.scss'),
+    ],
+    'demo-plugin-admin': [
+        path.resolve(__dirname, 'resources/admin/js/app.js'),
+        path.resolve(__dirname, 'resources/admin/scss/app.scss'),
+    ],
+},
+```
+
+Each entrypoint bundles its JS and SCSS into the `build/` directory:
+- `build/demo-plugin-frontend.js` + `build/demo-plugin-frontend.css`
+- `build/demo-plugin-admin.js` + `build/demo-plugin-admin.css`
+
+### Adding a New Entrypoint
+
+To add a new entrypoint, modify `webpack.config.js`:
+
+```javascript
+entry: {
+    // ... existing entries
+    'my-new-feature': [
+        path.resolve(__dirname, 'resources/frontend/js/my-feature.js'),
+        path.resolve(__dirname, 'resources/frontend/scss/my-feature.scss'),
+    ],
+},
+```
+
+This creates `build/my-new-feature.js` and `build/my-new-feature.css`.
+
+## Assets Referenced in SCSS
+
+Assets referenced via `url()` in SCSS files are automatically processed and copied to the `build/` directory. For example:
+
+```scss
+.hero {
+    background-image: url('../images/hero.jpg');
+}
+```
+
+Webpack resolves the path, copies the image to `build/`, and updates the URL in the compiled CSS. This is the default behavior and requires no additional configuration.
+
+## Static Files (Optional)
+
+For files that need to be copied as-is without being referenced in SCSS or JS (e.g., fonts loaded via `@font-face` with external URLs, pre-compiled libraries), you can optionally add the CopyPlugin:
+
+```javascript
+const CopyPlugin = require('copy-webpack-plugin');
+
+module.exports = {
+    // ... existing config
+    plugins: [
+        ...defaultConfig.plugins,
+        new CopyPlugin({
+            patterns: [
+                { from: 'resources/static', to: 'static' },
+            ],
+        }),
+    ],
+};
+```
+
+This copies files from `resources/static/` to `build/static/` without processing. Note: This plugin is **not included by default** and must be installed via `npm install copy-webpack-plugin --save-dev`.
+
+## Enqueuing Assets
+
+The main plugin class provides `enqueue_entrypoint()` for loading bundled assets. It handles both JS and CSS from a single call and can be used in any context.
+
+```php
+private function enqueue_entrypoint( string $entry, array $localize_data = array() ): void
+```
+
+### Basic Usage
+
+The boilerplate includes two preset entrypoints for admin and frontend. You can use `enqueue_entrypoint()` anywhere you need to load assets:
+
+```php
+// Enqueue on a specific admin page
+add_action('admin_enqueue_scripts', function($hook) {
+    if ($hook !== 'settings_page_my-plugin') {
+        return;
+    }
+    $this->enqueue_entrypoint('demo-plugin-admin');
+});
+
+// Enqueue for a shortcode
+public function render_shortcode(): string {
+    $this->enqueue_entrypoint('demo-plugin-frontend');
+    return '<div class="my-shortcode">...</div>';
+}
+```
+
+### Passing Data to JavaScript (Localization)
+
+Pass PHP data to JavaScript using the second parameter:
+
+```php
+$this->enqueue_entrypoint('demo-plugin-frontend', [
+    'ajax_url' => admin_url('admin-ajax.php'),
+    'nonce'    => wp_create_nonce('demo_plugin_nonce'),
+    'user_id'  => get_current_user_id(),
+]);
+```
+
+The data is available in JavaScript as a global object named after the plugin (hyphens become underscores):
+
+```javascript
+console.log(demo_plugin.ajax_url);
+console.log(demo_plugin.nonce);
+```
+
+### What it Does
+
+The method automatically:
+- Loads the `.asset.php` file generated by wp-scripts
+- Resolves dependencies (e.g., `wp-element`, `wp-i18n`)
+- Uses proper versioning for cache busting
+- Enqueues both JS and CSS if they exist
+- Applies `wp_localize_script()` when data is provided
+
+## Gutenberg Blocks
+
+Block assets are handled automatically. See [Create Blocks](create-blocks.md) for details on block development and asset management.
