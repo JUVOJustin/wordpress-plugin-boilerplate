@@ -96,7 +96,7 @@ module.exports = {
         ...defaultConfig.plugins,
         new CopyPlugin({
             patterns: [
-                { from: 'resources/static', to: 'static' },
+                { from: 'resources/static', to: 'static', noErrorOnMissing: true },
             ],
         }),
     ],
