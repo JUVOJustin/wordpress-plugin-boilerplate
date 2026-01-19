@@ -87,6 +87,12 @@ Webpack resolves the path, copies the image to `build/`, and updates the URL in 
 
 For files that need to be copied as-is without being referenced in SCSS or JS (e.g., fonts loaded via `@font-face` with external URLs, pre-compiled libraries), you can optionally add the CopyPlugin:
 
+```bash
+npm install copy-webpack-plugin --save-dev```
+```
+
+Then, modify `webpack.config.js`:
+
 ```javascript
 const CopyPlugin = require('copy-webpack-plugin');
 
