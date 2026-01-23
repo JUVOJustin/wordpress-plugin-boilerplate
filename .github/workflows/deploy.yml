@@ -41,14 +41,6 @@ jobs:
           key: ${{ needs.setup.outputs.node-cache-key }}
           fail-on-cache-miss: true
 
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.0'
-          tools: wp-cli
-
-      - name: Install latest version of dist-archive-command
-        run: wp package install wp-cli/dist-archive-command:@stable
-
       - name: Set env
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
@@ -58,16 +50,22 @@ jobs:
           sed -i -E 's/([[:blank:]]*\*[[:blank:]]*Version:[[:blank:]]*).*/\1${{ env.RELEASE_VERSION }}/' demo-plugin.php
           sed -i -E 's/Stable tag: .*/Stable tag: ${{ env.RELEASE_VERSION }}/' README.txt
 
-      - name: Build plugin
+      - name: Start wp-env
+        run: npm run env:start
+
+      - name: Compile translations
+        run: npm run env:cli "npm run compile"
+
+      - name: Build dist-archive
         run: |
+          wp-env run cli "wp package install wp-cli/dist-archive-command:@stable"
           wp dist-archive . ./demo-plugin-${{ env.RELEASE_VERSION }}.zip --plugin-dirname=demo-plugin
           mkdir tmp-build
           unzip demo-plugin-${{ env.RELEASE_VERSION }}.zip -d tmp-build
 
-      - name: Run plugin check
-        uses: wordpress/plugin-check-action@v1.0.6
-        with:
-          build-dir: './tmp-build/demo-plugin'
+      - name: Stop wp-env
+        if: always()
+        run: npm run env:stop
 
       - name: Update resources
         uses: test-room-7/action-update-file@v1
