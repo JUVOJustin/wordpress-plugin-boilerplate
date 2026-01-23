@@ -41,6 +41,9 @@
       "@php bin/strauss.phar",
       "@php composer dump-autoload"
     ],
+    "pre-autoload-dump": [
+      "mkdir -p vendor-prefixed"
+    ],
     "post-install-cmd": [
       "@prefix-namespaces"
     ],
