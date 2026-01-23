@@ -54,18 +54,35 @@ jobs:
         run: npm run env:start
 
       - name: Compile translations
-        run: npm run env:cli "npm run compile"
+        run: npm run env:cli -- i18n make-json languages/ --no-purge && npm run env:cli -- i18n make-mo languages/ && npm run env:cli -- i18n make-php languages/
 
-      - name: Build dist-archive
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          tools: wp-cli
+
+      - name: Install latest version of dist-archive-command
+        run: wp package install wp-cli/dist-archive-command:@stable
+
+      - name: Build plugin
         run: |
-          wp-env run cli "wp package install wp-cli/dist-archive-command:@stable"
           wp dist-archive . ./demo-plugin-${{ env.RELEASE_VERSION }}.zip --plugin-dirname=demo-plugin
           mkdir tmp-build
           unzip demo-plugin-${{ env.RELEASE_VERSION }}.zip -d tmp-build
 
+      - name: Verify plugin activation
+        run: |
+          npm run env:cli -- plugin list
+          npm run env:cli -- plugin is-active demo-plugin
+
       - name: Stop wp-env
         if: always()
         run: npm run env:stop
+
+      - name: Run plugin check
+        uses: wordpress/plugin-check-action@v1.0.6
+        with:
+          build-dir: './tmp-build/demo-plugin'
 
       - name: Update resources
         uses: test-room-7/action-update-file@v1
