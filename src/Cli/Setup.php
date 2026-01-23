@@ -324,7 +324,10 @@ class Setup {
 	}
 
 	/**
-	 * Remove setup.php from file autoload
+	 * Remove setup-specific entries from composer.json
+	 *
+	 * Removes setup.php from autoload files, the wp-cli/wp-cli dependency (no longer needed after setup),
+	 * and the post-create-project-cmd script that triggers the setup.
 	 *
 	 * @return void
 	 */
@@ -347,6 +350,16 @@ class Setup {
 			if ( empty( $composer_config['autoload']['files'] ) ) {
 				unset( $composer_config['autoload']['files'] );
 			}
+		}
+
+		// Remove wp-cli/wp-cli from require-dev (only needed for setup)
+		if ( isset( $composer_config['require-dev']['wp-cli/wp-cli'] ) ) {
+			unset( $composer_config['require-dev']['wp-cli/wp-cli'] );
+		}
+
+		// Remove post-create-project-cmd script (only triggers setup)
+		if ( isset( $composer_config['scripts']['post-create-project-cmd'] ) ) {
+			unset( $composer_config['scripts']['post-create-project-cmd'] );
 		}
 
 		// Save the modified composer.json
