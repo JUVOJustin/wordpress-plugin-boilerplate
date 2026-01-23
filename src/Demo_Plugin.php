@@ -189,7 +189,7 @@ class Demo_Plugin {
 			}
 
 			// Load JSON translations
-			wp_set_script_translations(self::PLUGIN_NAME . "/{$entry}", 'demo-plugin', DEMO_PLUGIN_PATH . 'languages/');
+			wp_set_script_translations( self::PLUGIN_NAME . "/{$entry}", 'demo-plugin', DEMO_PLUGIN_PATH . 'languages/' );
 		}
 
 		if ( $filesystem->exists( DEMO_PLUGIN_PATH . "build/{$entry}.css" ) ) {
