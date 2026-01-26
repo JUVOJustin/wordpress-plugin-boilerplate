@@ -37,7 +37,7 @@
       "composer exec -- wp setup"
     ],
     "prefix-namespaces": [
-      "sh -c 'if [ ! -f ./bin/strauss.phar ] || [ $(find ./bin/strauss.phar -mtime +1 -print 2>/dev/null) ]; then rm -f ./bin/strauss.phar && curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/0.22.2/strauss.phar; fi'",
+      "sh -c 'if [ ! -f ./bin/strauss.phar ] || [ $(find ./bin/strauss.phar -mtime +1 -print 2>/dev/null) ]; then rm -f ./bin/strauss.phar && curl -o bin/strauss.phar -L -C - https://github.com/BrianHenryIE/strauss/releases/download/latest/strauss.phar; fi'",
       "@php bin/strauss.phar",
       "@php composer dump-autoload"
     ],
