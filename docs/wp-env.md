@@ -1,0 +1,78 @@
+# wp-env Development Environment
+
+The plugin uses [@wordpress/env](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) to provide a consistent, containerized WordPress development environment. This is useful for local development and CI/CD pipelines where a full WordPress installation is required.
+
+## Configuration
+
+See `.wp-env.json` for the configuration. The setup uses `mappings` instead of the common `plugins: ["."]` approach.
+
+### Why `mappings` instead of `plugins: ["."]`
+
+The standard approach maps the current directory as a plugin, but the resulting folder name depends on the parent directory name. This causes issues when:
+
+- Different developers have different folder names for their checkout
+- CI/CD environments use unpredictable directory names
+- WP-CLI commands need to target the plugin by name
+
+Using explicit `mappings` with a hardcoded plugin name ensures deterministic paths and reliable WP-CLI targeting across all environments.
+
+## Available Scripts
+
+Scripts that interact with wp-env are defined in `package.json`:
+
+| Script | Description |
+|--------|-------------|
+| `npm run env:start` | Start the Docker containers |
+| `npm run env:stop` | Stop the Docker containers |
+| `npm run env:destroy` | Remove containers and data |
+| `npm run env:cli` | Run commands inside the container |
+
+### Running Commands Inside wp-env
+
+The `env:cli` script is pre-configured with the correct working directory:
+
+```bash
+npm run env:cli -- composer run i18n:compile
+npm run env:cli -- composer run phpstan
+```
+
+## Adding Custom Scripts
+
+**Host-side scripts** (interacting with wp-env from outside) belong in `package.json`:
+
+```json
+{
+  "scripts": {
+    "env:my-script": "wp-env run cli my-command"
+  }
+}
+```
+
+**Container-side scripts** (executed inside wp-env) belong in `composer.json` because Composer is available inside the container but npm is not:
+
+```json
+{
+  "scripts": {
+    "my-script": "wp some-command"
+  }
+}
+```
+
+Then run it with:
+
+```bash
+npm run env:cli -- composer run my-script
+```
+
+## Usage in CI/CD
+
+The boilerplate uses wp-env in the deploy workflow to compile translations. This requires a full WordPress environment with WP-CLI available.
+
+See [i18n.md](i18n.md) for details on translation compilation.
+
+## Things to Keep in Mind
+
+- Docker must be installed and running
+- The first start downloads WordPress core and may take a few minutes
+- Data persists between starts unless you run `env:destroy`
+- The `afterStart` lifecycle script automatically activates the plugin
