@@ -1,0 +1,11 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/wp-env.json",
+	"core": null,
+	"phpVersion": "8.0",
+	"mappings": {
+		"wp-content/plugins/demo-plugin": "."
+	},
+	"lifecycleScripts": {
+		"afterStart": "wp-env run cli wp plugin activate demo-plugin"
+	}
+}
