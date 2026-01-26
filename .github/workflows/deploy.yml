@@ -53,11 +53,8 @@ jobs:
       - name: Start wp-env
         run: npm run env:start
 
-      # Mirror of `npm run i18n:compile` command. npm is not available in wp-env context. So we call cli directly
-      - name: Compile in wp-env translations
-        run: |
-          npm run env:cli wp i18n make-json languages/ --no-purge
-          npm run env:cli wp i18n make-php languages/
+      - name: Compile translations in wp-env from po files
+        run: npm run env:cli composer run i18n:compile
 
       - name: Build dist-archive on host
         run: |
