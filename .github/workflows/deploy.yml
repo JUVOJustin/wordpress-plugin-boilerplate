@@ -53,12 +53,15 @@ jobs:
       - name: Start wp-env
         run: npm run env:start
 
+      # This is exactly the npm run i18n:compile command. npm is not available in wp-env context. So we call cli directly
       - name: Compile translations
-        run: npm run env:cli "npm run compile"
+        run: |
+          npm run env:cli wp i18n make-json languages/ --no-purge
+          npm run env:cli wp i18n make-php languages/
 
       - name: Build dist-archive
         run: |
-          wp-env run cli "wp package install wp-cli/dist-archive-command:@stable"
+          wp-env run cli wp package install wp-cli/dist-archive-command:@stable
           wp dist-archive . ./demo-plugin-${{ env.RELEASE_VERSION }}.zip --plugin-dirname=demo-plugin
           mkdir tmp-build
           unzip demo-plugin-${{ env.RELEASE_VERSION }}.zip -d tmp-build
