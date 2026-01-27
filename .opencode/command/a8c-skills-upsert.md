@@ -3,7 +3,7 @@ description: Upsert AC skills [skillnames], default to wp-interactivity-api, wp-
 subtask: false
 ---
 
-**Goal:** Upsert skills provided by automattic https://github.com/Automattic/agent-skills into the current workspace.
+**Goal:** Upsert skills provided by Automattic https://github.com/Automattic/agent-skills into the current workspace.
 
 ## **1. Download & Cleanup**
 * Download the archive:

@@ -48,6 +48,7 @@ The boilerplate includes detailed docs at `tmp/boilerplate-ref/docs/`:
 | File | Covers |
 |------|--------|
 | `abilities.md` | Abilities API interfaces, category/ability creation, Loader registration |
+| `bundeling.md` | wp-scripts bundling, entry points, asset enqueueing, localization |
 | `i18n.md` | Translation workflow, extract/compile scripts, JSON translations, caveats |
 | `create-blocks.md` | Block scaffolding, auto-registration via manifest, editor style sharing |
 | `wp-env.md` | Docker-based dev environment, script structure, CI/CD usage |
@@ -68,9 +69,11 @@ Compare: `diff composer.json tmp/boilerplate-ref/composer.json`
 
 **QA config files:** `tmp/boilerplate-ref/phpcs.xml`, `tmp/boilerplate-ref/phpstan.neon`
 
-### 2. JS (package.json & QA)
+### 2. JS & Bundling (package.json, webpack.config.js)
 
-Compare: `diff package.json tmp/boilerplate-ref/package.json`
+Compare:
+- `diff package.json tmp/boilerplate-ref/package.json`
+- `diff webpack.config.js tmp/boilerplate-ref/webpack.config.js`
 
 **New primitives:**
 - `@wordpress/scripts` - Replaces other bundlers (webpack, bud.js, laravel-mix)
@@ -79,16 +82,10 @@ Compare: `diff package.json tmp/boilerplate-ref/package.json`
 
 **QA config files:** `tmp/boilerplate-ref/.eslintrc`
 
+See `tmp/boilerplate-ref/docs/bundeling.md` for entry points, asset enqueueing, and localization.
 See `tmp/boilerplate-ref/docs/wp-env.md` for wp-env details.
 
-### 3. webpack.config.js
-
-Compare: `diff webpack.config.js tmp/boilerplate-ref/webpack.config.js`
-
-Extends `@wordpress/scripts/config/webpack.config` with custom entry points.
-Entry structure: `resources/{admin,frontend}/{js,scss}/app.{js,scss}`
-
-### 4. GitHub Actions (.github/workflows/)
+### 3. GitHub Actions (.github/workflows/)
 
 Compare: `diff -r .github/workflows tmp/boilerplate-ref/.github/workflows`
 
@@ -96,7 +93,7 @@ Compare: `diff -r .github/workflows tmp/boilerplate-ref/.github/workflows`
 - `test-analyse.yml` - PHPStan, PHPCS, JS linting on push
 - `deploy.yml` - Release automation, translation compilation via wp-env
 
-### 5. Loader.php
+### 4. Loader.php
 
 Compare: `diff src/Loader.php tmp/boilerplate-ref/src/Loader.php`
 
@@ -105,30 +102,28 @@ Compare: `diff src/Loader.php tmp/boilerplate-ref/src/Loader.php`
 - `add_cli($name, $instance, $args)`
 - `add_ability($ability_class)` - Categories auto-register
 
-### 6. Main Plugin Class
+### 5. Main Plugin Class
 
 Compare: `diff src/*.php tmp/boilerplate-ref/src/Demo_Plugin.php`
 
 **New patterns:**
-- `enqueue_entrypoint($entry)` - Asset loading with `.asset.php` metadata
-- `register_blocks()` - Uses `wp_register_block_types_from_metadata_collection()` (WP 6.8+)
+- `enqueue_entrypoint($entry)` - See `tmp/boilerplate-ref/docs/bundeling.md`
+- `register_blocks()` - See `tmp/boilerplate-ref/docs/create-blocks.md`
 
-See `tmp/boilerplate-ref/docs/create-blocks.md` for block handling details.
-
-### 7. i18n Workflow
+### 6. i18n Workflow
 
 Scripts: `i18n:extract` (creates .pot, updates .po) and `i18n:compile` (generates .mo, .json, .php)
 
 See `tmp/boilerplate-ref/docs/i18n.md` for workflow, caveats, and AI command.
 
-### 8. Abilities API (WordPress 6.9+)
+### 7. Abilities API (WordPress 6.9+)
 
 Exposes plugin functionality via structured interface with input/output schemas.
 Registration: `$this->loader->add_ability(Abilities\My_Ability::class)`
 
 See `tmp/boilerplate-ref/docs/abilities.md` for interface reference and examples.
 
-### 9. .opencode/ Configuration
+### 8. .opencode/ Configuration
 
 Compare: `diff -r .opencode tmp/boilerplate-ref/.opencode`
 
