@@ -90,6 +90,4 @@ jobs:
       # See https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching#restrictions-for-accessing-a-cache
       - name: Build assets (prod only)
         if: inputs.mode == 'prod' && steps.node-cache.outputs.cache-hit != 'true'
-        run: |
-          npm run build
-          rm -rf node_modules && npm ci --omit=dev
+        run: npm run build
