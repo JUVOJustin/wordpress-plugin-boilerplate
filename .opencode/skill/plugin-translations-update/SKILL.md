@@ -9,12 +9,13 @@ Manage internationalization (i18n) for WordPress plugins by extracting, translat
 
 ## Workflow
 
-1. **Validate setup**: Read `languages/` to check existing translation files
-2. **Extract strings**: Run `composer run i18n:extract` to generate `.pot` and update `.po` files
-3. **Translate**: Based on arguments:
+1. **Build scripts**: Build the scripts using `npm run build`
+2. **Validate setup**: Read `languages/` to check existing translation files
+3. **Extract strings**: Run `composer run i18n:extract` to generate `.pot` and update `.po` files
+4. **Translate**: Based on arguments:
    - **No arguments**: Update existing `.po` files with missing translations. Check the files for untranslated strings and provide translations.
    - **With languages** (e.g., `de_DE fr_FR`): Create `.po` files for specified languages if missing, then translate
-4. **Compile**: Run `composer run i18n:compile` to generate `.mo`, `.json`, and `.php` files
+5. **Compile**: Run `composer run i18n:compile` to generate `.mo`, `.json`, and `.php` files
 
 ## Translation Guidelines
 
