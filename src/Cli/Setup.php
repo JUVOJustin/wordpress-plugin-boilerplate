@@ -160,8 +160,8 @@ class Setup {
 		$this->rename_files();
 		$progress->tick();
 
-		// Remove setup CLI command from main plugin class
-		$this->remove_setup_from_main_class();
+		// Remove boilerplate-specific sections from all files
+		$this->remove_boilerplate_docs();
 		$progress->tick();
 
 		// Remove setup from autoloader
@@ -226,26 +226,6 @@ class Setup {
 			WP_CLI::error( 'Error renaming files.' );
 		}
 		// phpcs:enable
-	}
-
-	/**
-	 * Remove setup CLI command registration from main plugin class
-	 *
-	 * @return void
-	 */
-	private function remove_setup_from_main_class(): void {
-		$main_class_file = $this->path . "/src/$this->namespace.php";
-
-		$file_contents = file_get_contents( $main_class_file ); // phpcs:disable WordPress.WP.AlternativeFunctions
-
-		if ( false === $file_contents ) {
-			return;
-		}
-
-		$pattern       = '/\s*\/\/ <setup-cli-start>.*?\/\/ <\/setup-cli-end>\s*\n/s';
-		$file_contents = preg_replace( $pattern, '', $file_contents );
-
-		file_put_contents( $main_class_file, $file_contents ); // phpcs:disable WordPress.WP.AlternativeFunctions
 	}
 
 	/**
@@ -321,6 +301,45 @@ class Setup {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Remove boilerplate-specific sections from files
+	 *
+	 * Strips content between BOILERPLATE-DOCS-START and BOILERPLATE-DOCS-END markers.
+	 * Supports both PHP comments (// <BOILERPLATE-DOCS-START>) and HTML comments (<!-- BOILERPLATE-DOCS-START -->).
+	 *
+	 * @return void
+	 */
+	private function remove_boilerplate_docs(): void {
+		$files = array(
+			$this->path . "/src/$this->namespace.php",
+			$this->path . '/AGENTS.md',
+		);
+
+		// Pattern for PHP comments: // <BOILERPLATE-DOCS-START> ... // <BOILERPLATE-DOCS-END>
+		$php_pattern = '/\s*\/\/\s*<BOILERPLATE-DOCS-START>.*?\/\/\s*<BOILERPLATE-DOCS-END>\s*\n?/s';
+
+		// Pattern for HTML/Markdown comments: <!-- BOILERPLATE-DOCS-START --> ... <!-- BOILERPLATE-DOCS-END -->
+		$html_pattern = '/<!--\s*BOILERPLATE-DOCS-START\s*-->.*?<!--\s*BOILERPLATE-DOCS-END\s*-->\s*\n?/s';
+
+		foreach ( $files as $file ) {
+			if ( ! file_exists( $file ) ) {
+				continue;
+			}
+
+			$content = file_get_contents( $file ); // phpcs:disable WordPress.WP.AlternativeFunctions
+			if ( false === $content ) {
+				continue;
+			}
+
+			$new_content = preg_replace( $php_pattern, '', $content );
+			$new_content = preg_replace( $html_pattern, '', $new_content );
+
+			if ( $new_content !== $content ) {
+				file_put_contents( $file, $new_content ); // phpcs:disable WordPress.WP.AlternativeFunctions
+			}
+		}
 	}
 
 	/**
