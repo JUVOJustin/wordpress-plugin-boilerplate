@@ -121,6 +121,7 @@ class Setup {
 					'.*\.json',
 					'.*\.github\/.*\.(yml|md)',
 					'.*\.neon',
+					'.*docs\/.*\.md'
 				)
 			)
 			|| ! $this->replace_in_files(
@@ -130,6 +131,7 @@ class Setup {
 					'.*\.php',
 					'.*eslint.*\.js',
 					'.*\.github\/.*\.(yml|md)',
+					'.*docs\/.*\.md'
 				)
 			)
 			|| ! $this->replace_in_files(
@@ -139,6 +141,7 @@ class Setup {
 					'.*\.php',
 					'.*\.json',
 					'.*\.github\/.*\.(yml|md)',
+					'.*docs\/.*\.md'
 				)
 			)
 			|| ! $this->replace_in_files(
@@ -148,9 +151,10 @@ class Setup {
 					'.*\.php',
 					'.*\.json',
 					'.*\.github\/.*\.(yml|md)',
+					'.*docs\/.*\.md'
 				)
 			)
-			|| ! $this->replace_in_files( 'Demo Plugin', $this->name, array( '.*\.php', '.*README\.txt', '.*\.github\/.*\.(yml|md)' ) )
+			|| ! $this->replace_in_files( 'Demo Plugin', $this->name, array( '.*\.php', '.*README\.txt', '.*\.github\/.*\.(yml|md)', '.*docs\/.*\.md', '.*\.opencode\/.*\.md' ) )
 		) {
 			WP_CLI::error( 'Error replacing in files.' );
 		}
