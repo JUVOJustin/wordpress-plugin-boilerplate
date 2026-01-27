@@ -9,6 +9,7 @@ Detailed guides are available in `docs/`:
 | File | Covers |
 |------|--------|
 | `abilities.md` | Abilities API: interfaces, category/ability creation, Loader registration |
+| `bundeling.md` | wp-scripts bundling, entry points, asset enqueueing, localization |
 | `i18n.md` | Translation workflow, extract/compile scripts, JSON translations |
 | `create-blocks.md` | Block scaffolding, auto-registration, editor style sharing |
 | `wp-env.md` | Docker dev environment, script structure, CI/CD usage |
