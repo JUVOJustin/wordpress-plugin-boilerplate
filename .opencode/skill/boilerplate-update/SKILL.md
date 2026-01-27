@@ -53,6 +53,7 @@ The boilerplate includes detailed docs at `tmp/boilerplate-ref/docs/`:
 | `create-blocks.md` | Block scaffolding, auto-registration via manifest, editor style sharing |
 | `wp-env.md` | Docker-based dev environment, script structure, CI/CD usage |
 | `acf-json-sync.md` | ACF field group JSON storage patterns |
+| `work-with-ai.md` | AI integration: commands, skills, AGENTS.md, Automattic skills |
 
 Read these docs for implementation details. This skill only provides high-level guidance.
 
@@ -62,12 +63,13 @@ Read these docs for implementation details. This skill only provides high-level 
 
 Compare: `diff composer.json tmp/boilerplate-ref/composer.json`
 
-**New primitives:**
+See docs for details: `i18n.md`, `bundeling.md`
+
+**Key items:**
 - `wp-cli/i18n-command` - Translation extraction/compilation
 - Scripts: `i18n:extract`, `i18n:compile`, `phpstan`, `phpcs`, `phpcbf`
 - Strauss config in `extra.strauss` for namespace prefixing
-
-**QA config files:** `tmp/boilerplate-ref/phpcs.xml`, `tmp/boilerplate-ref/phpstan.neon`
+- QA config files: `phpcs.xml`, `phpstan.neon`
 
 ### 2. JS & Bundling (package.json, webpack.config.js)
 
@@ -75,15 +77,13 @@ Compare:
 - `diff package.json tmp/boilerplate-ref/package.json`
 - `diff webpack.config.js tmp/boilerplate-ref/webpack.config.js`
 
-**New primitives:**
-- `@wordpress/scripts` - Replaces other bundlers (webpack, bud.js, laravel-mix)
+See docs for details: `bundeling.md`, `wp-env.md`, `create-blocks.md`
+
+**Key items:**
+- `@wordpress/scripts` - Bundling, linting, formatting
 - `@wordpress/env` - Containerized WordPress for dev/CI
 - Scripts: `start`, `build` (with `--blocks-manifest`), `lint:*`, `format`, `create-block`, `env:*`
-
-**QA config files:** `tmp/boilerplate-ref/.eslintrc`
-
-See `tmp/boilerplate-ref/docs/bundeling.md` for entry points, asset enqueueing, and localization.
-See `tmp/boilerplate-ref/docs/wp-env.md` for wp-env details.
+- QA config: `.eslintrc`
 
 ### 3. GitHub Actions (.github/workflows/)
 
@@ -118,21 +118,21 @@ See `tmp/boilerplate-ref/docs/i18n.md` for workflow, caveats, and AI command.
 
 ### 7. Abilities API (WordPress 6.9+)
 
-Exposes plugin functionality via structured interface with input/output schemas.
-Registration: `$this->loader->add_ability(Abilities\My_Ability::class)`
-
 See `tmp/boilerplate-ref/docs/abilities.md` for interface reference and examples.
+
+**Key pattern:** `$this->loader->add_ability(Abilities\My_Ability::class)`
 
 ### 8. .opencode/ Configuration
 
 Compare: `diff -r .opencode tmp/boilerplate-ref/.opencode`
 
-**Commands and skills:**
+See `tmp/boilerplate-ref/docs/work-with-ai.md` for AI integration details.
+
+**Sync strategy:**
 - Add new items from upstream
 - Update existing (ask user if diff is significant)
 - Ask user before removing local-only items
-
-After copying, adapt text domain and paths.
+- Adapt text domain and paths after copying
 
 ## String Replacement
 

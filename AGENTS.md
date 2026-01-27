@@ -4,18 +4,19 @@ This plugin is a modern WordPress plugin with strict conventions and automated w
 
 ### Documentation
 
-Detailed guides are available in `docs/`:
+| File               | Covers |
+|--------------------|--------|
+| @docs/abilities.md | Abilities API: interfaces, category/ability creation, Loader registration |
+| @docs/bundeling.md      | wp-scripts bundling, entry points, asset enqueueing, localization |
+| @docs/i18n.md           | Translation workflow, extract/compile scripts, JSON translations |
+| @docs/create-blocks.md  | Block scaffolding, auto-registration, editor style sharing |
+| @docs/wp-env.md         | Docker dev environment, script structure, CI/CD usage |
+| @docs/acf-json-sync.md  | ACF field group JSON storage patterns |
+| @docs/work-with-ai.md   | AI integration: commands, skills, AGENTS.md, Automattic skills |
 
-| File | Covers |
-|------|--------|
-| `abilities.md` | Abilities API: interfaces, category/ability creation, Loader registration |
-| `bundeling.md` | wp-scripts bundling, entry points, asset enqueueing, localization |
-| `i18n.md` | Translation workflow, extract/compile scripts, JSON translations |
-| `create-blocks.md` | Block scaffolding, auto-registration, editor style sharing |
-| `wp-env.md` | Docker dev environment, script structure, CI/CD usage |
-| `acf-json-sync.md` | ACF field group JSON storage patterns |
-
-Read docs for implementation details. This file provides high-level guidance only.
+- Read docs for implementation details.
+- Keep the docs updated
+- Suggest to implement new docs when adding new features or patterns.
 
 ### Architecture & Source Layout
 
@@ -54,12 +55,12 @@ Read docs for implementation details. This file provides high-level guidance onl
 - **i18n**: Extract with `composer run i18n:extract`, compile with `composer run i18n:compile`. See `docs/i18n.md`.
 - **wp-env**: Start with `npm run env:start`. See `docs/wp-env.md`.
 
-### Maintaining the Boilerplate
+### Maintaining the plugin
 
-When adding new primitives, patterns, or documentation to this boilerplate:
+When adding new primitives, patterns, or documentation to this plugin:
 
-1. **Update `docs/`** with detailed implementation guides
-2. **Update this file** with high-level reference
+1. Update `docs/` with detailed implementation guides
+2. Update @AGENTS.md with high-level reference
 <!-- BOILERPLATE-DOCS-START -->
-3. **Update `.opencode/skill/boilerplate-update/SKILL.md`** so downstream plugins can adopt changes
+3. Update @.opencode/skill/boilerplate-update/SKILL.md so downstream plugins can adopt changes
 <!-- BOILERPLATE-DOCS-END -->

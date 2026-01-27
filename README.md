@@ -14,7 +14,7 @@ This boilerplate is a fork of [WordPress Boilerplate](https://github.com/DevinVi
 - PHPCS with ready-made Github actions
 - [@wordpress/scripts](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/) for simple bundling, linting and formatting of JS and CSS/SCSS files
 - Ready-made Github actions for building and bundling
-- Ready-made [opencode](https://opencode.ai) commands for common tasks (compatible with any LLM)
+- [AI-optimized](docs/work-with-ai.md) with AGENTS.md, commands, and skills
 - Simple [Gutenberg Block generation](/docs/create-blocks.md) and automated loading
 
 # Setup
@@ -38,13 +38,10 @@ Upon project creation, you'll be guided through a series of prompts to configure
 Your inputs will automatically tailor the boilerplate to match your plugin's identity.
 
 ## Step 3: Finalization (Optional)
-After configuration, the setup will finalize by updating files, renaming relevant items, and performing cleanup actions, including:
-- Replacing placeholders with your specified details.
-- Renaming files to match your plugin's namespace and slug.
-- Running `composer update` and `npm install` to install dependencies.
-- Cleaning up by removing the `setup.php` file and the setup cli command.
+Congrats! Your plugins is ready.
 
-At this point, the plugin is set up and good to go. Now it's your time to adjust plugin and readme headers according to your needs.
+To boost AI performance you proabably want to tune your `AGENTS.md` rules.
+For improved ai capabilities you can add [Agent Skills](docs/work-with-ai.md) provided by Automattic.
 
 # Development Guide
 
