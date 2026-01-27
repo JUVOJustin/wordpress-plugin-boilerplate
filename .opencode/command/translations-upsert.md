@@ -3,7 +3,7 @@ description: Update plugin translations [lang1 lang2 ...]
 subtask: false
 ---
 
-Load the `translations` skill and update or create translations.
+Load the `plugin-translations-update` skill and update or create translations.
 
 **Languages:** "$ARGUMENTS"
 - **Empty**: Update all existing `.po` files
