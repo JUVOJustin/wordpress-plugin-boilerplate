@@ -154,4 +154,5 @@ After copying, adapt text domain and paths.
 3. `composer phpstan && composer phpcs`
 4. `npm run lint:js && npm run lint:style`
 5. Validate `setup.php` as well as its cli and composer command are removed
-6. Test plugin functionality
+6. Validate all content wrapped with `<!-- BOILERPLATE-DOCS-START -->` comments is deleted
+7. Test plugin functionality
