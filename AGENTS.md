@@ -1,51 +1,64 @@
 ## AI Coding Agent Instructions for plugin-boilerplate
 
-This repository is a modern WordPress plugin boilerplate with strict conventions and automated workflows. Follow these guidelines to be immediately productive:
+This plugin is a modern WordPress plugin with strict conventions and automated workflows. Follow these guidelines.
+
+### Documentation
+
+Detailed guides are available in `docs/`:
+
+| File | Covers |
+|------|--------|
+| `abilities.md` | Abilities API: interfaces, category/ability creation, Loader registration |
+| `i18n.md` | Translation workflow, extract/compile scripts, JSON translations |
+| `create-blocks.md` | Block scaffolding, auto-registration, editor style sharing |
+| `wp-env.md` | Docker dev environment, script structure, CI/CD usage |
+| `acf-json-sync.md` | ACF field group JSON storage patterns |
+
+Read docs for implementation details. This file provides high-level guidance only.
 
 ### Architecture & Source Layout
+
 - **All plugin logic lives in `src/`**. Organize by feature/context (e.g., `Admin/`, `Frontend/`, `CLI/`, `Integrations/`).
 - **Main plugin file (`demo-plugin.php`) only bootstraps**. Never place business logic here.
-- **Loader pattern**: Register all hooks, filters, and shortcodes via the `Loader` class in your main plugin class. Do not register hooks in constructors.
-	- Example: See `Demo_Plugin.php` for `define_admin_hooks`, `define_public_hooks`, and `define_shortcodes` methods.
+- **Loader pattern**: Register hooks, filters, shortcodes, CLI commands, and abilities via the `Loader` class. Do not register hooks in constructors.
 
 ### Asset Management
-- **Frontend/admin assets**: Place in `resources/admin/` and `resources/frontend/`.
-- **Use "@wordpress/scripts" for asset compilation**. Entry points are defined in `webpack.config.js`.
-	- Build: `npm run start` (watch) or `npm run build` (minify).
 
-### Quality Assurance & Workflows
-- **Static analysis**: Use PHPStan (`phpstan.neon`), PHPCS (`phpcs.xml`), and ESLint (`eslint.config.js`).
-- **CI/CD**: GitHub Actions run tests, static analysis, and asset builds on push. See `.github/workflows/` for details.
-- **PHP version**: Update in `composer.json` (`require` and `config.platform`), and in all workflow YAMLs for consistency.
+- **Assets**: Place in `resources/admin/` and `resources/frontend/`.
+- **Build**: `@wordpress/scripts` handles compilation. Entry points in `webpack.config.js`.
+- **Scripts**: `npm run start` (watch), `npm run build` (production).
 
-### Project-Specific Patterns
-- **Namespace everything**: All classes use namespaces, autoloaded via Composer.
-- **Automatic namespace prefixing**: Strauss is used for dependency isolation.
-- **Shortcodes/CLI**: Register via loader, not directly in classes.
-- **Integrations**: Dedicated subfolders for BricksBuilder, Elementor, ACF, WooCommerce, etc.
+### Quality Assurance
 
-### Key Files & Directories
-- `src/` — All PHP source code
-- `resources/` — All assets (JS, CSS, images, ACF JSON)
-- `webpack.config.js` — Asset build config
-- `.github/workflows/` — CI/CD pipelines
-- `composer.json` — Dependency and PHP version management
-- `phpstan.neon`, `phpcs.xml`, `eslint.config.js` — QA configs
+- **PHP**: PHPStan (`phpstan.neon`), PHPCS (`phpcs.xml`)
+- **JS**: ESLint (`.eslintrc`)
+- **CI/CD**: GitHub Actions in `.github/workflows/`
 
-### Example: Registering an Admin Script
-```php
-private function define_admin_hooks() {
-		$admin = new Admin\Admin($this->get_plugin_name(), $this->get_version());
-		$this->loader->add_action('admin_enqueue_scripts', $admin, 'enqueue_styles');
-		$this->loader->add_action('admin_enqueue_scripts', $admin, 'enqueue_scripts');
-}
-```
+### Key Primitives
 
-### Block Generation
-To generate a new Gutenberg block, simply run `npm run create-block` and enter the required information when prompted.
-This will create a new block in the `src/Blocks/` folder. The block will be automatically registered and the assets enqueued.
+**Loader methods:**
+- `add_action()`, `add_filter()` - WordPress hooks
+- `add_shortcode()` - Shortcode registration
+- `add_cli()` - WP-CLI commands
+- `add_ability()` - Abilities API (WP 6.9+)
 
-### i18n/Translations Support 
-1. Run `npm run i18n:extract` to extract translatable strings into the `.pot` file located in the `languages/` directory. Strings in the PHP/JS need to use functions like `__()` or `_e()` with the plugin's text domain. Existing `.po` files will be updated automatically.
-2. From the `.pot` file, translate by creating `.po` files for each desired language.
-3. Run `npm run i18n:compile` to compile the `.po` files into `.mo`, `.json` and `.php` files for use by WordPress.
+**Composer scripts:** `phpstan`, `phpcs`, `phpcbf`, `i18n:extract`, `i18n:compile`
+
+**NPM scripts:** `start`, `build`, `lint:js`, `lint:style`, `format`, `create-block`, `env:*`
+
+### Feature Quick Reference
+
+- **Blocks**: Run `npm run create-block`. See `docs/create-blocks.md`.
+- **Abilities API**: Implement interfaces in `src/Abilities/`, register via Loader. See `docs/abilities.md`.
+- **i18n**: Extract with `composer run i18n:extract`, compile with `composer run i18n:compile`. See `docs/i18n.md`.
+- **wp-env**: Start with `npm run env:start`. See `docs/wp-env.md`.
+
+### Maintaining the Boilerplate
+
+When adding new primitives, patterns, or documentation to this boilerplate:
+
+1. **Update `docs/`** with detailed implementation guides
+2. **Update this file** with high-level reference
+<!-- BOILERPLATE-DOCS-START -->
+3. **Update `.opencode/skill/boilerplate-update/SKILL.md`** so downstream plugins can adopt changes
+<!-- BOILERPLATE-DOCS-END -->

@@ -1,11 +1,14 @@
 <?php
 /**
- * Register all actions, filters, shortcodes and cli commands for the plugin
+ * Register all actions, filters, shortcodes, cli commands and abilities for the plugin
  *
  * @package    Demo_Plugin
  */
 
 namespace Demo_Plugin;
+
+use Demo_Plugin\Abilities\Ability_Category_Interface;
+use Demo_Plugin\Abilities\Ability_Interface;
 
 /**
  * Register all actions and filters for the plugin.
@@ -23,7 +26,7 @@ class Loader {
 	 * @access   protected
 	 * @var      array<int, array{'hook':string, 'component':object, 'callback':string, 'priority':int, 'accepted_args':int}> $actions The actions registered with WordPress to fire when the plugin loads.
 	 */
-	protected $actions;
+	protected array $actions;
 
 	/**
 	 * The array of filters registered with WordPress.
@@ -32,7 +35,7 @@ class Loader {
 	 * @access   protected
 	 * @var      array<int, array{'hook':string, 'component':object, 'callback':string, 'priority':int, 'accepted_args':int}> $filters The filters registered with WordPress to fire when the plugin loads.
 	 */
-	protected $filters;
+	protected array $filters;
 
 	/**
 	 * The array of shortcodes registered with WordPress.
@@ -41,14 +44,28 @@ class Loader {
 	 * @access   protected
 	 * @var      array<int, array{'hook':string, 'component':object, 'callback':string, 'priority':int, 'accepted_args':int}> $shortcodes The shortcodes registered with WordPress to load when the plugin loads.
 	 */
-	protected $shortcodes;
+	protected array $shortcodes;
 
 	/**
 	 * The array of WP-CLI commands registered with WordPress.
 	 *
 	 * @var array<string, array{'instance':string, 'args':mixed[]}> $cli The array of WP-CLI commands registered with WordPress.
 	 */
-	protected $cli;
+	protected array $cli;
+
+	/**
+	 * The array of abilities registered with WordPress.
+	 *
+	 * @var array<string, class-string<Ability_Interface>> $abilities Ability class names keyed by ability name.
+	 */
+	protected array $abilities;
+
+	/**
+	 * The array of ability categories to register with WordPress.
+	 *
+	 * @var array<string, class-string<Ability_Category_Interface>> $ability_categories Category class names keyed by slug.
+	 */
+	protected array $ability_categories;
 
 	/**
 	 * Initialize the collections used to maintain the actions and filters.
@@ -56,9 +73,11 @@ class Loader {
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-		$this->actions    = array();
-		$this->filters    = array();
-		$this->shortcodes = array();
+		$this->actions            = array();
+		$this->filters            = array();
+		$this->shortcodes         = array();
+		$this->abilities          = array();
+		$this->ability_categories = array();
 	}
 
 	/**
@@ -103,6 +122,31 @@ class Loader {
 			'instance' => $instance,
 			'args'     => $args,
 		);
+	}
+
+	/**
+	 * Add a new ability to the collection to be registered with WordPress Abilities API.
+	 *
+	 * Automatically collects category classes for registration.
+	 *
+	 * @param string $ability_class Fully qualified class name implementing Ability_Interface.
+	 *
+	 * @return void
+	 */
+	public function add_ability( string $ability_class ): void {
+		if ( ! is_subclass_of( $ability_class, Ability_Interface::class ) ) {
+			return;
+		}
+
+		$this->abilities[ $ability_class::get_name() ] = $ability_class;
+
+		$category_class = $ability_class::get_category();
+
+		// @phpstan-ignore function.alreadyNarrowedType
+		if ( ! class_exists( $category_class ) || ! is_subclass_of( $category_class, Ability_Category_Interface::class ) ) {
+			return;
+		}
+		$this->ability_categories[ $category_class::get_slug() ] = $category_class;
 	}
 
 	/**
@@ -194,6 +238,58 @@ class Loader {
 			foreach ( $this->cli as $name => $data ) {
 				\WP_CLI::add_command( $name, $data['instance'], $data['args'] );
 			}
+		}
+
+		// Register WordPress Abilities
+		if ( ! empty( $this->abilities ) && function_exists( 'wp_register_ability' ) ) {
+			add_action( 'wp_abilities_api_categories_init', array( $this, 'do_register_ability_categories' ) );
+			add_action( 'wp_abilities_api_init', array( $this, 'do_register_abilities' ) );
+		}
+	}
+
+	/**
+	 * Callback to register all ability categories with WordPress.
+	 *
+	 * @return void
+	 */
+	public function do_register_ability_categories(): void {
+		foreach ( $this->ability_categories as $category_class ) {
+			wp_register_ability_category(
+				$category_class::get_slug(),
+				array(
+					'label'       => $category_class::get_label(),
+					'description' => $category_class::get_description(),
+					'meta'        => $category_class::get_meta(),
+				)
+			);
+		}
+	}
+
+	/**
+	 * Callback to register all abilities with WordPress.
+	 *
+	 * @return void
+	 */
+	public function do_register_abilities(): void {
+		foreach ( $this->abilities as $ability_class ) {
+			$category_class = $ability_class::get_category();
+
+			wp_register_ability(
+				$ability_class::get_name(),
+				array(
+					'label'               => $ability_class::get_label(),
+					'description'         => $ability_class::get_description(),
+					'category'            => $category_class::get_slug(),
+					'input_schema'        => $ability_class::get_input_schema(),
+					'output_schema'       => $ability_class::get_output_schema(),
+					'execute_callback'    => array( $ability_class, 'execute' ),
+					'permission_callback' => array( $ability_class, 'check_permissions' ),
+					'meta'                => array(
+						'annotations'  => $ability_class::get_annotations(),
+						'show_in_rest' => $ability_class::show_rest(),
+					),
+				)
+			);
 		}
 	}
 }

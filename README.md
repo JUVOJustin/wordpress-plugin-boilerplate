@@ -4,9 +4,9 @@
 [![PHPCS](https://img.shields.io/badge/PHPCS-WordPress-green)](https://github.com/WordPress/WordPress-Coding-Standards)
 [![Test/Analyse](https://github.com/JUVOJustin/wordpress-plugin-boilerplate/actions/workflows/test-analyse.yml/badge.svg)](https://github.com/JUVOJustin/wordpress-plugin-boilerplate/actions/workflows/test-analyse.yml)
 
-A modern, organized, and object-oriented foundation for building high-quality WordPress plugins. Fork of [WordPress Boilerplate](https://github.com/DevinVinson/WordPress-Plugin-Boilerplate).
+This boilerplate is a fork of [WordPress Boilerplate](https://github.com/DevinVinson/WordPress-Plugin-Boilerplate) with additional features and improvements. It provides a modern, organized, and object-oriented foundation for building high-quality WordPress plugins.
 
-## Features
+## Features of this boilerplate
 - Namespaces support using composer
 - Automatic Namespace prefixing with [Strauss](https://github.com/BrianHenryIE/strauss)
 - Easy Shortcode, CLI Command Registration through the loader
@@ -17,15 +17,18 @@ A modern, organized, and object-oriented foundation for building high-quality Wo
 - Ready-made [opencode](https://opencode.ai) commands for common tasks (compatible with any LLM)
 - Simple [Gutenberg Block generation](/docs/create-blocks.md) and automated loading
 
-## Setup
+# Setup
 
-### Step 1: Create Your Project
+## Step 1: Create Your Project
+Run the following command to create your project in the current folder. This will download the boilerplate and automatically run the script for initial configuration:
 
 ```bash
 composer create-project juvo/wordpress-plugin-boilerplate
 ```
 
-### Step 2: Configure Your Plugin
+The boilerplate will be set up in the current directory, and the setup script will run automatically.
+
+## Step 2: Configure Your Plugin (Automatic Prompt)
 Upon project creation, you'll be guided through a series of prompts to configure your plugin:
 
 - **Plugin Name**: Enter the name of your plugin.
@@ -34,75 +37,129 @@ Upon project creation, you'll be guided through a series of prompts to configure
 
 Your inputs will automatically tailor the boilerplate to match your plugin's identity.
 
-### Step 3: Finalization
+## Step 3: Finalization (Optional)
+After configuration, the setup will finalize by updating files, renaming relevant items, and performing cleanup actions, including:
+- Replacing placeholders with your specified details.
+- Renaming files to match your plugin's namespace and slug.
+- Running `composer update` and `npm install` to install dependencies.
+- Cleaning up by removing the `setup.php` file and the setup cli command.
 
-The setup replaces placeholders, renames files, and runs `composer update` and `npm install`.
+At this point, the plugin is set up and good to go. Now it's your time to adjust plugin and readme headers according to your needs.
+
+# Development Guide
 
 ## Project Structure
 
+### Source Code Organization
+
+All plugin logic should go into the `src` folder. This separation helps maintain a clean structure and follows modern PHP development practices. Example: 
+
 ```
 src/
-├── Blocks/            # Gutenberg Blocks
-├── API/               # REST API functionality
-├── CLI/               # CLI commands
-└── Integrations/      # Third-party integrations (Bricks, Elementor, ACF, WooCommerce)
-
-resources/
-├── admin/             # Admin assets (JS, SCSS)
-├── frontend/          # Frontend assets (JS, SCSS)
-└── acf-json/          # ACF field group JSON files
+├── Abilities/     # Abilitis and their categories
+├── API/           # Rest API-specific functionality
+├── Blocks/        # Gutenberg Blocks
+├── CLI/           # CLI commands
+└── Integrations/  # Core plugin functions and utilities
+    └── BricksBuilder/ # Bricks Builder integration
+    └── Elementor/ # Elementor integration
+    └── ACF/ # ACF integration
+    └── WC/ # WooCommerce integration
 ```
 
-## Development
+Avoid placing logic directly in the plugin's root files. The main plugin file should primarily be used for bootstrapping your plugin.
 
-### Loader Pattern
+## Loader and Hooks Registration
 
-Register hooks, filters, and shortcodes via the loader in the main class:
+### Using the Loader Correctly
+
+The plugin uses a loader pattern to centralize the registration of hooks, filters, and shortcodes. Instead of registering hooks in class constructors, always use the loader in the root class:
 
 ```php
+// In your Plugin.php main class
+public function __construct() {
+    $this->loader = new Loader();
+    $this->define_admin_hooks();
+    $this->define_public_hooks();
+}
+
 private function define_admin_hooks() {
     $admin = new Admin\Admin($this->get_plugin_name(), $this->get_version());
     $this->loader->add_action('admin_enqueue_scripts', $admin, 'enqueue_styles');
+    $this->loader->add_action('admin_enqueue_scripts', $admin, 'enqueue_scripts');
 }
 
 private function define_shortcodes() {
-    $example = new Shortcodes\ExampleShortcode();
-    $this->loader->add_shortcode('example', $example, 'render');
+    $example_shortcode = new Shortcodes\ExampleShortcode();
+    $this->loader->add_shortcode('example', $example_shortcode, 'render');
 }
+```
+
+This approach provides several benefits:
+1. Centralized hook management
+2. Easier debugging
+3. Better testability
+4. Cleaner class implementations
+
+## Frontend Assets Management
+
+### Resources Organization
+
+All frontend-facing assets (scripts, styles, images, etc.) should be placed in the `resources` directory, organized by context:
+
+```
+resources/
+├── admin/            # Admin-specific assets
+│   ├── css/
+│   ├── js/
+│   └── images/
+├── frontend/         # Frontend-specific assets
+│   ├── css/
+│   ├── js/
+│   └── images/
+├── acf-json/         # ACF field group JSON files
+└── webpack.config.js     # webpack/wp-scripts configuration
 ```
 
 ### Asset Compilation
 
-```bash
-npm run start    # Watch mode for development
-npm run build    # Production build
+The boilerplate uses [@wordpress/scripts](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/) for asset compilation and bundling.
+
+To compile assets:
+```
+npm run start        # Watch for changes during development and compile assets
+npm run build         # For production. Compiles assets and minifies them
 ```
 
-See [Bundling Documentation](/docs/bundeling.md) for details on entrypoints and configuration.
+To add a new entry point for scripts or styles, modify the `webpack.config.js` file.
 
-### Gutenberg Blocks
+### Gutenberg Block Development
+Generate blocks using `npm run create-block` and follow the interactive prompts. This command scaffolds a new block in the `src/Blocks` directory.
+Under the hood the npm script uses `@wordpress/create-block` package.
 
-```bash
-npm run create-block
-```
+Blocks are automatically registered using `wp_register_block_types_from_metadata_collection` in the main plugin class.
+Scripts and styles for the blocks are enqueued and bundled automatically.
 
-Blocks are auto-registered and assets auto-enqueued. See [Block Development](/docs/create-blocks.md).
+## Quality Assurance and Workflows
 
-### Quality Assurance
+### Default Checks and Quality Pipelines
 
-- **PHPCS**: WordPress coding standards
-- **PHPStan**: Static analysis (Level 6)
-- **wp-scripts**: JS/CSS linting and formatting
-- **GitHub Actions**: Automated testing and building
+The boilerplate comes with the following quality assurance tools configured:
 
-## Documentation
+1. **PHP CodeSniffer (PHPCS)**: Enforces WordPress coding standards
+2. **PHPStan**: Provides static analysis to catch potential bugs
+3. **@wp-scripts**: Enables bundling, linting and formatting of JS and CSS/SCSS files
+4. **GitHub Actions**: Automates testing and building processes
 
-| Topic | Description |
-|-------|-------------|
-| [Bundling](/docs/bundeling.md) | Asset compilation and webpack configuration |
-| [Block Development](/docs/create-blocks.md) | Gutenberg block creation and registration |
-| [i18n](/docs/i18n.md) | Internationalization and translations |
-| [ACF JSON Sync](/docs/acf-json-sync.md) | ACF field group version control |
+These checks run automatically in GitHub pipelines when you push code to your repository.
+
+### GitHub Workflows
+
+The boilerplate includes the following GitHub Actions workflows:
+
+- **Quality Checks**: Runs PHPCS and PHPStan to ensure code quality
+- **Asset Building**: Compiles and bundles frontend assets
+- **Release Management**: Helps with versioning and releases
 
 ## PHP Version Management
 
@@ -156,11 +213,14 @@ The GitHub Actions workflows are configured to use PHP 8.0. When changing the PH
 ```
 
 3. Check for PHP version constraints in static analysis configurations:
-    - `phpstan.neon.dist` might have PHP version specific settings
-    - `phpcs.xml.dist` might have PHP version specific ruleset configurations
+   - `phpstan.neon.dist` might have PHP version specific settings
+   - `phpcs.xml.dist` might have PHP version specific ruleset configurations
 
 Keeping PHP versions consistent across all configurations ensures that your development, testing, and deployment environments all work with the same PHP constraints.
 
----
+### Wrapping Up
 
-This plugin was created using the [wordpress-plugin-boilerplate](https://github.com/JUVOJustin/wordpress-plugin-boilerplate).
+That's it! Your plugin is now ready for development. Dive into creating your next remarkable WordPress plugin with ease and efficiency.
+
+---
+This plugin was created using the [wordpress-plugin-boilerplate](https://github.com/JUVOJustin/wordpress-plugin-boilerplate). Consult the upstream repository for changes, updates or IDE setups. LLM instructions can be found here: https://github.com/JUVOJustin/wordpress-plugin-boilerplate/wiki/LLM-AI. Keep this reference, to allow later updates.

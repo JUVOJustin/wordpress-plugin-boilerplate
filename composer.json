@@ -17,6 +17,7 @@
     "php-stubs/wp-cli-stubs": "^v2.5.0",
     "yoast/phpunit-polyfills": "^3.1.1",
     "wp-cli/wp-cli": "^2",
+    "wp-cli/i18n-command": "*",
     "wp-coding-standards/wpcs": "^3.1.0"
   },
   "minimum-stability": "stable",
@@ -57,7 +58,9 @@
     "phpstan:ci": "@php ./vendor/bin/phpstan analyse --error-format=checkstyle | cs2pr",
     "phpcs": "@php ./vendor/bin/phpcs --report-full",
     "phpcs:ci": "@phpcs --report-checkstyle=./phpcs-report.xml",
-    "phpcbf": "@php ./vendor/bin/phpcbf"
+    "phpcbf": "@php ./vendor/bin/phpcbf",
+    "i18n:extract": "wp i18n make-pot . languages/demo-plugin.pot --exclude=resources,vendor,vendor-prefixed,node_modules && wp i18n update-po languages/demo-plugin.pot languages/",
+    "i18n:compile": "wp i18n make-json languages/ --no-purge && wp i18n make-mo languages/ && wp i18n make-php languages/"
   },
   "extra": {
     "installer-paths": {

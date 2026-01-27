@@ -20,3 +20,8 @@ bin/*
 /phpcs-report.xml
 
 /lib/
+
+# Generated language files (compiled in CI/CD pipeline)
+languages/*.mo
+languages/*.json
+languages/*.php
