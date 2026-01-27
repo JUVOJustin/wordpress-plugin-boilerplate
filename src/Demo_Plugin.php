@@ -104,9 +104,9 @@ class Demo_Plugin {
 			100
 		);
 
-		// <setup-cli-start>
+		// <BOILERPLATE-DOCS-START>
 		$this->loader->add_cli( 'setup', new Cli\Setup() );
-		// </setup-cli-end>
+		// <BOILERPLATE-DOCS-END>
 	}
 
 	/**
