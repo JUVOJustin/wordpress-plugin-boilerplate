@@ -1,11 +1,11 @@
 ---
 name: boilerplate-update
 description: |
-  Guide for updating WordPress plugins to the latest plugin-boilerplate features.
-  Use when: (1) Updating build tools or adopting @wordpress/scripts, (2) Adopting
-  new features like Abilities API, improved Loader, or i18n workflows, (3) Syncing
-  CI/CD pipelines, QA configs, or dependencies, (4) User asks to "update from
-  boilerplate", "sync with boilerplate", or "migrate to latest boilerplate".
+   Guide for updating WordPress plugins to the latest plugin-boilerplate features.
+   Use when: (1) Updating build tools or adopting @wordpress/scripts, (2) Adopting
+   new features like Abilities API, improved Loader, or i18n workflows, (3) Syncing
+   CI/CD pipelines, QA configs, or dependencies, (4) User asks to "update from
+   boilerplate", "sync with boilerplate", or "migrate to latest boilerplate".
 ---
 
 # Boilerplate Update Skill
@@ -18,7 +18,8 @@ Update WordPress plugins to the latest plugin-boilerplate features.
 - Replacing or significantly restructuring files (Loader.php, main plugin class)
 - Changing build tools or asset pipeline
 - Modifying CI/CD workflows
-- Adding new architectural patterns (Abilities API)
+- Adding new architectural patterns (Abilities API, Blocks)
+- Deleting resources belonging to plugin features
 
 **Proceed without confirmation for:**
 - Updating dependency versions
@@ -32,8 +33,7 @@ Update WordPress plugins to the latest plugin-boilerplate features.
    ```bash
    git clone --depth 1 https://github.com/JUVOJustin/wordpress-plugin-boilerplate.git ./tmp/boilerplate-ref
    ```
-
-2. Compare key files using `diff` against `tmp/boilerplate-ref/`
+2. Use one **subtask/subagent** per key area defined. Compare using `diff` against `tmp/boilerplate-ref/`
 
 3. Present findings to user, categorized by confirmation requirement
 
@@ -133,6 +133,12 @@ See `tmp/boilerplate-ref/docs/work-with-ai.md` for AI integration details.
 - Update existing (ask user if diff is significant)
 - Ask user before removing local-only items
 - Adapt text domain and paths after copying
+- Remove redundant skills/commands if upstream now includes them or they are possibly renamed
+
+### 9. File Control files
+Compare:
+- `diff .distignore tmp/boilerplate-ref/.disignore`
+- `diff .gitignore tmp/boilerplate-ref/.gitignore`
 
 ## String Replacement
 
@@ -144,10 +150,10 @@ See `tmp/boilerplate-ref/docs/work-with-ai.md` for AI integration details.
 
 ## Verification
 
-1. `composer install && npm install`
-2. `npm run build`
-3. `composer phpstan && composer phpcs`
-4. `npm run lint:js && npm run lint:style`
+1. Ran `composer install && npm install` after changes
+2. Ran `npm run build` after changes
+3. Ran `composer phpstan && composer phpcs` after changes
+4. Ran `npm run lint:js && npm run lint:style` after changes
 5. Validate `setup.php` as well as its cli and composer command are removed
 6. Validate all content wrapped with `<!-- BOILERPLATE-DOCS-START -->` comments is deleted
 7. All `demo-plugin`, `Demo_Plugin`, and `DEMO_PLUGIN` strings are replaced appropriately
