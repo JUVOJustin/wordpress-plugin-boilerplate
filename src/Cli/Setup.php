@@ -110,51 +110,69 @@ class Setup {
 		// Further operations like composer update, npm install, etc.
 		$progress = \WP_CLI\Utils\make_progress_bar( 'Setup', 9 );
 
+		// File patterns for markdown documentation
+		$md_patterns = array( '.*docs\/.*\.md', '.*AGENTS\.md' );
+
 		// Replace in files
 		if (
 			! $this->replace_in_files(
 				'demo-plugin',
 				$this->slug,
-				array(
-					'.*\.php',
-					'.*\.js',
-					'.*\.json',
-					'.*\.github\/.*\.(yml|md)',
-					'.*\.neon',
-					'.*docs\/.*\.md',
+				array_merge(
+					array(
+						'.*\.php',
+						'.*\.js',
+						'.*\.json',
+						'.*\.github\/.*\.(yml|md)',
+						'.*\.neon',
+					),
+					$md_patterns
 				)
 			)
 			|| ! $this->replace_in_files(
 				'demo_plugin',
 				str_replace( '-', '_', $this->slug ),
-				array(
-					'.*\.php',
-					'.*eslint.*\.js',
-					'.*\.github\/.*\.(yml|md)',
-					'.*docs\/.*\.md',
+				array_merge(
+					array(
+						'.*\.php',
+						'.*eslint.*\.js',
+						'.*\.github\/.*\.(yml|md)',
+					),
+					$md_patterns
 				)
 			)
 			|| ! $this->replace_in_files(
 				'Demo_Plugin',
 				$this->namespace,
-				array(
-					'.*\.php',
-					'.*\.json',
-					'.*\.github\/.*\.(yml|md)',
-					'.*docs\/.*\.md',
+				array_merge(
+					array(
+						'.*\.php',
+						'.*\.json',
+						'.*\.github\/.*\.(yml|md)',
+					),
+					$md_patterns
 				)
 			)
 			|| ! $this->replace_in_files(
 				'DEMO_PLUGIN',
 				strtoupper( $this->namespace ),
-				array(
-					'.*\.php',
-					'.*\.json',
-					'.*\.github\/.*\.(yml|md)',
-					'.*docs\/.*\.md',
+				array_merge(
+					array(
+						'.*\.php',
+						'.*\.json',
+						'.*\.github\/.*\.(yml|md)',
+					),
+					$md_patterns
 				)
 			)
-			|| ! $this->replace_in_files( 'Demo Plugin', $this->name, array( '.*\.php', '.*README\.txt', '.*\.github\/.*\.(yml|md)', '.*docs\/.*\.md', '.*\.opencode\/.*\.md' ) )
+			|| ! $this->replace_in_files(
+				'Demo Plugin',
+				$this->name,
+				array_merge(
+					array( '.*\.php', '.*README\.txt', '.*\.github\/.*\.(yml|md)' ),
+					$md_patterns
+				)
+			)
 		) {
 			WP_CLI::error( 'Error replacing in files.' );
 		}
