@@ -141,6 +141,8 @@ class Loader {
 		$this->abilities[ $ability_class::get_name() ] = $ability_class;
 
 		$category_class = $ability_class::get_category();
+
+		// @phpstan-ignore function.alreadyNarrowedType
 		if ( ! class_exists( $category_class ) || ! is_subclass_of( $category_class, Ability_Category_Interface::class ) ) {
 			return;
 		}
