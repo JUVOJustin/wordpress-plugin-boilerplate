@@ -18,7 +18,7 @@ The project uses `@wordpress/scripts` (wp-scripts) for bundling and compiling fr
 ## Directory Structure
 
 ```
-resources/
+resources/            # Source assets (excluded from distribution)
 ├── admin/            # Admin-specific assets
 │   ├── js/
 │   │   └── app.js    # Admin JS entry point
@@ -31,7 +31,11 @@ resources/
 │   ├── scss/
 │   │   └── app.scss  # Frontend styles entry point
 │   └── images/       # Images referenced in frontend SCSS
-└── acf-json/         # ACF field group JSON files
+build/                # Compiled assets (distributed)
+├── demo-plugin-admin.js
+├── demo-plugin-admin.css
+├── demo-plugin-frontend.js
+└── demo-plugin-frontend.css
 ```
 
 ## Entrypoints

@@ -2,11 +2,11 @@
 
 There is no ultimate way how to do it but throughout the year the following pattern has proven to be effective and flexible.
 
-All ACF field group JSON files should be stored in `resources/acf-json/`.
+All ACF field group JSON files should be stored in `acf-json/` at the plugin root level.
 
 To enable ACF JSON sync in your plugin:
 
-1. Create the `resources/acf-json` directory
+1. Create the `acf-json` directory at the plugin root
 2. Add the following code to your `load_dependencies()` method in the main Demo_Plugin class:
 
 The code examples are based on ACF´s documentation for [local JSON](https://www.advancedcustomfields.com/resources/local-json/).
@@ -28,7 +28,7 @@ private function load_dependencies(): void {
         'acf/settings/save_json',
         function () {
             if ( wp_get_environment_type() !== 'production' ) {
-                return DEMO_PLUGIN_PATH . 'resources/acf-json';
+                return DEMO_PLUGIN_PATH . 'acf-json';
             }
             return '';
         }
@@ -36,7 +36,7 @@ private function load_dependencies(): void {
     add_filter(
         'acf/settings/load_json',
         function ( $paths ) {
-            $paths[] = DEMO_PLUGIN_PATH . 'resources/acf-json';
+            $paths[] = DEMO_PLUGIN_PATH . 'acf-json';
             return $paths;
         }
     );
@@ -82,7 +82,7 @@ class Config {
      */
     public function save_path(): string {
         if ( wp_get_environment_type() !== 'production' ) {
-            return DEMO_PLUGIN_PATH . 'resources/acf-json';
+            return DEMO_PLUGIN_PATH . 'acf-json';
         }
         return '';
     }
@@ -97,7 +97,7 @@ class Config {
         // Optional: Remove default path
         // unset( $paths[0] );
         
-        $paths[] = DEMO_PLUGIN_PATH . 'resources/acf-json';
+        $paths[] = DEMO_PLUGIN_PATH . 'acf-json';
         return $paths;
     }
 }

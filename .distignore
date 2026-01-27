@@ -42,3 +42,6 @@ tests/
 .budfiles/
 phpcs-report.xml
 /lib/
+
+# Source assets (compiled to build/)
+resources/
