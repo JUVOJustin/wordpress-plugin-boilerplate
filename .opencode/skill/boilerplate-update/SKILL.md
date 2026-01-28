@@ -33,7 +33,7 @@ Update WordPress plugins to the latest plugin-boilerplate features.
    ```bash
    git clone --depth 1 https://github.com/JUVOJustin/wordpress-plugin-boilerplate.git ./tmp/boilerplate-ref
    ```
-2. Use one **subtask/subagent** per key area defined. Compare using `diff` against `tmp/boilerplate-ref/`
+2. Use one **subtask/subagent** per key area. Delegate comparison using `diff` against `tmp/boilerplate-ref/`
 
 3. Present findings to user, categorized by confirmation requirement
 
