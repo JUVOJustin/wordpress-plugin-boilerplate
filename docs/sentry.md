@@ -1,0 +1,41 @@
+# Sentry
+
+Using [Sentry](https://sentry.io/) in your WordPress plugin allows you to monitor and track errors effectively. Below are the steps to integrate Sentry into your plugin.
+
+## 1. Install sentry SDK
+```
+composer require sentry/sentry
+```
+
+## 2. Add init script
+This snippet initializes Sentry in your plugin, ensuring that only errors originating from your plugin are sent to Sentry, and that errors from local environments are ignored. Make sure to replace `'https://your-dsn'` with your actual Sentry DSN and adjust the file check in the `before_send` callback to match your plugin's unique identifier.
+
+Add it in `Demo_Plugin.php` for example within the `load_dependencies` method or any initialization method that runs early in the plugin's lifecycle.
+```php
+\Sentry\init(
+    array(
+        'dsn'                => 'https://your-dsn', // Replace with your actual DSN
+        'release'            => self::PLUGIN_VERSION,
+        'environment'        => wp_get_environment_type(),
+        'traces_sample_rate' => 0.1,
+        'send_default_pii'   => false,
+        'before_send'        => function ( \Sentry\Event $event ) {
+        
+            // Do not trigger errors for local environments
+            if ( wp_get_environment_type() === 'local' ) {
+                return null;
+            }
+
+            // Make sure to only send errors caused by our plugin 
+            foreach ( $event->getExceptions() as $ex ) {
+                foreach ( $ex->getStacktrace()->getFrames() as $frame ) {
+                    if ( str_contains( $frame->getFile(), 'demo-plugin' ) ) { // Adjust to your plugin's unique identifier
+                        return $event;
+                    }
+                }
+            }
+            return null; 
+        },
+    )
+);
+```
