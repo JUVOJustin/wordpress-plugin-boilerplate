@@ -36,7 +36,7 @@ Skills are sophisticated, multi-step workflows for complex tasks. They live in `
 | Command | Description |
 |---------|-------------|
 | `/translations-upsert [lang1 lang2...]` | Update or create translations. Without arguments: updates all existing `.po` files. With arguments: creates/updates specific languages. |
-| `/a8c-skills-upsert [skillnames]` | Download and install Automattic's official WordPress skills. Default: `wp-interactivity-api`, `wp-project-triage`, `wp-block-development`, `wp-phpstan`. |
+| `/wp-skills-upsert [skillnames]` | Download and install official WordPress agent skills. Default: `wp-interactivity-api`, `wp-project-triage`, `wp-block-development`, `wp-phpstan`. |
 | `/commands-upsert` | Sync commands and skills from the upstream boilerplate. |
 | `/readme-update` | Update README.md with current plugin information, blocks, CLI commands, etc. |
 | `/qa-run` | Run quality assurance tools (PHPCS, PHPStan, ESLint, stylelint). |
@@ -63,9 +63,9 @@ Syncs your plugin with the latest boilerplate features:
 
 See [boilerplate-update skill](.opencode/skill/boilerplate-update/SKILL.md) for the full workflow.
 
-## Automattic Skills (Recommended)
+## WordPress Agent Skills (Recommended)
 
-Automattic provides official skills for WordPress development. Install them with `/a8c-skills-upsert`:
+The WordPress project provides official skills for WordPress development. Install them with `/wp-skills-upsert`:
 
 | Skill | Purpose |
 |-------|---------|
@@ -74,7 +74,7 @@ Automattic provides official skills for WordPress development. Install them with
 | `wp-phpstan` | PHPStan analysis with WordPress-specific rules |
 | `wp-project-triage` | Project analysis and task management |
 
-These skills are maintained by Automattic and follow WordPress core best practices.
+These skills are maintained in `https://github.com/WordPress/agent-skills` and follow WordPress core best practices.
 
 ## Customizing for Other AI Tools
 

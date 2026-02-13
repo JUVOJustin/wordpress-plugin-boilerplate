@@ -53,7 +53,7 @@ The boilerplate includes detailed docs at `tmp/boilerplate-ref/docs/`:
 | `create-blocks.md` | Block scaffolding, auto-registration via manifest, editor style sharing |
 | `wp-env.md` | Docker-based dev environment, script structure, CI/CD usage |
 | `acf-json-sync.md` | ACF field group JSON storage patterns |
-| `work-with-ai.md` | AI integration: commands, skills, AGENTS.md, Automattic skills |
+| `work-with-ai.md` | AI integration: commands, skills, AGENTS.md, WordPress agent skills |
 
 Read these docs for implementation details. This skill only provides high-level guidance.
 

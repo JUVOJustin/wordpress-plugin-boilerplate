@@ -1,13 +1,13 @@
 ---
-description: Upsert AC skills [skillnames], default to wp-interactivity-api, wp-block-development
+description: Upsert WordPress agent skills [skillnames], default to wp-interactivity-api, wp-project-triage, wp-block-development, wp-phpstan
 subtask: false
 ---
 
-**Goal:** Upsert skills provided by Automattic https://github.com/Automattic/agent-skills into the current workspace.
+**Goal:** Upsert skills provided by WordPress https://github.com/WordPress/agent-skills into the current workspace.
 
 ## **1. Download & Cleanup**
 * Download the archive:
-  `https://github.com/Automattic/agent-skills/archive/refs/heads/trunk.zip`
+  `https://github.com/WordPress/agent-skills/archive/refs/heads/trunk.zip`
 * Extract the `skills/` folder from the downloaded archive.
 * **Always** delete the downloaded archive and temporary assets afterwards.
 

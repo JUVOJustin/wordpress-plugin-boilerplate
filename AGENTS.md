@@ -12,7 +12,7 @@ This plugin is a modern WordPress plugin with strict conventions and automated w
 | @docs/create-blocks.md  | Block scaffolding, auto-registration, editor style sharing |
 | @docs/wp-env.md         | Docker dev environment, script structure, CI/CD usage |
 | @docs/acf-json-sync.md  | ACF field group JSON storage patterns |
-| @docs/work-with-ai.md   | AI integration: commands, skills, AGENTS.md, Automattic skills |
+| @docs/work-with-ai.md   | AI integration: commands, skills, AGENTS.md, WordPress agent skills |
 
 - Read docs for implementation details.
 - Keep the docs updated
