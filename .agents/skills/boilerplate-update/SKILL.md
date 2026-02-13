@@ -27,6 +27,19 @@ Update WordPress plugins to the latest plugin-boilerplate features.
 - Syncing QA config files
 - Copying .opencode commands and .agents/skills
 
+## Setup-Only Tooling (Exclude from Updates)
+
+`setup.php`, `src/Cli/Setup.php`, and the `wp setup` CLI command exist only for
+initial project creation. When updating an existing plugin, do **not** upsert or
+reintroduce these items.
+
+**Ignore diffs for:**
+- `setup.php`
+- `src/Cli/Setup.php`
+- `composer.json` entries: `autoload.files` for `setup.php`,
+  `scripts.post-create-project-cmd` for `composer exec -- wp setup`
+- Any Loader registration for the `wp setup` CLI command
+
 ## Workflow
 
 1. Clone fresh boilerplate for comparison:
@@ -70,6 +83,7 @@ See docs for details: `i18n.md`, `bundeling.md`
 - Scripts: `i18n:extract`, `i18n:compile`, `phpstan`, `phpcs`, `phpcbf`
 - Strauss config in `extra.strauss` for namespace prefixing
 - QA config files: `phpcs.xml`, `phpstan.neon`
+- Skip setup-only entries called out above
 
 ### 2. JS & Bundling (package.json, webpack.config.js)
 
@@ -156,7 +170,7 @@ Compare:
 2. Ran `npm run build` after changes
 3. Ran `composer phpstan && composer phpcs` after changes
 4. Ran `npm run lint:js && npm run lint:style` after changes
-5. Validate `setup.php` as well as its cli and composer command are removed
+5. Confirm setup-only tooling stays excluded (`setup.php`, setup CLI, composer hook)
 6. Validate all content wrapped with `<!-- BOILERPLATE-DOCS-START -->` comments is deleted
 7. All `demo-plugin`, `Demo_Plugin`, and `DEMO_PLUGIN` strings are replaced appropriately
 8. Test plugin functionality
