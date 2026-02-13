@@ -25,7 +25,7 @@ Update WordPress plugins to the latest plugin-boilerplate features.
 - Updating dependency versions
 - Adding/renaming scripts with equivalent functionality
 - Syncing QA config files
-- Copying .opencode commands/skills
+- Copying .opencode commands and .agents/skills
 
 ## Workflow
 
@@ -53,7 +53,7 @@ The boilerplate includes detailed docs at `tmp/boilerplate-ref/docs/`:
 | `create-blocks.md` | Block scaffolding, auto-registration via manifest, editor style sharing |
 | `wp-env.md` | Docker-based dev environment, script structure, CI/CD usage |
 | `acf-json-sync.md` | ACF field group JSON storage patterns |
-| `work-with-ai.md` | AI integration: commands, skills, AGENTS.md, Automattic skills |
+| `work-with-ai.md` | AI integration: commands, skills, AGENTS.md, WordPress agent skills |
 
 Read these docs for implementation details. This skill only provides high-level guidance.
 
@@ -122,9 +122,11 @@ See `tmp/boilerplate-ref/docs/abilities.md` for interface reference and examples
 
 **Key pattern:** `$this->loader->add_ability(Abilities\My_Ability::class)`
 
-### 8. .opencode/ Configuration
+### 8. Agent Configuration
 
-Compare: `diff -r .opencode tmp/boilerplate-ref/.opencode`
+Compare:
+- `diff -r .opencode/command tmp/boilerplate-ref/.opencode/command`
+- `diff -r .agents/skills tmp/boilerplate-ref/.agents/skills`
 
 See `tmp/boilerplate-ref/docs/work-with-ai.md` for AI integration details.
 

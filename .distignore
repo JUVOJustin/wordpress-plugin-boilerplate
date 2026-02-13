@@ -33,6 +33,7 @@ AGENTS.md
 .junie/
 .windsurfrules/
 .opencode/
+.agents/
 .mcp.json
 
 # Test files

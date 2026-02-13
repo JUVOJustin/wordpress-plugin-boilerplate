@@ -26,7 +26,7 @@ Commands are one-off tasks you can trigger via slash commands (e.g., `/translati
 
 ### 3. Skills — Complex Workflows
 
-Skills are sophisticated, multi-step workflows for complex tasks. They live in `.opencode/skill/` and handle:
+Skills are sophisticated, multi-step workflows for complex tasks. They live in `.agents/skills/` and handle:
 - Multi-file operations
 - Decision trees and conditional logic
 - Integration with external tools
@@ -36,7 +36,7 @@ Skills are sophisticated, multi-step workflows for complex tasks. They live in `
 | Command | Description |
 |---------|-------------|
 | `/translations-upsert [lang1 lang2...]` | Update or create translations. Without arguments: updates all existing `.po` files. With arguments: creates/updates specific languages. |
-| `/a8c-skills-upsert [skillnames]` | Download and install Automattic's official WordPress skills. Default: `wp-interactivity-api`, `wp-project-triage`, `wp-block-development`, `wp-phpstan`. |
+| `/wp-skills-upsert [skillnames]` | Download and install official WordPress agent skills. Default: `wp-interactivity-api`, `wp-project-triage`, `wp-block-development`, `wp-phpstan`. |
 | `/commands-upsert` | Sync commands and skills from the upstream boilerplate. |
 | `/readme-update` | Update README.md with current plugin information, blocks, CLI commands, etc. |
 | `/qa-run` | Run quality assurance tools (PHPCS, PHPStan, ESLint, stylelint). |
@@ -61,11 +61,11 @@ Syncs your plugin with the latest boilerplate features:
 - QA configurations
 - New architectural patterns (Abilities API, etc.)
 
-See [boilerplate-update skill](.opencode/skill/boilerplate-update/SKILL.md) for the full workflow.
+See [boilerplate-update skill](../.agents/skills/boilerplate-update/SKILL.md) for the full workflow.
 
-## Automattic Skills (Recommended)
+## WordPress Agent Skills (Recommended)
 
-Automattic provides official skills for WordPress development. Install them with `/a8c-skills-upsert`:
+The WordPress project provides official skills for WordPress development. Install them with `/wp-skills-upsert`:
 
 | Skill | Purpose |
 |-------|---------|
@@ -74,7 +74,7 @@ Automattic provides official skills for WordPress development. Install them with
 | `wp-phpstan` | PHPStan analysis with WordPress-specific rules |
 | `wp-project-triage` | Project analysis and task management |
 
-These skills are maintained by Automattic and follow WordPress core best practices.
+These skills are maintained in `https://github.com/WordPress/agent-skills` and follow WordPress core best practices.
 
 ## Customizing for Other AI Tools
 
@@ -83,7 +83,7 @@ While optimized for opencode, the structure works with any AI assistant:
 To adapt for another tool:
 - For claude code: copy `AGENTS.md` to `CLAUDE.md`.
 - Commands are basically pure prompts. You can copy their body to any tool. You might need to adjust the `front matter`.
-- Copy `.opencode/skill` into your tools skills folder like `.claude/skills`.
+- Copy `.agents/skills` into your tools skills folder like `.claude/skills`.
 
 ## Tips for Effective AI Collaboration
 

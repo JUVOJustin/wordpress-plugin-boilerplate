@@ -12,7 +12,7 @@ This plugin is a modern WordPress plugin with strict conventions and automated w
 | @docs/create-blocks.md  | Block scaffolding, auto-registration, editor style sharing |
 | @docs/wp-env.md         | Docker dev environment, script structure, CI/CD usage |
 | @docs/acf-json-sync.md  | ACF field group JSON storage patterns |
-| @docs/work-with-ai.md   | AI integration: commands, skills, AGENTS.md, Automattic skills |
+| @docs/work-with-ai.md   | AI integration: commands, skills, AGENTS.md, WordPress agent skills |
 
 - Read docs for implementation details.
 - Keep the docs updated
@@ -62,5 +62,5 @@ When adding new primitives, patterns, or documentation to this plugin:
 1. Update `docs/` with detailed implementation guides
 2. Update @AGENTS.md with high-level reference
 <!-- BOILERPLATE-DOCS-START -->
-3. Update @.opencode/skill/boilerplate-update/SKILL.md so downstream plugins can adopt changes
+3. Update @.agents/skills/boilerplate-update/SKILL.md so downstream plugins can adopt changes
 <!-- BOILERPLATE-DOCS-END -->

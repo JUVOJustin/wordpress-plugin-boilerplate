@@ -41,7 +41,7 @@ Your inputs will automatically tailor the boilerplate to match your plugin's ide
 Congrats! Your plugins is ready.
 
 To boost AI performance you proabably want to tune your `AGENTS.md` rules.
-For improved ai capabilities you can add [Agent Skills](docs/work-with-ai.md) provided by Automattic.
+For improved AI capabilities you can add official [WordPress Agent Skills](docs/work-with-ai.md) stored in `.agents/skills`.
 
 # Development Guide
 
