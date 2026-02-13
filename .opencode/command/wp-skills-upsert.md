@@ -3,6 +3,8 @@ description: Upsert WordPress agent skills [skillnames], default to wp-interacti
 subtask: false
 ---
 
+<!-- Keeps local skills aligned with the official WordPress agent-skills repo. -->
+
 **Goal:** Upsert skills provided by WordPress https://github.com/WordPress/agent-skills into the current workspace.
 
 ## **1. Download & Cleanup**
@@ -25,7 +27,7 @@ Based on the input provided, determine which skills to sync: "$ARGUMENTS"
     - Always upsert wp-project-triage as it is a dependency for other skills.
     - Upsert the skills "$ARGUMENTS" if they exist in the archive. Let the user know about missing skills after syncing the valid ones.
 
-* Compare existing skills in @.opencode/skill/ with the extracted skills.
+* Compare existing skills in @.agents/skills/ with the extracted skills.
 * **Add** new skills that don’t exist in the workspace and should be added.
 * **Update** existing skills
 * Default to treating the upstream as the source of truth.

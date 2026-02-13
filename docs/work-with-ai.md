@@ -1,5 +1,7 @@
 # Working with AI
 
+<!-- Explains how this boilerplate structures AI commands, skills, and rules. -->
+
 This boilerplate is optimized for AI-assisted development using [opencode](https://opencode.ai). It provides a complete set of commands, skills, and instructions that guide AI agents to work effectively with your plugin.
 These resources are kept up to date and it makes sense to update them with the latest version of the boilerplate. You can add your own resources anytime.
 
@@ -26,7 +28,7 @@ Commands are one-off tasks you can trigger via slash commands (e.g., `/translati
 
 ### 3. Skills — Complex Workflows
 
-Skills are sophisticated, multi-step workflows for complex tasks. They live in `.opencode/skill/` and handle:
+Skills are sophisticated, multi-step workflows for complex tasks. They live in `.agents/skills/` and handle:
 - Multi-file operations
 - Decision trees and conditional logic
 - Integration with external tools
@@ -61,7 +63,7 @@ Syncs your plugin with the latest boilerplate features:
 - QA configurations
 - New architectural patterns (Abilities API, etc.)
 
-See [boilerplate-update skill](.opencode/skill/boilerplate-update/SKILL.md) for the full workflow.
+See [boilerplate-update skill](../.agents/skills/boilerplate-update/SKILL.md) for the full workflow.
 
 ## WordPress Agent Skills (Recommended)
 
@@ -83,7 +85,7 @@ While optimized for opencode, the structure works with any AI assistant:
 To adapt for another tool:
 - For claude code: copy `AGENTS.md` to `CLAUDE.md`.
 - Commands are basically pure prompts. You can copy their body to any tool. You might need to adjust the `front matter`.
-- Copy `.opencode/skill` into your tools skills folder like `.claude/skills`.
+- Copy `.agents/skills` into your tools skills folder like `.claude/skills`.
 
 ## Tips for Effective AI Collaboration
 

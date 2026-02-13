@@ -2,6 +2,8 @@
 description: Sync commands and skills from boilerplate
 ---
 
-Use the `boilerplate-update` skill to sync `.opencode/command/` and `.opencode/skill/` from upstream.
+<!-- Keeps agent configuration sync scoped and repeatable. -->
 
-Focus only on section "8. .opencode/ Configuration".
+Use the `boilerplate-update` skill to sync `.opencode/command/` and `.agents/skills/` from upstream.
+
+Focus only on section "8. Agent Configuration".

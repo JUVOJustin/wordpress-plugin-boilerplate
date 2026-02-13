@@ -1,5 +1,7 @@
 # WordPress Plugin Boilerplate
 
+<!-- Summarizes boilerplate capabilities, setup, and development conventions. -->
+
 [![PHPStan](https://img.shields.io/badge/PHPStan-Level%206-blue)](https://phpstan.org/)
 [![PHPCS](https://img.shields.io/badge/PHPCS-WordPress-green)](https://github.com/WordPress/WordPress-Coding-Standards)
 [![Test/Analyse](https://github.com/JUVOJustin/wordpress-plugin-boilerplate/actions/workflows/test-analyse.yml/badge.svg)](https://github.com/JUVOJustin/wordpress-plugin-boilerplate/actions/workflows/test-analyse.yml)
@@ -41,7 +43,7 @@ Your inputs will automatically tailor the boilerplate to match your plugin's ide
 Congrats! Your plugins is ready.
 
 To boost AI performance you proabably want to tune your `AGENTS.md` rules.
-For improved AI capabilities you can add official [WordPress Agent Skills](docs/work-with-ai.md).
+For improved AI capabilities you can add official [WordPress Agent Skills](docs/work-with-ai.md) stored in `.agents/skills`.
 
 # Development Guide
 

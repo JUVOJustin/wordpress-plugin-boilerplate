@@ -8,6 +8,8 @@ description: |
    boilerplate", "sync with boilerplate", or "migrate to latest boilerplate".
 ---
 
+<!-- Guides safe, consistent adoption of upstream boilerplate changes. -->
+
 # Boilerplate Update Skill
 
 Update WordPress plugins to the latest plugin-boilerplate features.
@@ -25,7 +27,7 @@ Update WordPress plugins to the latest plugin-boilerplate features.
 - Updating dependency versions
 - Adding/renaming scripts with equivalent functionality
 - Syncing QA config files
-- Copying .opencode commands/skills
+- Copying .opencode commands and .agents/skills
 
 ## Workflow
 
@@ -122,9 +124,11 @@ See `tmp/boilerplate-ref/docs/abilities.md` for interface reference and examples
 
 **Key pattern:** `$this->loader->add_ability(Abilities\My_Ability::class)`
 
-### 8. .opencode/ Configuration
+### 8. Agent Configuration
 
-Compare: `diff -r .opencode tmp/boilerplate-ref/.opencode`
+Compare:
+- `diff -r .opencode/command tmp/boilerplate-ref/.opencode/command`
+- `diff -r .agents/skills tmp/boilerplate-ref/.agents/skills`
 
 See `tmp/boilerplate-ref/docs/work-with-ai.md` for AI integration details.
 

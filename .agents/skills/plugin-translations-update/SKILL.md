@@ -3,6 +3,8 @@ name: plugin-translations-update
 description: Update or create WordPress plugin translations. Use when working with i18n, translations, .po/.pot files, or when user asks to translate plugin strings into specific languages.
 ---
 
+<!-- Standardizes the plugin translation workflow for AI agents. -->
+
 # WordPress Plugin Translations
 
 Manage internationalization (i18n) for WordPress plugins by extracting, translating, and compiling translation files.

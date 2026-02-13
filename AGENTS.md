@@ -1,5 +1,7 @@
 ## AI Coding Agent Instructions for plugin-boilerplate
 
+<!-- Keeps AI agent behavior consistent with project conventions. -->
+
 This plugin is a modern WordPress plugin with strict conventions and automated workflows. Follow these guidelines.
 
 ### Documentation
@@ -62,5 +64,5 @@ When adding new primitives, patterns, or documentation to this plugin:
 1. Update `docs/` with detailed implementation guides
 2. Update @AGENTS.md with high-level reference
 <!-- BOILERPLATE-DOCS-START -->
-3. Update @.opencode/skill/boilerplate-update/SKILL.md so downstream plugins can adopt changes
+3. Update @.agents/skills/boilerplate-update/SKILL.md so downstream plugins can adopt changes
 <!-- BOILERPLATE-DOCS-END -->
