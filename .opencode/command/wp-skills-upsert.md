@@ -3,8 +3,6 @@ description: Upsert WordPress agent skills [skillnames], default to wp-interacti
 subtask: false
 ---
 
-<!-- Keeps local skills aligned with the official WordPress agent-skills repo. -->
-
 **Goal:** Upsert skills provided by WordPress https://github.com/WordPress/agent-skills into the current workspace.
 
 ## **1. Download & Cleanup**

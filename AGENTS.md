@@ -1,7 +1,5 @@
 ## AI Coding Agent Instructions for plugin-boilerplate
 
-<!-- Keeps AI agent behavior consistent with project conventions. -->
-
 This plugin is a modern WordPress plugin with strict conventions and automated workflows. Follow these guidelines.
 
 ### Documentation

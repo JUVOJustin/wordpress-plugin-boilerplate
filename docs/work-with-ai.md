@@ -1,7 +1,5 @@
 # Working with AI
 
-<!-- Explains how this boilerplate structures AI commands, skills, and rules. -->
-
 This boilerplate is optimized for AI-assisted development using [opencode](https://opencode.ai). It provides a complete set of commands, skills, and instructions that guide AI agents to work effectively with your plugin.
 These resources are kept up to date and it makes sense to update them with the latest version of the boilerplate. You can add your own resources anytime.
 

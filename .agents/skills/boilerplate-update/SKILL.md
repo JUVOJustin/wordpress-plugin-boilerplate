@@ -8,8 +8,6 @@ description: |
    boilerplate", "sync with boilerplate", or "migrate to latest boilerplate".
 ---
 
-<!-- Guides safe, consistent adoption of upstream boilerplate changes. -->
-
 # Boilerplate Update Skill
 
 Update WordPress plugins to the latest plugin-boilerplate features.
