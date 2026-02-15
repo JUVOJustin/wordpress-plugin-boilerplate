@@ -39,6 +39,21 @@ Short intro paragraph.
 ...
 ```
 
+## Code Blocks
+
+Use Expressive Code attributes on fenced code blocks. These attributes are ignored when unsupported, so it is best practice to include them consistently.
+
+- Always specify a language for syntax highlighting (e.g. `bash`, `php`, `js`).
+- Add a `title="..."` when the snippet belongs to a file or a terminal session.
+
+```bash title="Terminal"
+npm run build
+```
+
+```php title="src/Demo_Plugin.php"
+private function enqueue_entrypoint( string $entry, array $localize_data = array() ): void
+```
+
 ## Folder Structures
 
 When documenting folder layouts, use the Starlight FileTree component so directories and files render consistently.
