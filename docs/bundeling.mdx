@@ -4,45 +4,7 @@ short_title: Bundling
 description: Build and enqueue assets with @wordpress/scripts.
 ---
 
-import { Code, FileTree } from '@astrojs/starlight/components';
-
-const entrypointsCode = String.raw`entry: {
-    'demo-plugin-frontend': [
-        path.resolve(__dirname, 'resources/frontend/js/app.js'),
-        path.resolve(__dirname, 'resources/frontend/scss/app.scss'),
-    ],
-    'demo-plugin-admin': [
-        path.resolve(__dirname, 'resources/admin/js/app.js'),
-        path.resolve(__dirname, 'resources/admin/scss/app.scss'),
-    ],
-},
-`;
-
-const newEntrypointCode = String.raw`entry: {
-    // ... existing entries
-    'my-new-feature': [
-        path.resolve(__dirname, 'resources/frontend/js/my-feature.js'),
-        path.resolve(__dirname, 'resources/frontend/scss/my-feature.scss'),
-    ],
-},
-`;
-
-const copyPluginCode = String.raw`const CopyPlugin = require('copy-webpack-plugin');
-
-module.exports = {
-    // ... existing config
-    plugins: [
-        ...defaultConfig.plugins,
-        new CopyPlugin({
-            patterns: [
-                { from: 'resources/static', to: 'static', noErrorOnMissing: true },
-            ],
-        }),
-    ],
-};
-`;
-
-const enqueueEntrypointSignatureCode = String.raw`private function enqueue_entrypoint( string $entry, array $localize_data = array() ): void`;
+import { FileTree } from '@astrojs/starlight/components';
 
 The project uses `@wordpress/scripts` (wp-scripts) for bundling and compiling frontend assets like JavaScript and CSS/SCSS. This tool simplifies the build process by providing a set of pre-configured webpack settings tailored for WordPress development.
 
@@ -88,7 +50,18 @@ The `resources/` folder contains source assets and is excluded from distribution
 
 Entrypoints define what files webpack compiles. The default configuration includes two entrypoints in `webpack.config.js`:
 
-<Code code={entrypointsCode} lang="js" title="webpack.config.js" />
+```js title="webpack.config.js"
+entry: {
+    'demo-plugin-frontend': [
+        path.resolve(__dirname, 'resources/frontend/js/app.js'),
+        path.resolve(__dirname, 'resources/frontend/scss/app.scss'),
+    ],
+    'demo-plugin-admin': [
+        path.resolve(__dirname, 'resources/admin/js/app.js'),
+        path.resolve(__dirname, 'resources/admin/scss/app.scss'),
+    ],
+},
+```
 
 Each entrypoint bundles its JS and SCSS into the `build/` directory:
 - `build/demo-plugin-frontend.js` + `build/demo-plugin-frontend.css`
@@ -98,7 +71,15 @@ Each entrypoint bundles its JS and SCSS into the `build/` directory:
 
 To add a new entrypoint, modify `webpack.config.js`:
 
-<Code code={newEntrypointCode} lang="js" title="webpack.config.js" />
+```js title="webpack.config.js"
+entry: {
+    // ... existing entries
+    'my-new-feature': [
+        path.resolve(__dirname, 'resources/frontend/js/my-feature.js'),
+        path.resolve(__dirname, 'resources/frontend/scss/my-feature.scss'),
+    ],
+},
+```
 
 This creates `build/my-new-feature.js` and `build/my-new-feature.css`.
 
@@ -124,7 +105,21 @@ npm install copy-webpack-plugin --save-dev```
 
 Then, modify `webpack.config.js`:
 
-<Code code={copyPluginCode} lang="js" title="webpack.config.js" />
+```js title="webpack.config.js"
+const CopyPlugin = require('copy-webpack-plugin');
+
+module.exports = {
+    // ... existing config
+    plugins: [
+        ...defaultConfig.plugins,
+        new CopyPlugin({
+            patterns: [
+                { from: 'resources/static', to: 'static', noErrorOnMissing: true },
+            ],
+        }),
+    ],
+};
+```
 
 This copies files from `resources/static/` to `build/static/` without processing. Note: This plugin is **not included by default** and must be installed via `npm install copy-webpack-plugin --save-dev`.
 
@@ -132,7 +127,9 @@ This copies files from `resources/static/` to `build/static/` without processing
 
 The main plugin class provides `enqueue_entrypoint()` for loading bundled assets. It handles both JS and CSS from a single call and can be used in any context.
 
-<Code code={enqueueEntrypointSignatureCode} lang="php" title="src/Demo_Plugin.php" />
+```php title="src/Demo_Plugin.php"
+private function enqueue_entrypoint( string $entry, array $localize_data = array() ): void
+```
 
 ### Basic Usage
 

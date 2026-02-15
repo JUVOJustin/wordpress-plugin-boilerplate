@@ -4,9 +4,23 @@ short_title: ACF JSON
 description: Store and sync ACF field group JSON with the plugin.
 ---
 
-import { Code, Tabs, TabItem } from '@astrojs/starlight/components';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-const acfJsonDirectCode = String.raw`/**
+There is no ultimate way how to do it but throughout the year the following pattern has proven to be effective and flexible.
+
+All ACF field group JSON files should be stored in `acf-json/` at the plugin root level.
+
+To enable ACF JSON sync in your plugin:
+
+1. Create the `acf-json` directory at the plugin root
+2. Add the following code to your `load_dependencies()` method in the main Demo_Plugin class:
+
+The code examples are based on ACF´s documentation for [local JSON](https://www.advancedcustomfields.com/resources/local-json/).
+
+<Tabs>
+  <TabItem label="Option 1: Direct approach">
+```php title="src/Demo_Plugin.php"
+/**
  * Load the required dependencies for this plugin.
  *
  * @since    1.0.0
@@ -33,9 +47,12 @@ private function load_dependencies(): void {
         }
     );
 }
-`;
-
-const acfConfigClassCode = String.raw`<?php
+```
+  </TabItem>
+  <TabItem label="Option 2: Separate class">
+For more complex setups with multiple field groups, create a dedicated class:
+```php title="src/Integrations/ACF/Config.php"
+<?php
 /**
  * ACF Configuration.
  *
@@ -88,38 +105,15 @@ class Config {
         return $paths;
     }
 }
-`;
-
-const acfInitCode = String.raw`private function load_dependencies(): void {
+```
+Then initialize it in your main plugin class:
+```php title="src/Demo_Plugin.php"
+private function load_dependencies(): void {
     $this->loader = new Loader();
     
     // Initialize ACF configuration
     new \Demo_Plugin\Integrations\ACF\Config();
 }
-`;
-
-There is no ultimate way how to do it but throughout the year the following pattern has proven to be effective and flexible.
-
-All ACF field group JSON files should be stored in `acf-json/` at the plugin root level.
-
-To enable ACF JSON sync in your plugin:
-
-1. Create the `acf-json` directory at the plugin root
-2. Add the following code to your `load_dependencies()` method in the main Demo_Plugin class:
-
-The code examples are based on ACF´s documentation for [local JSON](https://www.advancedcustomfields.com/resources/local-json/).
-
-<Tabs>
-  <TabItem label="Option 1: Direct approach">
-    <Code code={acfJsonDirectCode} lang="php" title="src/Demo_Plugin.php" />
-  </TabItem>
-  <TabItem label="Option 2: Separate class">
-    For more complex setups with multiple field groups, create a dedicated class:
-
-    <Code code={acfConfigClassCode} lang="php" title="src/Integrations/ACF/Config.php" />
-
-    Then initialize it in your main plugin class:
-
-    <Code code={acfInitCode} lang="php" title="src/Demo_Plugin.php" />
+```
   </TabItem>
 </Tabs>
