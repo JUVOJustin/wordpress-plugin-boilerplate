@@ -43,6 +43,7 @@ Congrats! Your plugins is ready.
 
 To boost AI performance you proabably want to tune your `AGENTS.md` rules.
 For improved AI capabilities you can add official [WordPress Agent Skills](docs/work-with-ai.mdx) stored in `.agents/skills`.
+Default set includes `wp-block-development`, `wp-interactivity-api`, `wp-project-triage`, `wp-phpstan`, and `wp-rest-api`.
 
 # Development Guide
 

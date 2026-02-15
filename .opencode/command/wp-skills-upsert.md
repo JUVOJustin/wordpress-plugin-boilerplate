@@ -1,5 +1,5 @@
 ---
-description: Upsert WordPress agent skills [skillnames], default to wp-interactivity-api, wp-project-triage, wp-block-development, wp-phpstan
+description: Upsert WordPress agent skills [skillnames], default to wp-interactivity-api, wp-project-triage, wp-block-development, wp-phpstan, wp-rest-api
 subtask: false
 ---
 
@@ -20,6 +20,7 @@ Based on the input provided, determine which skills to sync: "$ARGUMENTS"
     - wp-project-triage 
     - wp-block-development
     - wp-phpstan
+    - wp-rest-api
 
 2. Defined input:
     - Always upsert wp-project-triage as it is a dependency for other skills.

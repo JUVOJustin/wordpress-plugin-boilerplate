@@ -40,7 +40,7 @@ Skills are sophisticated, multi-step workflows for complex tasks. They live in `
 | Command | Description |
 |---------|-------------|
 | `/translations-upsert [lang1 lang2...]` | Update or create translations. Without arguments: updates all existing `.po` files. With arguments: creates/updates specific languages. |
-| `/wp-skills-upsert [skillnames]` | Download and install official WordPress agent skills. Default: `wp-interactivity-api`, `wp-project-triage`, `wp-block-development`, `wp-phpstan`. |
+| `/wp-skills-upsert [skillnames]` | Download and install official WordPress agent skills. Default: `wp-interactivity-api`, `wp-project-triage`, `wp-block-development`, `wp-phpstan`, `wp-rest-api`. |
 | `/commands-upsert` | Sync commands and skills from the upstream boilerplate. |
 | `/readme-update` | Update README.md with current plugin information, blocks, CLI commands, etc. |
 | `/qa-run` | Run quality assurance tools (PHPCS, PHPStan, ESLint, stylelint). |
@@ -77,6 +77,7 @@ The WordPress project provides official skills for WordPress development. Instal
 | `wp-interactivity-api` | Work with the Interactivity API for dynamic blocks |
 | `wp-phpstan` | PHPStan analysis with WordPress-specific rules |
 | `wp-project-triage` | Project analysis and task management |
+| `wp-rest-api` | REST API routes, auth, and schema guidance |
 
 These skills are maintained in `https://github.com/WordPress/agent-skills` and follow WordPress core best practices.
 
