@@ -23,7 +23,7 @@ This boilerplate is a fork of [WordPress Boilerplate](https://github.com/DevinVi
 ## Step 1: Create Your Project
 Run the following command to create your project in the current folder. This will download the boilerplate and automatically run the script for initial configuration:
 
-```bash
+```bash title="Terminal"
 composer create-project juvo/wordpress-plugin-boilerplate
 ```
 
@@ -73,8 +73,7 @@ Avoid placing logic directly in the plugin's root files. The main plugin file sh
 
 The plugin uses a loader pattern to centralize the registration of hooks, filters, and shortcodes. Instead of registering hooks in class constructors, always use the loader in the root class:
 
-```php
-// In your Plugin.php main class
+```php title="src/Demo_Plugin.php"
 public function __construct() {
     $this->loader = new Loader();
     $this->define_admin_hooks();
