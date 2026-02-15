@@ -4,30 +4,9 @@ short_title: Abilities API
 description: Interfaces and Loader integration for WordPress Abilities.
 ---
 
-## Why This Boilerplate Includes Abilities Support
+import { Code } from '@astrojs/starlight/components';
 
-The project provides interfaces and Loader integration for the WordPress Abilities API to give you a head start when exposing your plugin's functionality.
-
-**What this integration offers:**
-
-- **Consistent structure** — The `Ability_Interface` enforces input/output schemas, permission checks, and annotations so every ability follows the same pattern.
-- **Automatic registration** — Categories are collected and registered automatically when you add an ability to the Loader.
-- **Type safety** — PHPStan and IDE autocompletion guide your implementation.
-- **No overhead when unused** — If you don't register abilities, no code runs. On WordPress < 6.9, the feature is silently skipped.
-
-To understand *what* the Abilities API is or *why* you might use it see the [official documentation](https://developer.wordpress.org/news/2025/11/introducing-the-wordpress-abilities-api/).
-
----
-
-
-## Quick Start
-
-### 1. Create Category Class (Optional)
-
-Create `src/Abilities/Categories/Data_Retrieval.php`:
-
-```php
-<?php
+const dataRetrievalCode = String.raw`<?php
 
 namespace Demo_Plugin\Abilities\Categories;
 
@@ -54,14 +33,9 @@ class Data_Retrieval implements Ability_Category_Interface {
         return array();
     }
 }
-```
+`;
 
-### 2. Create Ability Class
-
-Create `src/Abilities/My_Ability.php`:
-
-```php
-<?php
+const myAbilityCode = String.raw`<?php
 
 namespace Demo_Plugin\Abilities;
 
@@ -132,15 +106,45 @@ class My_Ability implements Ability_Interface {
         return array( 'success' => true, 'title' => $post->post_title );
     }
 }
-```
+`;
+
+const registerAbilityCode = String.raw`$this->loader->add_ability( Abilities\My_Ability::class );`;
+
+## Why This Boilerplate Includes Abilities Support
+
+The project provides interfaces and Loader integration for the WordPress Abilities API to give you a head start when exposing your plugin's functionality.
+
+**What this integration offers:**
+
+- **Consistent structure** — The `Ability_Interface` enforces input/output schemas, permission checks, and annotations so every ability follows the same pattern.
+- **Automatic registration** — Categories are collected and registered automatically when you add an ability to the Loader.
+- **Type safety** — PHPStan and IDE autocompletion guide your implementation.
+- **No overhead when unused** — If you don't register abilities, no code runs. On WordPress < 6.9, the feature is silently skipped.
+
+To understand *what* the Abilities API is or *why* you might use it see the [official documentation](https://developer.wordpress.org/news/2025/11/introducing-the-wordpress-abilities-api/).
+
+---
+
+
+## Quick Start
+
+### 1. Create Category Class (Optional)
+
+Create `src/Abilities/Categories/Data_Retrieval.php`:
+
+<Code code={dataRetrievalCode} lang="php" title="src/Abilities/Categories/Data_Retrieval.php" />
+
+### 2. Create Ability Class
+
+Create `src/Abilities/My_Ability.php`:
+
+<Code code={myAbilityCode} lang="php" title="src/Abilities/My_Ability.php" />
 
 ### 3. Register Ability
 
 In `Demo_Plugin.php`:
 
-```php
-$this->loader->add_ability( Abilities\My_Ability::class );
-```
+<Code code={registerAbilityCode} lang="php" title="src/Demo_Plugin.php" />
 
 Categories are automatically registered via the Loader when abilities reference them.
 

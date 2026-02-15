@@ -4,19 +4,9 @@ short_title: Sentry
 description: Error monitoring integration using the Sentry SDK.
 ---
 
-Using [Sentry](https://sentry.io/) in your WordPress plugin allows you to monitor and track errors effectively. Below are the steps to integrate Sentry into your plugin.
+import { Code } from '@astrojs/starlight/components';
 
-## 1. Install sentry SDK
-```
-composer require sentry/sentry
-```
-
-## 2. Add init script
-This snippet initializes Sentry in your plugin, ensuring that only errors originating from your plugin are sent to Sentry, and that errors from local environments are ignored. Make sure to replace `'https://your-dsn'` with your actual Sentry DSN and adjust the file check in the `before_send` callback to match your plugin's unique identifier.
-
-Add it in `Demo_Plugin.php` for example within the `load_dependencies` method or any initialization method that runs early in the plugin's lifecycle.
-```php
-\Sentry\init(
+const sentryInitCode = String.raw`\Sentry\init(
     array(
         'dsn'                => 'https://your-dsn', // Replace with your actual DSN
         'release'            => self::PLUGIN_VERSION,
@@ -42,4 +32,17 @@ Add it in `Demo_Plugin.php` for example within the `load_dependencies` method or
         },
     )
 );
+`;
+
+Using [Sentry](https://sentry.io/) in your WordPress plugin allows you to monitor and track errors effectively. Below are the steps to integrate Sentry into your plugin.
+
+## 1. Install sentry SDK
 ```
+composer require sentry/sentry
+```
+
+## 2. Add init script
+This snippet initializes Sentry in your plugin, ensuring that only errors originating from your plugin are sent to Sentry, and that errors from local environments are ignored. Make sure to replace `'https://your-dsn'` with your actual Sentry DSN and adjust the file check in the `before_send` callback to match your plugin's unique identifier.
+
+Add it in `Demo_Plugin.php` for example within the `load_dependencies` method or any initialization method that runs early in the plugin's lifecycle.
+<Code code={sentryInitCode} lang="php" title="src/Demo_Plugin.php" />

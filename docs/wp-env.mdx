@@ -4,6 +4,22 @@ short_title: wp-env
 description: Containerized WordPress development environment with @wordpress/env.
 ---
 
+import { Code } from '@astrojs/starlight/components';
+
+const wpEnvHostScriptCode = String.raw`{
+  "scripts": {
+    "env:my-script": "wp-env run cli my-command"
+  }
+}
+`;
+
+const wpEnvContainerScriptCode = String.raw`{
+  "scripts": {
+    "my-script": "wp some-command"
+  }
+}
+`;
+
 The plugin uses [@wordpress/env](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) to provide a consistent, containerized WordPress development environment. This is useful for local development and CI/CD pipelines where a full WordPress installation is required.
 
 ## Configuration
@@ -44,23 +60,11 @@ npm run env:cli -- composer run phpstan
 
 **Host-side scripts** (interacting with wp-env from outside) belong in `package.json`:
 
-```json
-{
-  "scripts": {
-    "env:my-script": "wp-env run cli my-command"
-  }
-}
-```
+<Code code={wpEnvHostScriptCode} lang="json" title="package.json" />
 
 **Container-side scripts** (executed inside wp-env) belong in `composer.json` because Composer is available inside the container but npm is not:
 
-```json
-{
-  "scripts": {
-    "my-script": "wp some-command"
-  }
-}
-```
+<Code code={wpEnvContainerScriptCode} lang="json" title="composer.json" />
 
 Then run it with:
 

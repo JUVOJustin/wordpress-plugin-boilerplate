@@ -4,6 +4,17 @@ short_title: Blocks
 description: Block scaffolding and automatic registration workflow.
 ---
 
+import { Code } from '@astrojs/starlight/components';
+
+const editorEntrypointCode = String.raw`/**
+ * Enqueue entrypoint in the editor.
+ * Should be used for shared styles and scripts
+ */
+add_action('enqueue_block_assets', function () {
+    $this->enqueue_entrypoint( 'demo-plugin-frontend' );
+});
+`;
+
 The project has builtin block support. This means it has an opinionated way to use blocks, but also automates a lot of the tedious tasks like registration and asset management.
 
 ## Create your first block
@@ -28,12 +39,4 @@ Another usecase is when using [server-side rendering for block previews](https:/
 
 To achieve this you can add the follwing snippet in the `register_blocks` method of the plugins main class.
 
-```php
-/**
- * Enqueue entrypoint in the editor.
- * Should be used for shared styles and scripts
- */
-add_action('enqueue_block_assets', function () {
-    $this->enqueue_entrypoint( 'demo-plugin-frontend' );
-});
-```
+<Code code={editorEntrypointCode} lang="php" title="src/Demo_Plugin.php" />
