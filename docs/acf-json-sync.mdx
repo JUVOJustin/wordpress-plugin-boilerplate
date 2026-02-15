@@ -4,7 +4,7 @@ short_title: ACF JSON
 description: Store and sync ACF field group JSON with the plugin.
 ---
 
-import { Code } from '@astrojs/starlight/components';
+import { Code, Tabs, TabItem } from '@astrojs/starlight/components';
 
 const acfJsonDirectCode = String.raw`/**
  * Load the required dependencies for this plugin.
@@ -109,16 +109,17 @@ To enable ACF JSON sync in your plugin:
 
 The code examples are based on ACF´s documentation for [local JSON](https://www.advancedcustomfields.com/resources/local-json/).
 
-## Option 1: Direct approach with anonymous functions
+<Tabs>
+  <TabItem label="Option 1: Direct approach">
+    <Code code={acfJsonDirectCode} lang="php" title="src/Demo_Plugin.php" />
+  </TabItem>
+  <TabItem label="Option 2: Separate class">
+    For more complex setups with multiple field groups, create a dedicated class:
 
-<Code code={acfJsonDirectCode} lang="php" title="src/Demo_Plugin.php" />
+    <Code code={acfConfigClassCode} lang="php" title="src/Integrations/ACF/Config.php" />
 
-## Option 2: Separate class for managing multiple field groups
+    Then initialize it in your main plugin class:
 
-For more complex setups with multiple field groups, create a dedicated class:
-
-<Code code={acfConfigClassCode} lang="php" title="src/Integrations/ACF/Config.php" />
-
-Then initialize it in your main plugin class:
-
-<Code code={acfInitCode} lang="php" title="src/Demo_Plugin.php" />
+    <Code code={acfInitCode} lang="php" title="src/Demo_Plugin.php" />
+  </TabItem>
+</Tabs>
