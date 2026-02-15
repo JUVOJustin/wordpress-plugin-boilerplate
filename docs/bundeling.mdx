@@ -1,4 +1,10 @@
-# Bundling using wp-scripts
+---
+title: Bundling with wp-scripts
+short_title: Bundling
+description: Build and enqueue assets with @wordpress/scripts.
+---
+
+import { FileTree } from '@astrojs/starlight/components';
 
 The project uses `@wordpress/scripts` (wp-scripts) for bundling and compiling frontend assets like JavaScript and CSS/SCSS. This tool simplifies the build process by providing a set of pre-configured webpack settings tailored for WordPress development.
 
@@ -17,32 +23,34 @@ The project uses `@wordpress/scripts` (wp-scripts) for bundling and compiling fr
 
 ## Directory Structure
 
-```
-resources/            # Source assets (excluded from distribution)
-├── admin/            # Admin-specific assets
-│   ├── js/
-│   │   └── app.js    # Admin JS entry point
-│   ├── scss/
-│   │   └── app.scss  # Admin styles entry point
-│   └── images/       # Images referenced in admin SCSS
-├── frontend/         # Frontend-specific assets
-│   ├── js/
-│   │   └── app.js    # Frontend JS entry point
-│   ├── scss/
-│   │   └── app.scss  # Frontend styles entry point
-│   └── images/       # Images referenced in frontend SCSS
-build/                # Compiled assets (distributed)
-├── demo-plugin-admin.js
-├── demo-plugin-admin.css
-├── demo-plugin-frontend.js
-└── demo-plugin-frontend.css
-```
+The `resources/` folder contains source assets and is excluded from distribution. The `build/` folder contains compiled assets.
+
+<FileTree>
+- resources
+  - admin
+    - js
+      - app.js
+    - scss
+      - app.scss
+    - images/
+  - frontend
+    - js
+      - app.js
+    - scss
+      - app.scss
+    - images/
+- build
+  - demo-plugin-admin.js
+  - demo-plugin-admin.css
+  - demo-plugin-frontend.js
+  - demo-plugin-frontend.css
+</FileTree>
 
 ## Entrypoints
 
 Entrypoints define what files webpack compiles. The default configuration includes two entrypoints in `webpack.config.js`:
 
-```javascript
+```js title="webpack.config.js"
 entry: {
     'demo-plugin-frontend': [
         path.resolve(__dirname, 'resources/frontend/js/app.js'),
@@ -63,7 +71,7 @@ Each entrypoint bundles its JS and SCSS into the `build/` directory:
 
 To add a new entrypoint, modify `webpack.config.js`:
 
-```javascript
+```js title="webpack.config.js"
 entry: {
     // ... existing entries
     'my-new-feature': [
@@ -97,7 +105,7 @@ npm install copy-webpack-plugin --save-dev```
 
 Then, modify `webpack.config.js`:
 
-```javascript
+```js title="webpack.config.js"
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
@@ -119,7 +127,7 @@ This copies files from `resources/static/` to `build/static/` without processing
 
 The main plugin class provides `enqueue_entrypoint()` for loading bundled assets. It handles both JS and CSS from a single call and can be used in any context.
 
-```php
+```php title="src/Demo_Plugin.php"
 private function enqueue_entrypoint( string $entry, array $localize_data = array() ): void
 ```
 
@@ -173,4 +181,4 @@ The method automatically:
 
 ## Gutenberg Blocks
 
-Block assets are handled automatically. See [Create Blocks](create-blocks.md) for details on block development and asset management.
+Block assets are handled automatically. See [Create Blocks](create-blocks.mdx) for details on block development and asset management.

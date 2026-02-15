@@ -1,4 +1,8 @@
-# WordPress Abilities API
+---
+title: WordPress Abilities API
+short_title: Abilities API
+description: Interfaces and Loader integration for WordPress Abilities.
+---
 
 ## Why This Boilerplate Includes Abilities Support
 
@@ -22,7 +26,7 @@ To understand *what* the Abilities API is or *why* you might use it see the [off
 
 Create `src/Abilities/Categories/Data_Retrieval.php`:
 
-```php
+```php title="src/Abilities/Categories/Data_Retrieval.php"
 <?php
 
 namespace Demo_Plugin\Abilities\Categories;
@@ -56,7 +60,7 @@ class Data_Retrieval implements Ability_Category_Interface {
 
 Create `src/Abilities/My_Ability.php`:
 
-```php
+```php title="src/Abilities/My_Ability.php"
 <?php
 
 namespace Demo_Plugin\Abilities;
@@ -134,7 +138,7 @@ class My_Ability implements Ability_Interface {
 
 In `Demo_Plugin.php`:
 
-```php
+```php title="src/Demo_Plugin.php"
 $this->loader->add_ability( Abilities\My_Ability::class );
 ```
 

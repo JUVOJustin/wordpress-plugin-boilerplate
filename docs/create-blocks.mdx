@@ -1,4 +1,8 @@
-# Develop and Ship Blocks
+---
+title: Develop and Ship Blocks
+short_title: Blocks
+description: Block scaffolding and automatic registration workflow.
+---
 
 The project has builtin block support. This means it has an opinionated way to use blocks, but also automates a lot of the tedious tasks like registration and asset management.
 
@@ -24,7 +28,7 @@ Another usecase is when using [server-side rendering for block previews](https:/
 
 To achieve this you can add the follwing snippet in the `register_blocks` method of the plugins main class.
 
-```php
+```php title="src/Demo_Plugin.php"
 /**
  * Enqueue entrypoint in the editor.
  * Should be used for shared styles and scripts

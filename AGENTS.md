@@ -6,13 +6,14 @@ This plugin is a modern WordPress plugin with strict conventions and automated w
 
 | File               | Covers |
 |--------------------|--------|
-| @docs/abilities.md | Abilities API: interfaces, category/ability creation, Loader registration |
-| @docs/bundeling.md      | wp-scripts bundling, entry points, asset enqueueing, localization |
-| @docs/i18n.md           | Translation workflow, extract/compile scripts, JSON translations |
-| @docs/create-blocks.md  | Block scaffolding, auto-registration, editor style sharing |
-| @docs/wp-env.md         | Docker dev environment, script structure, CI/CD usage |
-| @docs/acf-json-sync.md  | ACF field group JSON storage patterns |
-| @docs/work-with-ai.md   | AI integration: commands, skills, AGENTS.md, WordPress agent skills |
+| @docs/abilities.mdx | Abilities API: interfaces, category/ability creation, Loader registration |
+| @docs/bundeling.mdx      | wp-scripts bundling, entry points, asset enqueueing, localization |
+| @docs/i18n.mdx           | Translation workflow, extract/compile scripts, JSON translations |
+| @docs/create-blocks.mdx  | Block scaffolding, auto-registration, editor style sharing |
+| @docs/wp-env.mdx         | Docker dev environment, script structure, CI/CD usage |
+| @docs/acf-json-sync.mdx  | ACF field group JSON storage patterns |
+| @docs/work-with-ai.mdx   | AI integration: commands, skills, AGENTS.md, WordPress agent skills |
+| @docs/documentation.mdx  | Documentation structure, front matter metadata, heading rules |
 
 - Read docs for implementation details.
 - Keep the docs updated
@@ -50,10 +51,10 @@ This plugin is a modern WordPress plugin with strict conventions and automated w
 
 ### Feature Quick Reference
 
-- **Blocks**: Run `npm run create-block`. See `docs/create-blocks.md`.
-- **Abilities API**: Implement interfaces in `src/Abilities/`, register via Loader. See `docs/abilities.md`.
-- **i18n**: Extract with `composer run i18n:extract`, compile with `composer run i18n:compile`. See `docs/i18n.md`.
-- **wp-env**: Start with `npm run env:start`. See `docs/wp-env.md`.
+- **Blocks**: Run `npm run create-block`. See `docs/create-blocks.mdx`.
+- **Abilities API**: Implement interfaces in `src/Abilities/`, register via Loader. See `docs/abilities.mdx`.
+- **i18n**: Extract with `composer run i18n:extract`, compile with `composer run i18n:compile`. See `docs/i18n.mdx`.
+- **wp-env**: Start with `npm run env:start`. See `docs/wp-env.mdx`.
 
 ### Maintaining the plugin
 

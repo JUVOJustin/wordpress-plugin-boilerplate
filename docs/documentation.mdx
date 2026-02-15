@@ -1,0 +1,53 @@
+---
+title: Plugin Documentation
+short_title: Documentation
+description: Guidance for writing plugin docs with structured front matter metadata.
+---
+
+Use the `docs/` folder for all plugin documentation. Organize files and subfolders in any structure that fits the project.
+
+## Structure Is Flexible
+
+Group documentation by feature, workflow, or integration. Create subfolders when it helps discovery, and keep filenames descriptive so they can be linked directly from `README.md` or other docs. Author docs as MDX so components can be used when helpful.
+
+## Front Matter Metadata
+
+Front matter is optional, and documentation can be created freely. Using it is a best practice; when you include it, add a `title`, a `short_title`, and a `description` so automated tooling can parse the docs.
+
+```yaml
+---
+title: Asset Bundling
+short_title: Bundling
+description: How scripts and styles are built and enqueued.
+---
+```
+
+## Headings and Intro
+
+Do not repeat the front matter `title` as an H1 in the body. Start with a short paragraph or an H2 such as `## Overview`.
+
+```md
+---
+title: Asset Bundling
+short_title: Bundling
+description: How scripts and styles are built and enqueued.
+---
+
+Short intro paragraph.
+
+## Overview
+...
+```
+
+## Folder Structures
+
+When documenting folder layouts, use the Starlight FileTree component so directories and files render consistently.
+
+```mdx
+import { FileTree } from '@astrojs/starlight/components';
+
+<FileTree>
+- src
+  - ...
+</FileTree>
+```
