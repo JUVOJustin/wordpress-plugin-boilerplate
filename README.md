@@ -14,8 +14,9 @@ This boilerplate is a fork of [WordPress Boilerplate](https://github.com/DevinVi
 - PHPCS with ready-made Github actions
 - [@wordpress/scripts](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/) for simple bundling, linting and formatting of JS and CSS/SCSS files
 - Ready-made Github actions for building and bundling
-- [AI-optimized](docs/work-with-ai.md) with AGENTS.md, commands, and skills
-- Simple [Gutenberg Block generation](/docs/create-blocks.md) and automated loading
+- [AI-optimized](docs/work-with-ai.mdx) with AGENTS.md, commands, and skills
+- Documentation guidelines in `docs/documentation.mdx` with front matter metadata
+- Simple [Gutenberg Block generation](/docs/create-blocks.mdx) and automated loading
 
 # Setup
 
@@ -41,7 +42,7 @@ Your inputs will automatically tailor the boilerplate to match your plugin's ide
 Congrats! Your plugins is ready.
 
 To boost AI performance you proabably want to tune your `AGENTS.md` rules.
-For improved AI capabilities you can add official [WordPress Agent Skills](docs/work-with-ai.md) stored in `.agents/skills`.
+For improved AI capabilities you can add official [WordPress Agent Skills](docs/work-with-ai.mdx) stored in `.agents/skills`.
 
 # Development Guide
 

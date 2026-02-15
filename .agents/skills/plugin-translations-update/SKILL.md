@@ -25,4 +25,4 @@ Manage internationalization (i18n) for WordPress plugins by extracting, translat
 
 ## Reference
 
-For detailed i18n documentation, see [i18n.md](references/i18n.md).
+For detailed i18n documentation, see [i18n](../../../docs/i18n.mdx).

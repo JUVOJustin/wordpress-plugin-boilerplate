@@ -1,4 +1,8 @@
-# i18n Support
+---
+title: i18n Support
+short_title: i18n
+description: Translation workflow and extraction/compilation scripts.
+---
 
 The plugin is prepared to support internationalization (i18n) and translations for your WordPress plugin.
 
@@ -6,7 +10,7 @@ The plugin is prepared to support internationalization (i18n) and translations f
 1. Run bundling using `npm run build` for js script extraction.
 2. Run `composer run i18n:extract` to generate the `.pot` file in the `languages/` directory and update existing `.po` files.
 3. Translate the strings in the `.po` files existing or create a new file for each language you want to support.
-4. (Optional) Run `composer run i18n:compile` to compile the `.po` files into `.mo`, `.json` and `.php` files. This step makes translations available to WordPress. The `deploy` action does this automatically using [wp-env](wp-env.md).
+4. (Optional) Run `composer run i18n:compile` to compile the `.po` files into `.mo`, `.json` and `.php` files. This step makes translations available to WordPress. The `deploy` action does this automatically using [wp-env](wp-env.mdx).
 
 This process allows you translating blocks and generate the fast [php format](https://make.wordpress.org/core/2024/02/27/i18n-improvements-6-5-performant-translations/) for maximum performance.
 

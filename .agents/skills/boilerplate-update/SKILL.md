@@ -47,13 +47,14 @@ The boilerplate includes detailed docs at `tmp/boilerplate-ref/docs/`:
 
 | File | Covers |
 |------|--------|
-| `abilities.md` | Abilities API interfaces, category/ability creation, Loader registration |
-| `bundeling.md` | wp-scripts bundling, entry points, asset enqueueing, localization |
-| `i18n.md` | Translation workflow, extract/compile scripts, JSON translations, caveats |
-| `create-blocks.md` | Block scaffolding, auto-registration via manifest, editor style sharing |
-| `wp-env.md` | Docker-based dev environment, script structure, CI/CD usage |
-| `acf-json-sync.md` | ACF field group JSON storage patterns |
-| `work-with-ai.md` | AI integration: commands, skills, AGENTS.md, WordPress agent skills |
+| `abilities.mdx` | Abilities API interfaces, category/ability creation, Loader registration |
+| `bundeling.mdx` | wp-scripts bundling, entry points, asset enqueueing, localization |
+| `i18n.mdx` | Translation workflow, extract/compile scripts, JSON translations, caveats |
+| `create-blocks.mdx` | Block scaffolding, auto-registration via manifest, editor style sharing |
+| `wp-env.mdx` | Docker-based dev environment, script structure, CI/CD usage |
+| `acf-json-sync.mdx` | ACF field group JSON storage patterns |
+| `work-with-ai.mdx` | AI integration: commands, skills, AGENTS.md, WordPress agent skills |
+| `documentation.mdx` | Documentation structure, front matter metadata, heading rules |
 
 Read these docs for implementation details. This skill only provides high-level guidance.
 
@@ -63,7 +64,7 @@ Read these docs for implementation details. This skill only provides high-level 
 
 Compare: `diff composer.json tmp/boilerplate-ref/composer.json`
 
-See docs for details: `i18n.md`, `bundeling.md`
+See docs for details: `i18n.mdx`, `bundeling.mdx`
 
 **Key items:**
 - `wp-cli/i18n-command` - Translation extraction/compilation
@@ -77,7 +78,7 @@ Compare:
 - `diff package.json tmp/boilerplate-ref/package.json`
 - `diff webpack.config.js tmp/boilerplate-ref/webpack.config.js`
 
-See docs for details: `bundeling.md`, `wp-env.md`, `create-blocks.md`
+See docs for details: `bundeling.mdx`, `wp-env.mdx`, `create-blocks.mdx`
 
 **Key items:**
 - `@wordpress/scripts` - Bundling, linting, formatting
@@ -107,18 +108,18 @@ Compare: `diff src/Loader.php tmp/boilerplate-ref/src/Loader.php`
 Compare: `diff src/*.php tmp/boilerplate-ref/src/Demo_Plugin.php`
 
 **New patterns:**
-- `enqueue_entrypoint($entry)` - See `tmp/boilerplate-ref/docs/bundeling.md`
-- `register_blocks()` - See `tmp/boilerplate-ref/docs/create-blocks.md`
+- `enqueue_entrypoint($entry)` - See `tmp/boilerplate-ref/docs/bundeling.mdx`
+- `register_blocks()` - See `tmp/boilerplate-ref/docs/create-blocks.mdx`
 
 ### 6. i18n Workflow
 
 Scripts: `i18n:extract` (creates .pot, updates .po) and `i18n:compile` (generates .mo, .json, .php)
 
-See `tmp/boilerplate-ref/docs/i18n.md` for workflow, caveats, and AI command.
+See `tmp/boilerplate-ref/docs/i18n.mdx` for workflow, caveats, and AI command.
 
 ### 7. Abilities API (WordPress 6.9+)
 
-See `tmp/boilerplate-ref/docs/abilities.md` for interface reference and examples.
+See `tmp/boilerplate-ref/docs/abilities.mdx` for interface reference and examples.
 
 **Key pattern:** `$this->loader->add_ability(Abilities\My_Ability::class)`
 
@@ -128,7 +129,7 @@ Compare:
 - `diff -r .opencode/command tmp/boilerplate-ref/.opencode/command`
 - `diff -r .agents/skills tmp/boilerplate-ref/.agents/skills`
 
-See `tmp/boilerplate-ref/docs/work-with-ai.md` for AI integration details.
+See `tmp/boilerplate-ref/docs/work-with-ai.mdx` for AI integration details.
 
 **Sync strategy:**
 - Add new items from upstream

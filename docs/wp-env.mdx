@@ -1,4 +1,8 @@
-# wp-env Development Environment
+---
+title: wp-env Development Environment
+short_title: wp-env
+description: Containerized WordPress development environment with @wordpress/env.
+---
 
 The plugin uses [@wordpress/env](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) to provide a consistent, containerized WordPress development environment. This is useful for local development and CI/CD pipelines where a full WordPress installation is required.
 
@@ -68,7 +72,7 @@ npm run env:cli -- composer run my-script
 
 The boilerplate uses wp-env in the deploy workflow to compile translations. This requires a full WordPress environment with WP-CLI available.
 
-See [i18n.md](i18n.md) for details on translation compilation.
+See [i18n](i18n.mdx) for details on translation compilation.
 
 ## Things to Keep in Mind
 
