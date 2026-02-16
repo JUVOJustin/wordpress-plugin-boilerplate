@@ -111,7 +111,7 @@ class Setup {
 		$progress = \WP_CLI\Utils\make_progress_bar( 'Setup', 9 );
 
 		// File patterns for markdown documentation
-		$md_patterns = array( '.*docs\/.*\.md', '.*AGENTS\.md' );
+		$md_patterns = array( '.*docs\/.*\.(md|mdx)', '.*AGENTS\.md' );
 
 		// Replace in files
 		if (
