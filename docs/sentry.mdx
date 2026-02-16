@@ -6,40 +6,63 @@ description: Error monitoring integration using the Sentry SDK.
 
 Using [Sentry](https://sentry.io/) in your WordPress plugin allows you to monitor and track errors effectively. Below are the steps to integrate Sentry into your plugin.
 
-## 1. Install sentry SDK
+## 1. Install Sentry SDK
 ```bash title="Terminal"
 composer require sentry/sentry
 ```
 
-## 2. Add init script
+## 2. Initialize Sentry first
+When you add Sentry in `load_dependencies`, make it the very first statement. This ensures Sentry registers its error and exception handlers before loaders, hook registration, or any other boot logic runs, so early failures are still captured.
+
+```php title="src/Demo_Plugin.php"
+/**
+ * Load all plugin dependencies while making Sentry available first.
+ */
+private function load_dependencies(): void {
+    $this->init_sentry();
+
+    $this->loader = new Loader();
+    $this->define_admin_hooks();
+    $this->define_public_hooks();
+}
+```
+
+## 3. Configure Sentry
 This snippet initializes Sentry in your plugin, ensuring that only errors originating from your plugin are sent to Sentry, and that errors from local environments are ignored. Make sure to replace `'https://your-dsn'` with your actual Sentry DSN and adjust the file check in the `before_send` callback to match your plugin's unique identifier.
 
-Add it in `Demo_Plugin.php` for example within the `load_dependencies` method or any initialization method that runs early in the plugin's lifecycle.
+Add it in `Demo_Plugin.php` for example within the `load_dependencies` method or any initialization method that runs early in the plugin's lifecycle. If you place it in `load_dependencies`, it must be the first statement.
 ```php title="src/Demo_Plugin.php"
-\Sentry\init(
-    array(
-        'dsn'                => 'https://your-dsn', // Replace with your actual DSN
-        'release'            => self::PLUGIN_VERSION,
-        'environment'        => wp_get_environment_type(),
-        'traces_sample_rate' => 0.1,
-        'send_default_pii'   => false,
-        'before_send'        => function ( \Sentry\Event $event ) {
-        
-            // Do not trigger errors for local environments
-            if ( wp_get_environment_type() === 'local' ) {
-                return null;
-            }
+/**
+ * Initialize Sentry before any other boot logic runs.
+ */
+private function init_sentry(): void {
+    \Sentry\init(
+        array(
+            'dsn'                => 'https://your-dsn',
+            'release'            => self::PLUGIN_VERSION,
+            'environment'        => wp_get_environment_type(),
+            'traces_sample_rate' => 0.1,
+            'send_default_pii'   => false,
+            'before_send'        => function ( \Sentry\Event $event ) {
+                // Filter events to this plugin and skip local environments.
+                if ( wp_get_environment_type() === 'local' ) {
+                    return null;
+                }
 
-            // Make sure to only send errors caused by our plugin 
-            foreach ( $event->getExceptions() as $ex ) {
-                foreach ( $ex->getStacktrace()->getFrames() as $frame ) {
-                    if ( str_contains( $frame->getFile(), 'demo-plugin' ) ) { // Adjust to your plugin's unique identifier
-                        return $event;
+                foreach ( $event->getExceptions() as $ex ) {
+                    foreach ( $ex->getStacktrace()->getFrames() as $frame ) {
+                        if ( str_contains( $frame->getFile(), 'demo-plugin' ) ) {
+                            return $event;
+                        }
                     }
                 }
-            }
-            return null; 
-        },
-    )
-);
+
+                return null;
+            },
+        )
+    );
+}
 ```
+
+## 4. Automatic error capture
+The PHP SDK registers error and exception handlers on `\Sentry\init`, so uncaught exceptions and fatal errors are captured automatically. For deeper usage examples (breadcrumbs, scopes, context), see the official PHP docs: https://docs.sentry.io/platforms/php/
