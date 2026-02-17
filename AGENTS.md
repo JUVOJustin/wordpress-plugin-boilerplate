@@ -1,4 +1,10 @@
-## AI Coding Agent Instructions for plugin-boilerplate
+## AI Coding Agent Instructions for Demo Plugin
+
+<!-- BOILERPLATE-DOCS-START -->
+This project is a boilerplate of a WordPress plugin for other developers to be used as a Quick Start. Code and comments wrapped in `<!-- BOILERPLATE-DOCS-START --><!-- BOILERPLATE-DOCS-END -->` will be removed after the @cli/Setup.php runs.
+
+Instead of calling this a boilerplate, reference the boilerplate by "Demo Plugin" since this will be replaced with the plugin name during setup.
+<!-- BOILERPLATE-DOCS-END -->
 
 This plugin is a modern WordPress plugin with strict conventions and automated workflows. Follow these guidelines.
 
@@ -21,7 +27,7 @@ This plugin is a modern WordPress plugin with strict conventions and automated w
 
 ### Architecture & Source Layout
 
-- **All plugin logic lives in `src/`**. Organize by feature/context (e.g., `Admin/`, `Frontend/`, `CLI/`, `Integrations/`).
+- **All plugin logic lives in `src/`**. Organize by feature/context (e.g., `Admin/`, `Frontend/`, `Integrations/`).
 - **Main plugin file (`demo-plugin.php`) only bootstraps**. Never place business logic here.
 - **Loader pattern**: Register hooks, filters, shortcodes, CLI commands, and abilities via the `Loader` class. Do not register hooks in constructors.
 
@@ -63,5 +69,5 @@ When adding new primitives, patterns, or documentation to this plugin:
 1. Update `docs/` with detailed implementation guides
 2. Update @AGENTS.md with high-level reference
 <!-- BOILERPLATE-DOCS-START -->
-3. Update @.agents/skills/boilerplate-update/SKILL.md so downstream plugins can adopt changes
+3. Update @.agents/skills/boilerplate-update so downstream plugins can adopt changes
 <!-- BOILERPLATE-DOCS-END -->
