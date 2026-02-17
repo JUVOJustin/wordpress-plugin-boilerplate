@@ -65,7 +65,14 @@ Syncs your plugin with the latest boilerplate features:
 - QA configurations
 - New architectural patterns (Abilities API, etc.)
 
-See [boilerplate-update skill](../.agents/skills/boilerplate-update/SKILL.md) for the full workflow.
+See [boilerplate-update skill](../.agents/skills/boilerplate-update) for the full workflow.
+
+### Skills are not available?
+Ask your agent to clone the skills or use skills.sh to install them.
+
+```bash title="Terminal"
+npx skills add https://github.com/JUVOJustin/wordpress-plugin-boilerplate
+```
 
 ## WordPress Agent Skills (Recommended)
 
@@ -87,8 +94,7 @@ While optimized for opencode, the structure works with any AI assistant:
 
 To adapt for another tool:
 - For claude code: copy `AGENTS.md` to `CLAUDE.md`.
-- Commands are basically pure prompts. You can copy their body to any tool. You might need to adjust the `front matter`.
-- Copy `.agents/skills` into your tools skills folder like `.claude/skills`.
+- Commands are basically prompts. You can copy their body to any tool. You might need to adjust the `frontmatter` header.
 
 ## Tips for Effective AI Collaboration
 
