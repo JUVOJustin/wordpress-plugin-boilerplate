@@ -179,6 +179,40 @@ The method automatically:
 - Enqueues both JS and CSS if they exist
 - Applies `wp_localize_script()` when data is provided
 
+## jQuery Support
+
+jQuery is configured with global aliases (`$` and `jQuery`) via webpack.ProvidePlugin in `webpack.config.js`:
+
+```js title="webpack.config.js"
+plugins: [
+    ...defaultConfig.plugins,
+    new webpack.ProvidePlugin({
+        $: 'jquery',
+        jQuery: 'jquery',
+    }),
+],
+```
+
+This allows you to use jQuery in your JavaScript without importing it:
+
+```javascript title="app.js"
+// Both work out of the box
+jQuery(document).ready(function() {
+    console.log('jQuery ready');
+});
+
+// Or using the $ alias
+$(document).ready(function() {
+    console.log('$ ready');
+});
+```
+
+jQuery is externalized by wp-scripts and loaded from WordPress core. The `.asset.php` file automatically includes `jquery` as a dependency when detected in your code.
+
+:::note
+The ProvidePlugin has minimal build-time overhead. If your project doesn't use jQuery, you can safely remove the plugin configuration from `webpack.config.js`.
+:::
+
 ## Gutenberg Blocks
 
 Block assets are handled automatically. See [Create Blocks](create-blocks.mdx) for details on block development and asset management.
