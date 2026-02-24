@@ -110,7 +110,7 @@ class Setup {
 			array( 'key', 'value' )
 		);
 
-		$progress = \WP_CLI\Utils\make_progress_bar( 'Setup', 5 );
+		$progress = \WP_CLI\Utils\make_progress_bar( 'Setup', 4 );
 
 		$this->run_replacement_script( $script_path, $plugin_path, $this->name, $this->namespace, $this->slug );
 		$progress->tick();
@@ -124,15 +124,16 @@ class Setup {
 		$this->run_shell_command( 'npm run build', 'Error running npm run build' );
 		$progress->tick();
 
-		$this->run_cleanup_script( $script_path, $plugin_path );
-		$progress->tick();
-
 		$progress->finish();
 		WP_CLI::success( 'Setup completed' );
 	}
 
 	/**
 	 * Invoke the shared replacement script with the user-provided identity values.
+	 *
+	 * Passing --cleanup-setup removes setup autoload entries and setup files as
+	 * part of this call, before any subsequent composer commands regenerate the
+	 * autoloader, so the vendor autoload map is built from a clean composer.json.
 	 *
 	 * @param string $script_path Absolute path to replacement script.
 	 * @param string $plugin_path Absolute plugin root path.
@@ -158,35 +159,11 @@ class Setup {
 				escapeshellarg( $plugin_namespace ),
 				'--plugin-text-domain',
 				escapeshellarg( $plugin_text_domain ),
+				'--cleanup-setup',
 			)
 		);
 
 		$this->run_shell_command( $command, 'Error running replacement script' );
-	}
-
-	/**
-	 * Invoke the shared script in cleanup-only mode to remove setup artifacts.
-	 *
-	 * @param string $script_path Absolute path to replacement script.
-	 * @param string $plugin_path Absolute plugin root path.
-	 *
-	 * @return void
-	 */
-	private function run_cleanup_script( string $script_path, string $plugin_path ): void {
-		$php = $this->php_binary();
-
-		$command = implode(
-			' ',
-			array(
-				escapeshellarg( $php ),
-				escapeshellarg( $script_path ),
-				'--path',
-				escapeshellarg( $plugin_path ),
-				'--cleanup-setup-only',
-			)
-		);
-
-		$this->run_shell_command( $command, 'Error cleaning setup artifacts' );
 	}
 
 	/**
