@@ -48,10 +48,10 @@ The `resources/` folder contains source assets and is excluded from distribution
 
 ## Entrypoints
 
-Entrypoints define what files webpack compiles. The default configuration includes two entrypoints in `webpack.config.js`:
+Entrypoints define what files webpack compiles. Custom entries are defined in the `customEntries` object in `webpack.config.js` and **merged** with any auto-discovered block entries from `@wordpress/scripts`:
 
 ```js title="webpack.config.js"
-entry: {
+const customEntries = {
     'demo-plugin-frontend': [
         path.resolve(__dirname, 'resources/frontend/js/app.js'),
         path.resolve(__dirname, 'resources/frontend/scss/app.scss'),
@@ -60,7 +60,7 @@ entry: {
         path.resolve(__dirname, 'resources/admin/js/app.js'),
         path.resolve(__dirname, 'resources/admin/scss/app.scss'),
     ],
-},
+};
 ```
 
 Each entrypoint bundles its JS and SCSS into the `build/` directory:
@@ -69,16 +69,16 @@ Each entrypoint bundles its JS and SCSS into the `build/` directory:
 
 ### Adding a New Entrypoint
 
-To add a new entrypoint, modify `webpack.config.js`:
+To add a new entrypoint, add it to the `customEntries` object in `webpack.config.js`:
 
 ```js title="webpack.config.js"
-entry: {
+const customEntries = {
     // ... existing entries
     'my-new-feature': [
         path.resolve(__dirname, 'resources/frontend/js/my-feature.js'),
         path.resolve(__dirname, 'resources/frontend/scss/my-feature.scss'),
     ],
-},
+};
 ```
 
 This creates `build/my-new-feature.js` and `build/my-new-feature.css`.
@@ -103,22 +103,24 @@ For files that need to be copied as-is without being referenced in SCSS or JS (e
 npm install copy-webpack-plugin --save-dev
 ```
 
-Then, modify `webpack.config.js`:
+Then add it to the `plugins` array inside the `extendConfig` function in `webpack.config.js`:
 
 ```js title="webpack.config.js"
 const CopyPlugin = require('copy-webpack-plugin');
 
-module.exports = {
-    // ... existing config
+const extendConfig = (config) => ({
+    ...config,
     plugins: [
-        ...defaultConfig.plugins,
+        ...config.plugins,
+        // ... existing plugins
         new CopyPlugin({
             patterns: [
                 { from: 'resources/static', to: 'static', noErrorOnMissing: true },
             ],
         }),
     ],
-};
+    // ...
+});
 ```
 
 This copies files from `resources/static/` to `build/static/` without processing. Note: This plugin is **not included by default** and must be installed via `npm install copy-webpack-plugin --save-dev`.
@@ -181,11 +183,11 @@ The method automatically:
 
 ## jQuery Support
 
-jQuery is configured with global aliases (`$` and `jQuery`) via webpack.ProvidePlugin in `webpack.config.js`:
+jQuery is configured with global aliases (`$` and `jQuery`) via webpack.ProvidePlugin in the `extendConfig` function in `webpack.config.js`:
 
 ```js title="webpack.config.js"
 plugins: [
-    ...defaultConfig.plugins,
+    ...config.plugins,
     new webpack.ProvidePlugin({
         $: 'jquery',
         jQuery: 'jquery',
