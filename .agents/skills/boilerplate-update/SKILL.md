@@ -6,6 +6,7 @@ description: |
    new features like Abilities API, improved Loader, or i18n workflows, (3) Syncing
    CI/CD pipelines, QA configs, or dependencies, (4) User asks to "update from
    boilerplate", "sync with boilerplate", or "migrate to latest boilerplate".
+compatibility: Requires PHP CLI and a WordPress plugin repository with standard plugin headers. This skill is intended for WordPress plugins only.
 ---
 
 # Boilerplate Update Skill
@@ -27,18 +28,43 @@ Update WordPress plugins to the latest plugin-boilerplate features.
 - Syncing QA config files
 - Copying .opencode commands and .agents/skills
 
-## Setup-Only Tooling (Exclude from Updates)
+## Identity Replacement Script
 
-`setup.php`, `src/Cli/Setup.php`, and the `wp setup` CLI command exist only for
-initial project creation. When updating an existing plugin, do **not** upsert or
-reintroduce these items.
+Use `scripts/boilerplate-replace.php` (bundled with this skill) for deterministic
+placeholder replacement. This avoids manual AI search-and-replace across copied
+upstream files.
 
-**Ignore diffs for:**
-- `setup.php`
-- `src/Cli/Setup.php`
-- `composer.json` entries: `autoload.files` for `setup.php`,
-  `scripts.post-create-project-cmd` for `composer exec -- wp setup`
-- Any Loader registration for the `wp setup` CLI command
+### Determine the target plugin identity
+
+Before running the script, read these sources from the **target** plugin to determine
+the three required parameters:
+
+- **plugin-name** — `Plugin Name:` header in the main plugin PHP file (the root `.php` file containing `@wordpress-plugin` headers)
+- **plugin-text-domain** — `Text Domain:` header in the same file
+- **plugin-namespace** — the PSR-4 namespace mapped to `src/` in `composer.json` (`autoload.psr-4`), or the `namespace` declaration in `src/*.php` files
+
+### Apply replacements on the cloned boilerplate
+
+Run the script against the **cloned boilerplate directory** so every file in the
+reference copy already carries the target plugin's identity before you compare or
+copy anything:
+
+```bash
+php tmp/boilerplate-ref/.agents/skills/boilerplate-update/scripts/boilerplate-replace.php \
+  --path tmp/boilerplate-ref \
+  --plugin-name "My Awesome Plugin" \
+  --plugin-namespace "My_Awesome_Plugin" \
+  --plugin-text-domain "my-awesome-plugin" \
+  --cleanup-setup
+```
+
+This does three things in one pass:
+1. Replaces all boilerplate placeholders (`demo-plugin`, `Demo_Plugin`, etc.)
+2. Strips all `BOILERPLATE-DOCS` marker sections
+3. Removes setup-only artifacts (`setup.php`, `src/Cli/Setup.php`, composer autoload/hook entries)
+
+After this step every `diff` between `tmp/boilerplate-ref/` and the target plugin
+shows only real upstream changes -- no placeholder noise and no setup-only files.
 
 ## Workflow
 
@@ -46,13 +72,12 @@ reintroduce these items.
    ```bash
    git clone --depth 1 https://github.com/JUVOJustin/wordpress-plugin-boilerplate.git ./tmp/boilerplate-ref
    ```
-2. Use one **subtask/subagent** per key area. Delegate comparison using `diff` against `tmp/boilerplate-ref/`
-
-3. Present findings to user, categorized by confirmation requirement
-
-4. Apply changes incrementally
-
-5. Cleanup: `rm -rf tmp/boilerplate-ref`
+2. Determine target plugin identity (see above).
+3. Run the replacement script on `tmp/boilerplate-ref` with `--cleanup-setup` (see above).
+4. Use one **subtask/subagent** per key area. Delegate comparison using `diff` against `tmp/boilerplate-ref/`.
+5. Present findings to user, categorized by confirmation requirement.
+6. Apply changes incrementally.
+7. Cleanup: `rm -rf tmp/boilerplate-ref`
 
 ## Documentation Reference
 
@@ -84,7 +109,7 @@ See docs for details: `i18n.mdx`, `bundeling.mdx`
 - Scripts: `i18n:extract`, `i18n:compile`, `phpstan`, `phpcs`, `phpcbf`
 - Strauss config in `extra.strauss` for namespace prefixing
 - QA config files: `phpcs.xml`, `phpstan.neon`
-- Skip setup-only entries called out above
+
 
 ### 2. JS & Bundling (package.json, webpack.config.js)
 
@@ -154,16 +179,8 @@ See `tmp/boilerplate-ref/docs/work-with-ai.mdx` for AI integration details.
 
 ### 9. File Control files
 Compare:
-- `diff .distignore tmp/boilerplate-ref/.disignore`
+- `diff .distignore tmp/boilerplate-ref/.distignore`
 - `diff .gitignore tmp/boilerplate-ref/.gitignore`
-
-## String Replacement
-
-| Placeholder | Replace With |
-|-------------|--------------|
-| `demo-plugin` | Plugin slug (lowercase, hyphens) |
-| `Demo_Plugin` | Namespace (PascalCase, underscores) |
-| `DEMO_PLUGIN` | Constant prefix (UPPERCASE, underscores) |
 
 ## Verification
 
@@ -171,7 +188,4 @@ Compare:
 2. Ran `npm run build` after changes
 3. Ran `composer phpstan && composer phpcs` after changes
 4. Ran `npm run lint:js && npm run lint:style` after changes
-5. Confirm setup-only tooling stays excluded (`setup.php`, setup CLI, composer hook)
-6. Validate all content wrapped with `<!-- BOILERPLATE-DOCS-START -->` comments is deleted
-7. All `demo-plugin`, `Demo_Plugin`, and `DEMO_PLUGIN` strings are replaced appropriately
-8. Test plugin functionality
+5. Test plugin functionality

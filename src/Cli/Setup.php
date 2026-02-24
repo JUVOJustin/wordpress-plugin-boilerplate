@@ -1,90 +1,94 @@
 <?php
 /**
- * WP_CLI Setup command integration
+ * WP_CLI Setup command integration.
+ *
+ * Collects user input and delegates all replacement logic to the shared
+ * boilerplate-replace.php script in .agents/skills/boilerplate-update/scripts/.
  *
  * @package Demo_Plugin
  */
 
 namespace Demo_Plugin\Cli;
 
-use FilesystemIterator;
-use RecursiveDirectoryIterator;
-use RegexIterator;
 use WP_CLI;
 use WP_CLI\ExitException;
 use function WP_CLI\Utils\format_items;
 
 /**
- * Class Setup
- *
- * This class is responsible for performing the initial setup of the plugin.
+ * Perform initial plugin setup from the boilerplate template.
  */
 class Setup {
 
 	/**
-	 * Plugin name
+	 * Plugin name provided by the user.
 	 *
 	 * @var string
 	 */
 	protected string $name;
 
 	/**
-	 * Plugin Namespace
+	 * Plugin namespace in Pascal_Snake_Case.
 	 *
 	 * @var string
 	 */
 	protected string $namespace;
 
 	/**
-	 * Plugin Slug
+	 * Plugin text domain slug in kebab-case.
 	 *
 	 * @var string
 	 */
 	protected string $slug;
 
 	/**
-	 * Plugin Path
+	 * Absolute plugin root path.
 	 *
 	 * @var string|false
 	 */
 	protected $path;
 
 	/**
-	 * Init Class and set root path of plugin
+	 * Resolve plugin root path for setup operations.
 	 */
 	public function __construct() {
 		$this->path = realpath( __DIR__ . '/../../' );
 	}
 
 	/**
-	 * Initial plugin setup
+	 * Prompt setup values and apply all boilerplate replacements.
 	 *
-	 * @param string[] $args Unnamed arguments passed from the command calling.
-	 * @param string[] $assoc_args Named arguments passed from the command.
+	 * @param string[] $args Unused positional arguments.
+	 * @param string[] $assoc_args Unused associative arguments.
 	 *
 	 * @throws ExitException CLI ended with error.
 	 * @when before_wp_load
 	 */
 	public function __invoke( array $args, array $assoc_args ): void { // phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
+		if ( false === $this->path ) {
+			WP_CLI::error( 'Unable to resolve plugin path for setup.' );
+		}
 
-		// if setup file still exists, assume setup has to be made.
-		if ( ! file_exists( $this->path . '/setup.php' ) ) {
+		$plugin_path = (string) $this->path;
+		$script_path = $plugin_path . '/.agents/skills/boilerplate-update/scripts/boilerplate-replace.php';
+		if ( ! file_exists( $script_path ) ) {
+			WP_CLI::error( "Missing replacement script: {$script_path}" );
+		}
+
+		// If setup file still exists, assume setup has to be made.
+		if ( ! file_exists( $plugin_path . '/setup.php' ) ) {
 			WP_CLI::confirm( 'Are you sure you want to rerun the setup?' );
 		}
 
 		$this->name = $this->ask( "Enter the 'human' name of the plugin (e.g. My Awesome Plugin):" );
-		if ( empty( $this->name ) ) {
+		if ( '' === trim( $this->name ) ) {
 			WP_CLI::error( 'You need to provide a name for the plugin.' );
 		}
 
-		// Namespace
-		$namespace       = $this->to_pascal_snake_case( $this->name );
-		$this->namespace = $this->ask( "Enter the namespace in Camel_Snake Case (e.g., 'My_Awesome_Plugin'). Leave empty for default '" . $namespace . "':", $namespace );
+		$default_namespace = $this->to_pascal_snake_case( $this->name );
+		$this->namespace   = $this->ask( "Enter the namespace in Camel_Snake Case (e.g., 'My_Awesome_Plugin'). Leave empty for default '{$default_namespace}':", $default_namespace );
 
-		// Slug
-		$slug = str_replace( '_', '-', str_replace( ' ', '-', strtolower( $this->name ) ) );
-
-		$this->slug = $this->ask( "Enter the slug you want to use for the plugin as kebab-case (e.g., 'awesome-plugin'). Leave empty for default '" . $slug . "':", $slug );
+		$default_slug = $this->to_slug( $this->name );
+		$this->slug   = $this->ask( "Enter the text domain slug you want to use as kebab-case (e.g., 'awesome-plugin'). Leave empty for default '{$default_slug}':", $default_slug );
 
 		WP_CLI::log( 'Using the following values:' );
 		format_items(
@@ -99,313 +103,162 @@ class Setup {
 					'value' => $this->namespace,
 				),
 				array(
-					'key'   => 'Slug',
+					'key'   => 'Text Domain',
 					'value' => $this->slug,
 				),
-
 			),
 			array( 'key', 'value' )
 		);
 
-		// Further operations like composer update, npm install, etc.
-		$progress = \WP_CLI\Utils\make_progress_bar( 'Setup', 9 );
+		$progress = \WP_CLI\Utils\make_progress_bar( 'Setup', 5 );
 
-		// File patterns for markdown documentation
-		$md_patterns = array( '.*docs\/.*\.(md|mdx)', '.*AGENTS\.md' );
-
-		// Replace in files
-		if (
-			! $this->replace_in_files(
-				'demo-plugin',
-				$this->slug,
-				array_merge(
-					array(
-						'.*\.php',
-						'.*\.js',
-						'.*\.json',
-						'.*\.github\/.*\.(yml|md)',
-						'.*\.neon',
-					),
-					$md_patterns
-				)
-			)
-			|| ! $this->replace_in_files(
-				'demo_plugin',
-				str_replace( '-', '_', $this->slug ),
-				array_merge(
-					array(
-						'.*\.php',
-						'.*eslint.*\.js',
-						'.*\.github\/.*\.(yml|md)',
-					),
-					$md_patterns
-				)
-			)
-			|| ! $this->replace_in_files(
-				'Demo_Plugin',
-				$this->namespace,
-				array_merge(
-					array(
-						'.*\.php',
-						'.*\.json',
-						'.*\.github\/.*\.(yml|md)',
-					),
-					$md_patterns
-				)
-			)
-			|| ! $this->replace_in_files(
-				'DEMO_PLUGIN',
-				strtoupper( $this->namespace ),
-				array_merge(
-					array(
-						'.*\.php',
-						'.*\.json',
-						'.*\.github\/.*\.(yml|md)',
-					),
-					$md_patterns
-				)
-			)
-			|| ! $this->replace_in_files(
-				'Demo Plugin',
-				$this->name,
-				array_merge(
-					array( '.*\.php', '.*README\.txt', '.*\.github\/.*\.(yml|md)' ),
-					$md_patterns
-				)
-			)
-		) {
-			WP_CLI::error( 'Error replacing in files.' );
-		}
+		$this->run_replacement_script( $script_path, $plugin_path, $this->name, $this->namespace, $this->slug );
 		$progress->tick();
 
-		// rename main files
-		$this->rename_files();
+		$this->run_shell_command( 'composer dump-autoload && composer update', 'Error running composer update' );
 		$progress->tick();
 
-		// Remove boilerplate-specific sections from all files
-		$this->remove_boilerplate_docs();
+		$this->run_shell_command( 'npm install', 'Error running npm install' );
 		$progress->tick();
 
-		// Remove setup from autoloader
-		$this->remove_setup_from_autoload();
+		$this->run_shell_command( 'npm run build', 'Error running npm run build' );
 		$progress->tick();
 
-		// Fix paths
-		// phpcs:disable WordPress.PHP.DiscouragedPHPFunctions.system_calls_exec
-		exec( 'composer dump-autoload && composer update 2>&1', $output, $code );
-		if ( 0 !== $code ) {
-			WP_CLI::error( 'Error running composer update' );
-		}
+		$this->run_cleanup_script( $script_path, $plugin_path );
 		$progress->tick();
 
-		exec( 'npm install 2>&1', $output, $code );
-		if ( 0 !== $code ) {
-			WP_CLI::error( 'Error running npm install' );
-		}
-		$progress->tick();
-
-		exec( 'npm run build 2>&1', $output, $code );
-		if ( 0 !== $code ) {
-			WP_CLI::error( 'Error running npm run build' );
-		}
-		$progress->tick();
-		// phpcs:enable
-
-		// Cleanup setup folder
-		if ( file_exists( $this->path . '/setup.php' ) ) {
-			$removed = unlink( $this->path . '/setup.php' ); // phpcs:disable WordPress.WP.AlternativeFunctions
-			if ( ! $removed ) {
-				WP_CLI::error( 'Error removing setup file' );
-			}
-		}
-
-		// Remove Setup.php
-		if ( file_exists( $this->path . '/src/Cli/Setup.php' ) ) {
-			$removed = unlink( $this->path . '/src/Cli/Setup.php' ); // phpcs:disable WordPress.WP.AlternativeFunctions
-			if ( ! $removed ) {
-				WP_CLI::error( 'Error removing Setup.php file' );
-			}
-		}
-		$progress->tick();
-
-		// All done
 		$progress->finish();
 		WP_CLI::success( 'Setup completed' );
 	}
 
 	/**
-	 * Rename files
+	 * Invoke the shared replacement script with the user-provided identity values.
+	 *
+	 * @param string $script_path Absolute path to replacement script.
+	 * @param string $plugin_path Absolute plugin root path.
+	 * @param string $plugin_name Human readable plugin name.
+	 * @param string $plugin_namespace Plugin namespace.
+	 * @param string $plugin_text_domain Plugin text domain.
 	 *
 	 * @return void
-	 * @throws ExitException CLI ended with error.
 	 */
-	private function rename_files(): void {
-		// phpcs:disable WordPress.WP.AlternativeFunctions.rename_rename
-		if (
-			! rename( $this->path . '/src/Demo_Plugin.php', $this->path . "/src/$this->namespace.php" ) // phpcs:disable WordPress.WP.AlternativeFunctions.rename_rename
-			|| ! rename( $this->path . '/demo-plugin.php', $this->path . "/$this->slug.php" ) // phpcs:disable WordPress.WP.AlternativeFunctions.rename_rename
-		) {
-			WP_CLI::error( 'Error renaming files.' );
-		}
-		// phpcs:enable
+	private function run_replacement_script( string $script_path, string $plugin_path, string $plugin_name, string $plugin_namespace, string $plugin_text_domain ): void {
+		$php = $this->php_binary();
+
+		$command = implode(
+			' ',
+			array(
+				escapeshellarg( $php ),
+				escapeshellarg( $script_path ),
+				'--path',
+				escapeshellarg( $plugin_path ),
+				'--plugin-name',
+				escapeshellarg( $plugin_name ),
+				'--plugin-namespace',
+				escapeshellarg( $plugin_namespace ),
+				'--plugin-text-domain',
+				escapeshellarg( $plugin_text_domain ),
+			)
+		);
+
+		$this->run_shell_command( $command, 'Error running replacement script' );
 	}
 
 	/**
-	 * Converts a given value into pascal snake case
+	 * Invoke the shared script in cleanup-only mode to remove setup artifacts.
 	 *
-	 * @param string $value The value to convert to pascal snake case.
+	 * @param string $script_path Absolute path to replacement script.
+	 * @param string $plugin_path Absolute plugin root path.
+	 *
+	 * @return void
+	 */
+	private function run_cleanup_script( string $script_path, string $plugin_path ): void {
+		$php = $this->php_binary();
+
+		$command = implode(
+			' ',
+			array(
+				escapeshellarg( $php ),
+				escapeshellarg( $script_path ),
+				'--path',
+				escapeshellarg( $plugin_path ),
+				'--cleanup-setup-only',
+			)
+		);
+
+		$this->run_shell_command( $command, 'Error cleaning setup artifacts' );
+	}
+
+	/**
+	 * Resolve the PHP binary path used to invoke sub-scripts.
 	 *
 	 * @return string
 	 */
-	private function to_pascal_snake_case( string $value ): string {
-		// Split the string into words based on spaces or underscores
-		$words = preg_split( '/[\s_]+/', $value );
-
-		// Capitalize the first letter of each word and then join them with an underscore
-		return implode( '_', array_map( 'ucfirst', $words ) );
+	private function php_binary(): string {
+		return defined( 'PHP_BINARY' ) && '' !== PHP_BINARY ? PHP_BINARY : 'php';
 	}
 
 	/**
-	 * Replace string in files using regex
+	 * Execute a shell command and stop setup when it fails.
 	 *
-	 * @param string   $find The string to replace.
-	 * @param string   $replace The value to replace the $find string with.
-	 * @param string[] $file_patterns array of regex patterns that determine which files to check.
+	 * @param string $command Shell command to execute.
+	 * @param string $error_message Message shown on failure.
 	 *
-	 * @return bool
+	 * @return void
 	 * @throws ExitException CLI ended with error.
 	 */
-	private function replace_in_files( string $find, string $replace, array $file_patterns ): bool {
+	private function run_shell_command( string $command, string $error_message ): void {
+		// phpcs:disable WordPress.PHP.DiscouragedPHPFunctions.system_calls_exec
+		exec( $command . ' 2>&1', $output, $code );
+		// phpcs:enable
 
-		$dir    = new RecursiveDirectoryIterator( $this->path, FilesystemIterator::SKIP_DOTS );
-		$filter = new \RecursiveCallbackFilterIterator(
-			$dir,
-			function ( $current ) {
-				$path = str_replace( $current->getFilename(), '', $current->getPathname() );
-				// Directly check for 'vendor' or 'node_modules' in the path
-				if ( strpos( $path, 'vendor' ) !== false || strpos( $path, 'node_modules' ) !== false ) {
-					return false;
-				}
-
-				// Check for '.git' in the path
-				if ( strpos( $path, '.git' ) !== false ) {
-					// Ensure that it's not '.github' that's being matched
-					if ( strpos( $path, '.github' ) === false ) {
-						return false;
-					}
-				}
-
-				return true;
-			}
-		);
-		$ite    = new \RecursiveIteratorIterator( $filter );
-
-		foreach ( $file_patterns as $file_pattern ) {
-
-			$files = new RegexIterator( $ite, "/^{$file_pattern}$/", RegexIterator::GET_MATCH );
-			foreach ( $files as $file ) {
-
-				$file = $file[0];
-
-				// phpcs:disable WordPress.WP.AlternativeFunctions
-				$file_contents = file_get_contents( $file );
-				if ( empty( $file_contents ) ) {
-					\WP_CLI::log( "Skipping file '$file', since it is empty" );
-					continue;
-				}
-
-				$file_contents = str_replace( $find, $replace, $file_contents );
-				if ( ! file_put_contents( $file, $file_contents ) ) {
-					\WP_CLI::error( "Error replacing in file: $file" );
-				}
-				// phpcs:enable
-			}
+		if ( 0 === $code ) {
+			return;
 		}
 
-		return true;
+		if ( ! empty( $output ) ) {
+			WP_CLI::log( implode( PHP_EOL, $output ) );
+		}
+
+		WP_CLI::error( $error_message );
 	}
 
 	/**
-	 * Remove boilerplate-specific sections from files
+	 * Ask an open question and return the answer.
 	 *
-	 * Strips content between BOILERPLATE-DOCS-START and BOILERPLATE-DOCS-END markers.
-	 * Supports both PHP comments (// <BOILERPLATE-DOCS-START>) and HTML comments (<!-- BOILERPLATE-DOCS-START -->).
-	 *
-	 * @return void
-	 */
-	private function remove_boilerplate_docs(): void {
-		$files = array(
-			$this->path . "/src/$this->namespace.php",
-			$this->path . '/AGENTS.md',
-		);
-
-		// Pattern for PHP comments: // <BOILERPLATE-DOCS-START> ... // <BOILERPLATE-DOCS-END>
-		$php_pattern = '/\s*\/\/\s*<BOILERPLATE-DOCS-START>.*?\/\/\s*<BOILERPLATE-DOCS-END>\s*\n?/s';
-
-		// Pattern for HTML/Markdown comments: <!-- BOILERPLATE-DOCS-START --> ... <!-- BOILERPLATE-DOCS-END -->
-		$html_pattern = '/<!--\s*BOILERPLATE-DOCS-START\s*-->.*?<!--\s*BOILERPLATE-DOCS-END\s*-->\s*\n?/s';
-
-		foreach ( $files as $file ) {
-			if ( ! file_exists( $file ) ) {
-				continue;
-			}
-
-			$content = file_get_contents( $file ); // phpcs:disable WordPress.WP.AlternativeFunctions
-			if ( false === $content ) {
-				continue;
-			}
-
-			$new_content = preg_replace( $php_pattern, '', $content );
-			$new_content = preg_replace( $html_pattern, '', $new_content );
-
-			if ( $new_content !== $content ) {
-				file_put_contents( $file, $new_content ); // phpcs:disable WordPress.WP.AlternativeFunctions
-			}
-		}
-	}
-
-	/**
-	 * Remove setup.php from file autoload
-	 *
-	 * @return void
-	 */
-	private function remove_setup_from_autoload(): void {
-
-		// Path to your composer.json
-		$composer_json_path = $this->path . '/composer.json';
-
-		// Load the current composer.json into an array
-		$composer_config = json_decode( file_get_contents( $composer_json_path ), true );                                      // phpcs:disable WordPress.WP.AlternativeFunctions
-
-		// Remove the script from the autoload.files section
-		if ( isset( $composer_config['autoload']['files'] ) ) {
-			$key = array_search( 'setup.php', $composer_config['autoload']['files'], true );
-			if ( false !== $key ) {
-				unset( $composer_config['autoload']['files'][ $key ] );
-			}
-
-			// If the files array is empty, remove it
-			if ( empty( $composer_config['autoload']['files'] ) ) {
-				unset( $composer_config['autoload']['files'] );
-			}
-		}
-
-		// Save the modified composer.json
-		file_put_contents( $composer_json_path, json_encode( $composer_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) ); // phpcs:disable WordPress.WP.AlternativeFunctions
-	}
-
-	/**
-	 * Ask an open question and return the answer
-	 *
-	 * @param string      $question The question prompted to the user.
-	 * @param string|null $default_value Default value used when empty answer provided.
+	 * @param string      $question Prompt shown in CLI.
+	 * @param string|null $default_value Default value used for empty input.
 	 *
 	 * @return string
 	 */
 	private function ask( string $question, ?string $default_value = null ): string {
 		WP_CLI::log( WP_CLI::colorize( '%4' . $question . '%n' ) );
-		$output = trim( fgets( STDIN ) ); // Get input from user
+		$output = trim( (string) fgets( STDIN ) );
 
-		return $output ? $output : $default_value;
+		return '' !== $output ? $output : (string) $default_value;
+	}
+
+	/**
+	 * Convert a value into Pascal_Snake_Case.
+	 *
+	 * @param string $value Input string.
+	 *
+	 * @return string
+	 */
+	private function to_pascal_snake_case( string $value ): string {
+		$words = preg_split( '/[\s_]+/', $value );
+
+		return implode( '_', array_map( 'ucfirst', $words ) );
+	}
+
+	/**
+	 * Convert a value into a kebab-case text domain.
+	 *
+	 * @param string $value Input string.
+	 *
+	 * @return string
+	 */
+	private function to_slug( string $value ): string {
+		return str_replace( '_', '-', str_replace( ' ', '-', strtolower( $value ) ) );
 	}
 }
