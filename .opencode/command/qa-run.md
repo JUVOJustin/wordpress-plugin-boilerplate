@@ -11,7 +11,7 @@ description: Run quality assurance tools
 * ALWAYS only run commands defined in composer.json to run the tools. DO NOT use the binaries directly
 * If phpcs reports issues first run phpcbf to apply autofixing
 
-Use @.github/instructions/quality-assurance/phpstan.instructions.md for guidance how to solve phpstan errors.
+Use `wp-phpstan` skill for guidance how to solve phpstan errors.
 
 ## JS/Styling Run linting and formatting tools defined in package.json.
 * ALWAYS only run commands defined in package.json to run the tools. DO NOT use the tools directly
