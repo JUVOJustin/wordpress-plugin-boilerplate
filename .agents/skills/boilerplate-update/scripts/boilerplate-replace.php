@@ -5,7 +5,7 @@
  *
  * Modes:
  *   --plugin-name + --plugin-namespace + --plugin-text-domain   Apply replacements
- *   --cleanup-setup-only Remove setup autoload entries and setup files only
+ *   --cleanup-setup (optional)  Also remove setup autoload entries and setup files
  */
 
 exit( main() );
@@ -26,14 +26,6 @@ function main(): int {
 		}
 
 		$plugin_path = resolve_plugin_path( get_option_string( $options, 'path', getcwd() ?: '.' ) );
-
-		// Cleanup-only mode: remove setup artifacts without replacements.
-		if ( isset( $options['cleanup-setup-only'] ) ) {
-			cleanup_setup_artifacts( $plugin_path );
-			fwrite( STDOUT, "Setup artifacts cleaned in: {$plugin_path}" . PHP_EOL );
-
-			return 0;
-		}
 
 		// Replace mode: all three identity options are required.
 		$plugin_name        = get_required_option( $options, 'plugin-name' );
@@ -501,7 +493,6 @@ function parse_options(): array {
 			'plugin-namespace:',
 			'plugin-text-domain:',
 			'cleanup-setup',
-			'cleanup-setup-only',
 			'help',
 		)
 	);
@@ -579,7 +570,6 @@ Boilerplate replacement helper
 
 Usage:
   php boilerplate-replace.php --plugin-name <name> --plugin-namespace <ns> --plugin-text-domain <td> [--path <plugin-path>] [--cleanup-setup]
-  php boilerplate-replace.php --cleanup-setup-only [--path <plugin-path>]
 
 Options:
   --path                 Target plugin path (default: current directory)
@@ -587,12 +577,11 @@ Options:
   --plugin-namespace     Root namespace (e.g. "My_Awesome_Plugin")
   --plugin-text-domain   Text domain slug (e.g. "my-awesome-plugin")
   --cleanup-setup        Also remove setup autoload entries and setup files after replacement
-  --cleanup-setup-only   Only remove setup artifacts (no replacements)
   --help                 Show this help
 
 Examples:
   php boilerplate-replace.php --plugin-name "My Plugin" --plugin-namespace "My_Plugin" --plugin-text-domain "my-plugin" --path /path/to/plugin
-  php boilerplate-replace.php --cleanup-setup-only --path /path/to/plugin
+  php boilerplate-replace.php --plugin-name "My Plugin" --plugin-namespace "My_Plugin" --plugin-text-domain "my-plugin" --path /path/to/plugin --cleanup-setup
 HELP;
 
 	fwrite( STDOUT, $help . PHP_EOL );
