@@ -2,24 +2,30 @@
 # This file specifies which files and directories should be excluded from the plugin distribution zip
 
 # Development dependencies
-node_modules
+/node_modules/
 
-# Development configuration files
+# Development configuration files (root-only)
+/phpcs-report.xml
+/.eslintrc
+/webpack.config.js
+/constants.php
+
+# Dev config and documentation files excluded everywhere (never needed at runtime)
+*.md
 composer.lock
-package.json
-package-lock.json
+phpunit.xml
 phpunit.xml.dist
 phpcs.xml
+phpcs.xml.dist
 phpstan.neon
-phpcs-report.xml
-.eslintrc
-webpack.config.js
-constants.php
-
-# Documentation and development files
-README.md
-CLAUDE.md
-AGENTS.md
+phpstan.neon.dist
+package.json
+package-lock.json
+Makefile
+.travis.yml
+.scrutinizer.yml
+Dockerfile
+docker-compose.yml
 
 # Version control and CI/CD
 .git/
@@ -37,12 +43,10 @@ AGENTS.md
 .mcp.json
 
 # Test files
-tests/
+/tests/
 
 # Build artifacts and cache
-.budfiles/
-phpcs-report.xml
 /lib/
 
 # Source assets (compiled to build/)
-resources/
+/resources/
