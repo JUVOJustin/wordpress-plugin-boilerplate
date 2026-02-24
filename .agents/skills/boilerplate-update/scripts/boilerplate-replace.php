@@ -496,10 +496,10 @@ function parse_options(): array {
 	$options = getopt(
 		'',
 		array(
-			'path::',
-			'plugin-name::',
-			'plugin-namespace::',
-			'plugin-text-domain::',
+			'path:',
+			'plugin-name:',
+			'plugin-namespace:',
+			'plugin-text-domain:',
 			'cleanup-setup',
 			'cleanup-setup-only',
 			'help',
