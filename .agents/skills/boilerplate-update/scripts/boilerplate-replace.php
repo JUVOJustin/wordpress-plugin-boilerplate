@@ -317,8 +317,8 @@ function rename_if_exists( string $source, string $destination ): void {
  * @return void
  */
 function remove_boilerplate_docs( string $plugin_path ): void {
-	$php_pattern  = '/\s*\/\/\s*<BOILERPLATE-DOCS-START>.*?\/\/\s*<BOILERPLATE-DOCS-END>\s*\n?/s';
-	$html_pattern = '/<!--\s*BOILERPLATE-DOCS-START\s*-->.*?<!--\s*BOILERPLATE-DOCS-END\s*-->\s*\n?/s';
+	$php_pattern  = '/^\s*\/\/\s*<BOILERPLATE-DOCS-START>.*?^\s*\/\/\s*<BOILERPLATE-DOCS-END>\s*\n?/ms';
+	$html_pattern = '/^\s*<!--\s*BOILERPLATE-DOCS-START\s*-->.*?^\s*<!--\s*BOILERPLATE-DOCS-END\s*-->\s*\n?/ms';
 
 	$iterator = create_filtered_file_iterator( $plugin_path );
 
