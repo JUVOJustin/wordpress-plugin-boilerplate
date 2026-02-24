@@ -195,7 +195,7 @@ class Setup {
 	 * @return string
 	 */
 	private function php_binary(): string {
-		return defined( 'PHP_BINARY' ) && '' !== PHP_BINARY ? PHP_BINARY : 'php';
+		return defined( 'PHP_BINARY' ) ? PHP_BINARY : 'php';
 	}
 
 	/**
