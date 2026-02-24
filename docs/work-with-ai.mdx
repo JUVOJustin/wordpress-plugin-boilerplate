@@ -66,23 +66,15 @@ Syncs your plugin with the latest boilerplate features:
 - New architectural patterns (Abilities API, etc.)
 - Deterministic placeholder replacement via `scripts/boilerplate-replace.php`
 
-```bash title="Terminal"
-php tmp/boilerplate-ref/.agents/skills/boilerplate-update/scripts/boilerplate-replace.php \
-  --path tmp/boilerplate-ref \
-  --plugin-name "My Plugin" \
-  --plugin-namespace "My_Plugin" \
-  --plugin-text-domain "my-plugin" \
-  --cleanup-setup
-```
-
 See [boilerplate-update skill](../.agents/skills/boilerplate-update) for the full workflow.
 
-### Skills are not available?
-Ask your agent to clone the skills or use skills.sh to install them.
+:::tip[Missing "plugin-translations-update" skill?]
+You can install the skill using `npx skills add JUVOJustin/wordpress-plugin-boilerplate --skill plugin-translations-update`
+:::
 
-```bash title="Terminal"
-npx skills add https://github.com/JUVOJustin/wordpress-plugin-boilerplate
-```
+:::tip[Missing "boilerplate-update" skill?]
+You can install the skill using `npx skills add JUVOJustin/wordpress-plugin-boilerplate --skill boilerplate-update`
+:::
 
 ## WordPress Agent Skills (Recommended)
 
