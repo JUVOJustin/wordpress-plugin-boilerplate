@@ -2,7 +2,7 @@
 # This file specifies which files and directories should be excluded from the plugin distribution zip
 
 # Development dependencies
-node_modules
+/node_modules/
 
 # Development configuration files
 composer.lock
@@ -37,12 +37,11 @@ AGENTS.md
 .mcp.json
 
 # Test files
-tests/
+/tests/
 
 # Build artifacts and cache
 .budfiles/
-phpcs-report.xml
 /lib/
 
 # Source assets (compiled to build/)
-resources/
+/resources/
