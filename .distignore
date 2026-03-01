@@ -4,28 +4,22 @@
 # Development dependencies
 /node_modules/
 
-# Development configuration files (root-only)
-/phpcs-report.xml
-/.eslintrc
-/webpack.config.js
-/constants.php
-
-# Dev config and documentation files excluded everywhere (never needed at runtime)
-*.md
+# Development configuration files
 composer.lock
-phpunit.xml
-phpunit.xml.dist
-phpcs.xml
-phpcs.xml.dist
-phpstan.neon
-phpstan.neon.dist
 package.json
 package-lock.json
-Makefile
-.travis.yml
-.scrutinizer.yml
-Dockerfile
-docker-compose.yml
+phpunit.xml.dist
+phpcs.xml
+phpstan.neon
+phpcs-report.xml
+.eslintrc
+webpack.config.js
+constants.php
+
+# Documentation and development files
+README.md
+CLAUDE.md
+AGENTS.md
 
 # Version control and CI/CD
 .git/
@@ -46,6 +40,7 @@ docker-compose.yml
 /tests/
 
 # Build artifacts and cache
+.budfiles/
 /lib/
 
 # Source assets (compiled to build/)
