@@ -17,6 +17,7 @@ This plugin is a modern WordPress plugin with strict conventions and automated w
 | @docs/i18n.mdx           | Translation workflow, extract/compile scripts, JSON translations |
 | @docs/create-blocks.mdx  | Block scaffolding, auto-registration, editor style sharing |
 | @docs/wp-env.mdx         | Docker dev environment, script structure, CI/CD usage |
+| @docs/github-actions.mdx | CI/CD workflows, release process, PHP version configuration |
 | @docs/acf-json-sync.mdx  | ACF field group JSON storage patterns |
 | @docs/work-with-ai.mdx   | AI integration: commands, skills, AGENTS.md, WordPress agent skills |
 | @docs/documentation.mdx  | Documentation structure, front matter metadata, heading rules |
