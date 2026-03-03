@@ -159,6 +159,14 @@ The boilerplate includes the following GitHub Actions workflows:
 - **Asset Building**: Compiles and bundles frontend assets
 - **Release Management**: Helps with versioning and releases
 
+#### Release Workflow
+
+Releases are triggered by pushing a git tag. The deploy workflow:
+
+1. **Resolves the source branch** — detects which branch the tagged commit lives on (via `git branch -r --contains`) and pushes version-file updates back to that same branch (not always `main`). When the commit exists on multiple branches, the first branch returned by git is used. The workflow fails fast if no branch can be resolved.
+2. **Updates version files** — bumps the version in `src/Demo_Plugin.php`, `demo-plugin.php`, and `README.txt`, then commits and pushes directly to the resolved branch using the built-in `GITHUB_TOKEN`.
+3. **Handles prereleases** — tags containing `alpha`, `beta`, or `rc` (e.g. `v1.0.0-beta.1`) are automatically published as GitHub prereleases and are **not** marked as the latest release. Stable tags produce normal releases that are eligible to become latest.
+
 ## PHP Version Management
 
 Changing the PHP version for your plugin requires updates in multiple places to ensure consistency across development, testing, and deployment environments.
