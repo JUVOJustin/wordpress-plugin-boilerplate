@@ -151,78 +151,7 @@ The boilerplate comes with the following quality assurance tools configured:
 
 These checks run automatically in GitHub pipelines when you push code to your repository.
 
-### GitHub Workflows
-
-The boilerplate includes the following GitHub Actions workflows:
-
-- **Quality Checks**: Runs PHPCS and PHPStan to ensure code quality
-- **Asset Building**: Compiles and bundles frontend assets
-- **Release Management**: Helps with versioning and releases
-
-#### Release Workflow
-
-Releases are triggered by pushing a git tag. The deploy workflow:
-
-1. **Resolves the source branch** — detects which branch the tagged commit lives on (via `git branch -r --contains`) and pushes version-file updates back to that same branch (not always `main`). When the commit exists on multiple branches, the first branch returned by git is used. The workflow fails fast if no branch can be resolved.
-2. **Updates version files** — bumps the version in `src/Demo_Plugin.php`, `demo-plugin.php`, and `README.txt`, then commits and pushes directly to the resolved branch using the built-in `GITHUB_TOKEN`.
-3. **Handles prereleases** — tags containing `alpha`, `beta`, or `rc` (e.g. `v1.0.0-beta.1`) are automatically published as GitHub prereleases and are **not** marked as the latest release. Stable tags produce normal releases that are eligible to become latest.
-
-## PHP Version Management
-
-Changing the PHP version for your plugin requires updates in multiple places to ensure consistency across development, testing, and deployment environments.
-
-### Composer Configuration
-
-The plugin's PHP version requirements must be updated in `composer.json` in two places:
-
-1. The `require` section specifies the minimum PHP version:
-
-```json
-"require": {
-    "php": ">=8.0"
-}
-```
-
-2. The `config.platform` section which controls what PHP version Composer uses for compatibility checks:
-
-```json
-"config": {
-    "platform": {
-        "php": "8.0"
-    }
-}
-```
-
-After updating these values, run `composer update` to update your dependencies based on the new PHP version constraints.
-
-### GitHub Pipeline Configuration
-
-The GitHub Actions workflows are configured to use PHP 8.0. When changing the PHP version, you'll need to update it in these workflow files:
-
-1. Edit `.github/workflows/test-analyse.yml` and update the PHP version:
-
-```yaml
-- name: Setup php
-  uses: shivammathur/setup-php@v2
-  with:
-    php-version: '8.0'
-    tools: cs2pr
-```
-
-2. Also update the PHP version in `.github/workflows/setup.yml`:
-
-```yaml
-- name: Setup php
-  uses: shivammathur/setup-php@v2
-  with:
-    php-version: '8.0'
-```
-
-3. Check for PHP version constraints in static analysis configurations:
-   - `phpstan.neon.dist` might have PHP version specific settings
-   - `phpcs.xml.dist` might have PHP version specific ruleset configurations
-
-Keeping PHP versions consistent across all configurations ensures that your development, testing, and deployment environments all work with the same PHP constraints.
+See [docs/github-actions.mdx](docs/github-actions.mdx) for a full breakdown of each workflow, the release process, and how to change the PHP version.
 
 ### Wrapping Up
 

@@ -1,0 +1,102 @@
+---
+title: GitHub Actions Workflows
+short_title: GitHub Actions
+description: Overview of the included CI/CD workflows, release process, and PHP version configuration.
+---
+
+The boilerplate ships three GitHub Actions workflows in `.github/workflows/`. They share a reusable setup step to keep dependency installation fast.
+
+## Workflows at a Glance
+
+| Workflow | File | Trigger | Purpose |
+|----------|------|---------|---------|
+| Setup Environment | `setup.yml` | `workflow_call` | Installs and caches PHP/Node dependencies; shared by the other two workflows |
+| Test / Analyse | `test-analyse.yml` | Push to any branch | Lints JS/CSS, builds assets, runs PHPStan and PHPCS |
+| Deploy | `deploy.yml` | Push of any tag | Builds the distributable archive and publishes a GitHub release |
+
+## setup.yml
+
+A reusable workflow (`workflow_call`) that the other two workflows call via `uses: ./.github/workflows/setup.yml`. It:
+
+- Generates cache keys from `composer.lock` and `package-lock.json`.
+- Installs Composer and NPM dependencies (skipped on cache hit).
+- In `prod` mode, also runs `npm run build` to compile assets.
+- Passes cache keys back as outputs so dependent jobs can restore the exact same cache.
+
+## test-analyse.yml
+
+Runs on every branch push (with concurrency cancellation so stale runs are skipped). It calls `setup.yml` in `dev` mode, then runs two parallel jobs:
+
+**`test-js`** — JS/CSS quality and build
+- Lints JavaScript with `npm run lint:js`
+- Lints styles with `npm run lint:style`
+- Verifies the production build succeeds with `npm run build`
+
+**`test-php`** — PHP quality
+- Runs PHPStan static analysis (`composer run phpstan:ci`)
+- Runs PHPCS (`composer run phpcs:ci`) and surfaces violations as inline PR annotations via `cs2pr`
+
+## deploy.yml
+
+Triggered when any tag is pushed. Only runs in forked/downstream repositories (`github.repository != 'JUVOJustin/wordpress-plugin-boilerplate'`).
+
+### Release process
+
+1. **Resolve source branch** — `git branch -r --contains <sha>` finds which branch the tagged commit lives on. The workflow fails immediately with a clear error if no branch can be resolved. When the commit exists on multiple branches, the first one returned by git is used; tag from a unique branch context to avoid ambiguity.
+
+2. **Update version files** — replaces the version string in:
+   - `src/Demo_Plugin.php` (`PLUGIN_VERSION` constant)
+   - `demo-plugin.php` (plugin header `Version:`)
+   - `README.txt` (`Stable tag:`)
+
+3. **Build** — starts wp-env, compiles translations inside the container, then generates the distributable `.zip` with `wp dist-archive`.
+
+4. **Commit and push version updates** — commits the three changed files and pushes them to the resolved source branch (not always `main`).
+
+5. **Publish GitHub release** — attaches the `.zip` as a release artifact.
+
+### Stable vs. prerelease tags
+
+Tags whose name contains `-alpha`, `-beta`, or `-rc` (e.g. `v1.0.0-beta.1`) are automatically published as **prereleases** and are **not** marked as the latest release. All other tags produce standard releases that are eligible to become latest.
+
+## PHP Version Configuration
+
+Changing the PHP version requires updates in multiple places.
+
+### composer.json
+
+Update both the `require` constraint and the `config.platform` version:
+
+```json
+"require": {
+    "php": ">=8.0"
+},
+"config": {
+    "platform": {
+        "php": "8.0"
+    }
+}
+```
+
+Run `composer update` after changing these values.
+
+### Workflow files
+
+Update the PHP version in both workflow files that invoke `shivammathur/setup-php`:
+
+**`.github/workflows/setup.yml`**
+```yaml
+- uses: shivammathur/setup-php@v2
+  with:
+    php-version: '8.2'
+```
+
+**`.github/workflows/test-analyse.yml`**
+```yaml
+- uses: shivammathur/setup-php@v2
+  with:
+    php-version: '8.0'
+    tools: cs2pr
+```
+
+Also check `phpstan.neon` and `phpcs.xml` for any PHP-version-specific settings that may need updating.
