@@ -104,8 +104,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add src/Demo_Plugin.php demo-plugin.php README.txt
-          git commit -m "Update Version in WordPress specific files"
-          git push origin "$(git rev-parse HEAD):refs/heads/${{ steps.resolve-branch.outputs.branch }}"
+          if git diff --cached --quiet; then
+            echo "No changes to commit; skipping commit and push."
+          else
+            git commit -m "Update Version in WordPress specific files"
+            git push origin "$(git rev-parse HEAD):refs/heads/${{ steps.resolve-branch.outputs.branch }}"
+          fi
 
       - name: Release
         uses: ncipollo/release-action@v1
