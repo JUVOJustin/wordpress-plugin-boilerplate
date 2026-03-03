@@ -4,7 +4,7 @@ short_title: GitHub Actions
 description: Overview of the included CI/CD workflows, release process, and PHP version configuration.
 ---
 
-The boilerplate ships three GitHub Actions workflows in `.github/workflows/`. They share a reusable setup step to keep dependency installation fast.
+The plugin ships three GitHub Actions workflows in `.github/workflows/`. They share a reusable setup step to keep dependency installation fast.
 
 ## Workflows at a Glance
 
@@ -38,7 +38,7 @@ Runs on every branch push (with concurrency cancellation so stale runs are skipp
 
 ## deploy.yml
 
-Triggered when any tag is pushed. Only runs in forked/downstream repositories (`github.repository != 'JUVOJustin/wordpress-plugin-boilerplate'`).
+Triggered when any tag is pushed.
 
 ### Release process
 
@@ -49,9 +49,9 @@ Triggered when any tag is pushed. Only runs in forked/downstream repositories (`
    - `demo-plugin.php` (plugin header `Version:`)
    - `README.txt` (`Stable tag:`)
 
-3. **Build** — starts wp-env, compiles translations inside the container, then generates the distributable `.zip` with `wp dist-archive`.
+3. **Build** — starts wp-env, compiles translations inside the container, then generates the distributable `.zip` with `wp dist-archive`. Files listed in `.distignore` (e.g. source maps, dev dependencies, test files) are automatically excluded from the archive — no manual cleanup needed.
 
-4. **Commit and push version updates** — commits the three changed files and pushes them to the resolved source branch (not always `main`).
+4. **Commit and push version updates** — commits the three changed files and pushes them to the resolved source branch (not always `main`). You do not need to update version numbers manually — the workflow handles this automatically when a tag is pushed.
 
 5. **Publish GitHub release** — attaches the `.zip` as a release artifact.
 
