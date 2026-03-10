@@ -355,6 +355,7 @@ function cleanup_setup_artifacts( string $plugin_path ): void {
 	remove_setup_from_autoload( $plugin_path );
 	remove_file_if_exists( $plugin_path . '/setup.php' );
 	remove_file_if_exists( $plugin_path . '/src/Cli/Setup.php' );
+	remove_file_if_exists( $plugin_path . '/context7.json' );
 }
 
 /**
