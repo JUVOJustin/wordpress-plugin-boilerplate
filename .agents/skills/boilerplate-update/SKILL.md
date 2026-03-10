@@ -90,7 +90,7 @@ The boilerplate includes detailed docs at `tmp/boilerplate-ref/docs/`:
 | `i18n.mdx` | Translation workflow, extract/compile scripts, JSON translations, caveats |
 | `create-blocks.mdx` | Block scaffolding, auto-registration via manifest, editor style sharing |
 | `wp-env.mdx` | Docker-based dev environment, script structure, CI/CD usage |
-| `acf-json-sync.mdx` | ACF field group JSON storage patterns |
+| `integrations/acf.mdx` | ACF field group JSON storage patterns |
 | `work-with-ai.mdx` | AI integration: commands, skills, AGENTS.md, WordPress agent skills |
 | `documentation.mdx` | Documentation structure, front matter metadata, heading rules |
 
