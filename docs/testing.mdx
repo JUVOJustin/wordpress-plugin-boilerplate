@@ -1,0 +1,57 @@
+---
+title: Application Testing with PHPUnit
+short_title: Testing
+description: Minimal PHPUnit setup for WordPress application tests using wp-env.
+---
+
+The Demo Plugin is intended for application tests against a real WordPress runtime instead of isolated unit tests. Most plugin behavior is coupled to core hooks, globals, and APIs, so running tests inside WordPress gives realistic coverage with less setup overhead.
+
+## Why this setup is minimal
+
+`@wordpress/env` already ships the WordPress PHPUnit framework in the test container:
+
+- `WP_TESTS_DIR=/wordpress-phpunit`
+- `/wordpress-phpunit/wp-tests-config.php` (auto-generated config)
+- `/wordpress-phpunit/includes/functions.php` and `/wordpress-phpunit/includes/bootstrap.php`
+- Database isolation via transactional rollback per test run
+
+Because of that, no custom `tests/wp-config.php`, no manual database reset logic, and no explicit database credentials in npm scripts are needed.
+
+## Bootstrap flow
+
+The test bootstrap lives in `tests/bootstrap.php` and follows this order:
+
+1. Load Composer autoloader
+2. Resolve the test framework path (`WP_TESTS_DIR` first, Composer fallback second)
+3. Load `includes/functions.php`
+4. Register a `muplugins_loaded` callback to load `demo-plugin.php`
+5. Hand off to WordPress test bootstrap via `includes/bootstrap.php`
+
+This keeps setup deterministic in wp-env while still allowing an optional fallback path for environments outside wp-env.
+
+## Run tests locally
+
+```bash title="Terminal"
+npm run test:php
+```
+
+This runs:
+
+```bash title="package.json"
+wp-env run tests-cli --env-cwd=wp-content/plugins/demo-plugin ./vendor/bin/phpunit
+```
+
+The `--env-cwd` value matches the deterministic mapping from `.wp-env.json`.
+
+## Adding your tests
+
+`phpunit.xml.dist` points to `./tests/php` by default. Add your application tests there.
+
+```php title="tests/php/ExampleTest.php"
+<?php
+class ExampleTest extends WP_UnitTestCase {}
+```
+
+## Optional: load dependencies before the plugin under test
+
+If your plugin depends on another plugin (for example ACF), load that dependency in the `muplugins_loaded` callback before requiring `demo-plugin.php`.
