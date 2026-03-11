@@ -4,11 +4,11 @@ short_title: Testing
 description: Minimal PHPUnit setup for WordPress application tests using wp-env.
 ---
 
-The Demo Plugin is intended for application tests against a real WordPress runtime instead of isolated unit tests. Most plugin behavior is coupled to core hooks, globals, and APIs, so running tests inside WordPress gives realistic coverage with less setup overhead.
+This plugin is intended for application tests against a real WordPress runtime instead of isolated unit tests. Most plugin behavior is coupled to core hooks, globals, and APIs, so running tests inside WordPress gives realistic coverage with less setup overhead.
 
 ## Why this setup is minimal
 
-`@wordpress/env` already ships the WordPress PHPUnit framework in the test container:
+`@wordpress/env` already ships the WordPress PHPUnit framework in the test container and exposes `WP_TESTS_DIR` there:
 
 - `WP_TESTS_DIR=/wordpress-phpunit`
 - `/wordpress-phpunit/wp-tests-config.php` (auto-generated config)
