@@ -1,0 +1,71 @@
+---
+title: Application Testing with PHPUnit
+short_title: Testing
+description: Minimal PHPUnit setup for WordPress application tests using wp-env.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+## Bootstrap
+
+Start with `tests/bootstrap.php` so WordPress loads your plugin during the test bootstrap sequence.
+
+```php title="tests/bootstrap.php"
+<?php
+require_once dirname( __DIR__ ) . '/vendor/autoload.php';
+
+$tests_dir = getenv( 'WP_TESTS_DIR' );
+if ( false === $tests_dir || '' === $tests_dir ) {
+	$tests_dir = dirname( __DIR__ ) . '/vendor/wp-phpunit/wp-phpunit';
+}
+
+require_once $tests_dir . '/includes/functions.php';
+
+tests_add_filter(
+	'muplugins_loaded',
+	static function (): void {
+		require dirname( __DIR__ ) . '/demo-plugin.php';
+	}
+);
+
+require $tests_dir . '/includes/bootstrap.php';
+```
+
+<Steps>
+1. Load Composer autoloader.
+2. Resolve the WordPress test framework path (`WP_TESTS_DIR` first, Composer fallback second).
+3. Load `includes/functions.php`.
+4. Hook plugin loading on `muplugins_loaded`.
+5. Run WordPress test bootstrap (`includes/bootstrap.php`).
+</Steps>
+
+## Write your first application test
+
+<Steps>
+1. Create a test file in `tests/php`.
+
+```php title="tests/php/ExampleTest.php"
+<?php
+class ExampleTest extends WP_UnitTestCase {
+	public function test_plugin_class_is_loaded(): void {
+		$this->assertTrue( class_exists( \Demo_Plugin\Demo_Plugin::class ) );
+	}
+}
+```
+
+2. Run the test suite.
+
+```bash title="Terminal"
+npm run test:php
+```
+
+3. Add more tests under `tests/php` as your plugin grows. `phpunit.xml.dist` already points to that directory.
+</Steps>
+
+## Why this setup uses wp-env
+
+`wp-env` already provides the WordPress PHPUnit framework in the test container (`WP_TESTS_DIR=/wordpress-phpunit`, `includes/functions.php`, and `includes/bootstrap.php`), plus an auto-generated test config. This keeps the setup small: no custom `tests/wp-config.php`, no manual DB credential wiring in npm scripts, and no manual test database cleanup logic.
+
+## Optional: load dependencies before the plugin under test
+
+If your plugin depends on another plugin (for example ACF), load that dependency in the `muplugins_loaded` callback before requiring `demo-plugin.php`.
