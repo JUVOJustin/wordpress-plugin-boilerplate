@@ -4,53 +4,67 @@ short_title: Testing
 description: Minimal PHPUnit setup for WordPress application tests using wp-env.
 ---
 
-This plugin is intended for application tests against a real WordPress runtime instead of isolated unit tests. Most plugin behavior is coupled to core hooks, globals, and APIs, so running tests inside WordPress gives realistic coverage with less setup overhead.
+import { Steps } from '@astrojs/starlight/components';
 
-## Why this setup is minimal
+## Bootstrap
 
-`@wordpress/env` already ships the WordPress PHPUnit framework in the test container and exposes `WP_TESTS_DIR` there:
+Start with `tests/bootstrap.php` so WordPress loads your plugin during the test bootstrap sequence.
 
-- `WP_TESTS_DIR=/wordpress-phpunit`
-- `/wordpress-phpunit/wp-tests-config.php` (auto-generated config)
-- `/wordpress-phpunit/includes/functions.php` and `/wordpress-phpunit/includes/bootstrap.php`
-- Database isolation via transactional rollback per test run
+```php title="tests/bootstrap.php"
+<?php
+require_once dirname( __DIR__ ) . '/vendor/autoload.php';
 
-Because of that, no custom `tests/wp-config.php`, no manual database reset logic, and no explicit database credentials in npm scripts are needed.
+$tests_dir = getenv( 'WP_TESTS_DIR' );
+if ( false === $tests_dir || '' === $tests_dir ) {
+	$tests_dir = dirname( __DIR__ ) . '/vendor/wp-phpunit/wp-phpunit';
+}
 
-## Bootstrap flow
+require_once $tests_dir . '/includes/functions.php';
 
-The test bootstrap lives in `tests/bootstrap.php` and follows this order:
+tests_add_filter(
+	'muplugins_loaded',
+	static function (): void {
+		require dirname( __DIR__ ) . '/demo-plugin.php';
+	}
+);
 
-1. Load Composer autoloader
-2. Resolve the test framework path (`WP_TESTS_DIR` first, Composer fallback second)
-3. Load `includes/functions.php`
-4. Register a `muplugins_loaded` callback to load `demo-plugin.php`
-5. Hand off to WordPress test bootstrap via `includes/bootstrap.php`
+require $tests_dir . '/includes/bootstrap.php';
+```
 
-This keeps setup deterministic in wp-env while still allowing an optional fallback path for environments outside wp-env.
+<Steps>
+1. Load Composer autoloader.
+2. Resolve the WordPress test framework path (`WP_TESTS_DIR` first, Composer fallback second).
+3. Load `includes/functions.php`.
+4. Hook plugin loading on `muplugins_loaded`.
+5. Run WordPress test bootstrap (`includes/bootstrap.php`).
+</Steps>
 
-## Run tests locally
+## Write your first application test
+
+<Steps>
+1. Create a test file in `tests/php`.
+
+```php title="tests/php/ExampleTest.php"
+<?php
+class ExampleTest extends WP_UnitTestCase {
+	public function test_plugin_class_is_loaded(): void {
+		$this->assertTrue( class_exists( \Demo_Plugin\Demo_Plugin::class ) );
+	}
+}
+```
+
+2. Run the test suite.
 
 ```bash title="Terminal"
 npm run test:php
 ```
 
-This runs:
+3. Add more tests under `tests/php` as your plugin grows. `phpunit.xml.dist` already points to that directory.
+</Steps>
 
-```bash title="package.json"
-wp-env run tests-cli --env-cwd=wp-content/plugins/demo-plugin ./vendor/bin/phpunit
-```
+## Why this setup uses wp-env
 
-The `--env-cwd` value matches the deterministic mapping from `.wp-env.json`.
-
-## Adding your tests
-
-`phpunit.xml.dist` points to `./tests/php` by default. Add your application tests there.
-
-```php title="tests/php/ExampleTest.php"
-<?php
-class ExampleTest extends WP_UnitTestCase {}
-```
+`wp-env` already provides the WordPress PHPUnit framework in the test container (`WP_TESTS_DIR=/wordpress-phpunit`, `includes/functions.php`, and `includes/bootstrap.php`), plus an auto-generated test config. This keeps the setup small: no custom `tests/wp-config.php`, no manual DB credential wiring in npm scripts, and no manual test database cleanup logic.
 
 ## Optional: load dependencies before the plugin under test
 
