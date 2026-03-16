@@ -6,7 +6,16 @@
  * Modes:
  *   --plugin-name + --plugin-namespace + --plugin-text-domain   Apply replacements
  *   --cleanup-setup (optional)  Also remove setup autoload entries and setup files
+ *
+ * Source options (optional – defaults to the boilerplate defaults):
+ *   --source-plugin-name        Human-readable name currently in the files (default: "Demo Plugin")
+ *   --source-plugin-namespace   Namespace currently in the files (default: "Demo_Plugin")
+ *   --source-plugin-text-domain Text domain currently in the files (default: "demo-plugin")
  */
+
+const DEFAULT_SOURCE_PLUGIN_NAME = 'Demo Plugin';
+const DEFAULT_SOURCE_PLUGIN_NAMESPACE = 'Demo_Plugin';
+const DEFAULT_SOURCE_PLUGIN_TEXT_DOMAIN = 'demo-plugin';
 
 exit( main() );
 
@@ -32,7 +41,13 @@ function main(): int {
 		$plugin_namespace   = get_required_option( $options, 'plugin-namespace' );
 		$plugin_text_domain = get_required_option( $options, 'plugin-text-domain' );
 
-		apply_replacements( $plugin_path, $plugin_name, $plugin_namespace, $plugin_text_domain );
+		// Source options default to the boilerplate defaults so the script works
+		// on a fresh clone without any extra arguments.
+		$source_plugin_name        = get_option_string( $options, 'source-plugin-name', DEFAULT_SOURCE_PLUGIN_NAME );
+		$source_plugin_namespace   = get_option_string( $options, 'source-plugin-namespace', DEFAULT_SOURCE_PLUGIN_NAMESPACE );
+		$source_plugin_text_domain = get_option_string( $options, 'source-plugin-text-domain', DEFAULT_SOURCE_PLUGIN_TEXT_DOMAIN );
+
+		apply_replacements( $plugin_path, $plugin_name, $plugin_namespace, $plugin_text_domain, $source_plugin_name, $source_plugin_namespace, $source_plugin_text_domain );
 
 		if ( isset( $options['cleanup-setup'] ) ) {
 			cleanup_setup_artifacts( $plugin_path );
@@ -59,10 +74,13 @@ function main(): int {
  * @param string $plugin_name Human readable plugin name.
  * @param string $plugin_namespace Root namespace in Pascal_Snake_Case.
  * @param string $plugin_text_domain Text domain in kebab-case.
+ * @param string $source_plugin_name Human-readable name currently in the files.
+ * @param string $source_plugin_namespace Namespace currently in the files.
+ * @param string $source_plugin_text_domain Text domain slug currently in the files.
  *
  * @return void
  */
-function apply_replacements( string $plugin_path, string $plugin_name, string $plugin_namespace, string $plugin_text_domain ): void {
+function apply_replacements( string $plugin_path, string $plugin_name, string $plugin_namespace, string $plugin_text_domain, string $source_plugin_name = DEFAULT_SOURCE_PLUGIN_NAME, string $source_plugin_namespace = DEFAULT_SOURCE_PLUGIN_NAMESPACE, string $source_plugin_text_domain = DEFAULT_SOURCE_PLUGIN_TEXT_DOMAIN ): void {
 	$plugin_slug = to_slug( $plugin_text_domain );
 	if ( '' === $plugin_slug ) {
 		throw new RuntimeException( 'Plugin text domain cannot be empty.' );
@@ -76,6 +94,21 @@ function apply_replacements( string $plugin_path, string $plugin_name, string $p
 		throw new RuntimeException( 'Plugin namespace cannot be empty.' );
 	}
 
+	$source_slug      = to_slug( $source_plugin_text_domain );
+	$source_namespace = trim( $source_plugin_namespace );
+
+	if ( '' === $source_slug ) {
+		throw new RuntimeException( 'Source plugin text domain cannot be empty.' );
+	}
+
+	if ( '' === $source_namespace ) {
+		throw new RuntimeException( 'Source plugin namespace cannot be empty.' );
+	}
+
+	if ( '' === trim( $source_plugin_name ) ) {
+		throw new RuntimeException( 'Source plugin name cannot be empty.' );
+	}
+
 	$md_patterns = array(
 		'.*README\.md',
 		'.*docs\/.*\.(md|mdx)',
@@ -87,7 +120,7 @@ function apply_replacements( string $plugin_path, string $plugin_name, string $p
 	// kebab-case slug (demo-plugin -> my-plugin)
 	replace_in_files(
 		$plugin_path,
-		'demo-plugin',
+		$source_slug,
 		$plugin_slug,
 		array_merge(
 			array(
@@ -104,7 +137,7 @@ function apply_replacements( string $plugin_path, string $plugin_name, string $p
 	// snake_case slug (demo_plugin -> my_plugin)
 	replace_in_files(
 		$plugin_path,
-		'demo_plugin',
+		str_replace( '-', '_', $source_slug ),
 		str_replace( '-', '_', $plugin_slug ),
 		array_merge(
 			array(
@@ -119,7 +152,7 @@ function apply_replacements( string $plugin_path, string $plugin_name, string $p
 	// Namespace (Demo_Plugin -> My_Plugin)
 	replace_in_files(
 		$plugin_path,
-		'Demo_Plugin',
+		$source_namespace,
 		$plugin_namespace,
 		array_merge(
 			array(
@@ -134,7 +167,7 @@ function apply_replacements( string $plugin_path, string $plugin_name, string $p
 	// Constant prefix (DEMO_PLUGIN -> MY_PLUGIN)
 	replace_in_files(
 		$plugin_path,
-		'DEMO_PLUGIN',
+		strtoupper( $source_namespace ),
 		strtoupper( $plugin_namespace ),
 		array_merge(
 			array(
@@ -149,7 +182,7 @@ function apply_replacements( string $plugin_path, string $plugin_name, string $p
 	// Human name (Demo Plugin -> My Awesome Plugin)
 	replace_in_files(
 		$plugin_path,
-		'Demo Plugin',
+		trim( $source_plugin_name ),
 		$plugin_name,
 		array_merge(
 			array(
@@ -161,7 +194,7 @@ function apply_replacements( string $plugin_path, string $plugin_name, string $p
 		)
 	);
 
-	rename_template_files( $plugin_path, $plugin_namespace, $plugin_slug );
+	rename_template_files( $plugin_path, $plugin_namespace, $plugin_slug, $source_namespace, $source_slug );
 	remove_boilerplate_docs( $plugin_path );
 }
 
@@ -267,12 +300,14 @@ function matches_file_patterns( string $path, array $file_patterns ): bool {
  * @param string $plugin_path Plugin root path.
  * @param string $plugin_namespace Root plugin namespace.
  * @param string $plugin_slug Plugin slug.
+ * @param string $source_namespace Source namespace currently used in file names.
+ * @param string $source_slug Source slug currently used in file names.
  *
  * @return void
  */
-function rename_template_files( string $plugin_path, string $plugin_namespace, string $plugin_slug ): void {
-	rename_if_exists( $plugin_path . '/src/Demo_Plugin.php', $plugin_path . "/src/{$plugin_namespace}.php" );
-	rename_if_exists( $plugin_path . '/demo-plugin.php', $plugin_path . "/{$plugin_slug}.php" );
+function rename_template_files( string $plugin_path, string $plugin_namespace, string $plugin_slug, string $source_namespace = DEFAULT_SOURCE_PLUGIN_NAMESPACE, string $source_slug = DEFAULT_SOURCE_PLUGIN_TEXT_DOMAIN ): void {
+	rename_if_exists( $plugin_path . "/src/{$source_namespace}.php", $plugin_path . "/src/{$plugin_namespace}.php" );
+	rename_if_exists( $plugin_path . "/{$source_slug}.php", $plugin_path . "/{$plugin_slug}.php" );
 }
 
 /**
@@ -493,6 +528,9 @@ function parse_options(): array {
 			'plugin-name:',
 			'plugin-namespace:',
 			'plugin-text-domain:',
+			'source-plugin-name:',
+			'source-plugin-namespace:',
+			'source-plugin-text-domain:',
 			'cleanup-setup',
 			'help',
 		)
@@ -566,24 +604,39 @@ function get_required_option( array $options, string $key ): string {
  * @return void
  */
 function print_help(): void {
-	$help = <<<'HELP'
+	$help = sprintf(
+		<<<'HELP'
 Boilerplate replacement helper
 
 Usage:
   php boilerplate-replace.php --plugin-name <name> --plugin-namespace <ns> --plugin-text-domain <td> [--path <plugin-path>] [--cleanup-setup]
+  php boilerplate-replace.php --plugin-name <name> --plugin-namespace <ns> --plugin-text-domain <td> --source-plugin-name <name> --source-plugin-namespace <ns> --source-plugin-text-domain <td> [--path <plugin-path>]
 
 Options:
-  --path                 Target plugin path (default: current directory)
-  --plugin-name          Human-readable plugin name (e.g. "My Awesome Plugin")
-  --plugin-namespace     Root namespace (e.g. "My_Awesome_Plugin")
-  --plugin-text-domain   Text domain slug (e.g. "my-awesome-plugin")
-  --cleanup-setup        Also remove setup autoload entries and setup files after replacement
-  --help                 Show this help
+  --path                        Target plugin path (default: current directory)
+  --plugin-name                 Human-readable plugin name (e.g. "My Awesome Plugin")
+  --plugin-namespace            Root namespace (e.g. "My_Awesome_Plugin")
+  --plugin-text-domain          Text domain slug (e.g. "my-awesome-plugin")
+  --source-plugin-name          Human-readable name currently in the files (default: "%s")
+  --source-plugin-namespace     Namespace currently in the files (default: "%s")
+  --source-plugin-text-domain   Text domain slug currently in the files (default: "%s")
+  --cleanup-setup               Also remove setup autoload entries and setup files after replacement
+  --help                        Show this help
 
 Examples:
+  # Initial setup from the boilerplate defaults:
   php boilerplate-replace.php --plugin-name "My Plugin" --plugin-namespace "My_Plugin" --plugin-text-domain "my-plugin" --path /path/to/plugin
-  php boilerplate-replace.php --plugin-name "My Plugin" --plugin-namespace "My_Plugin" --plugin-text-domain "my-plugin" --path /path/to/plugin --cleanup-setup
-HELP;
+
+  # Rename an already-customised plugin (e.g. "My Plugin" -> "Better Plugin"):
+  php boilerplate-replace.php \
+    --source-plugin-name "My Plugin" --source-plugin-namespace "My_Plugin" --source-plugin-text-domain "my-plugin" \
+    --plugin-name "Better Plugin" --plugin-namespace "Better_Plugin" --plugin-text-domain "better-plugin" \
+    --path /path/to/plugin
+HELP,
+		DEFAULT_SOURCE_PLUGIN_NAME,
+		DEFAULT_SOURCE_PLUGIN_NAMESPACE,
+		DEFAULT_SOURCE_PLUGIN_TEXT_DOMAIN
+	);
 
 	fwrite( STDOUT, $help . PHP_EOL );
 }
