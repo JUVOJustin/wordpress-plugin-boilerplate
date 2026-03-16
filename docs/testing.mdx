@@ -1,71 +1,80 @@
 ---
 title: Application Testing with PHPUnit
 short_title: Testing
-description: Minimal PHPUnit setup for WordPress application tests using wp-env.
+description: Developer guide for writing PHPUnit application tests in Demo Plugin using wp-env.
 ---
 
 import { Steps } from '@astrojs/starlight/components';
 
-## Bootstrap
+Use this guide to start writing application tests quickly in **Demo Plugin**.  
+Focus here is on authoring real plugin tests (assertions, factories, hook behavior), not on low-level PHPUnit wiring.
 
-Start with `tests/bootstrap.php` so WordPress loads your plugin during the test bootstrap sequence.
+## Start your first application test
 
-```php title="tests/bootstrap.php"
-<?php
-require_once dirname( __DIR__ ) . '/vendor/autoload.php';
+<Steps>
+1. Start the test environment.
 
-$tests_dir = getenv( 'WP_TESTS_DIR' );
-if ( false === $tests_dir || '' === $tests_dir ) {
-	$tests_dir = dirname( __DIR__ ) . '/vendor/wp-phpunit/wp-phpunit';
-}
-
-require_once $tests_dir . '/includes/functions.php';
-
-tests_add_filter(
-	'muplugins_loaded',
-	static function (): void {
-		require dirname( __DIR__ ) . '/demo-plugin.php';
-	}
-);
-
-require $tests_dir . '/includes/bootstrap.php';
+```bash title="Terminal"
+npm run env:start
 ```
 
-<Steps>
-1. Load Composer autoloader.
-2. Resolve the WordPress test framework path (`WP_TESTS_DIR` first, Composer fallback second).
-3. Load `includes/functions.php`.
-4. Hook plugin loading on `muplugins_loaded`.
-5. Run WordPress test bootstrap (`includes/bootstrap.php`).
-</Steps>
-
-## Write your first application test
-
-<Steps>
-1. Create a test file in `tests/php`.
+2. Create your first test class in `tests/php`.
 
 ```php title="tests/php/ExampleTest.php"
 <?php
+
 class ExampleTest extends WP_UnitTestCase {
-	public function test_plugin_class_is_loaded(): void {
+	public function test_plugin_bootstraps_core_class(): void {
 		$this->assertTrue( class_exists( \Demo_Plugin\Demo_Plugin::class ) );
 	}
 }
 ```
 
-2. Run the test suite.
+3. Run tests.
 
 ```bash title="Terminal"
 npm run test:php
 ```
 
-3. Add more tests under `tests/php` as your plugin grows. `phpunit.xml.dist` already points to that directory.
+4. Add more test classes in `tests/php` as features grow (`phpunit.xml.dist` already points there).
 </Steps>
 
-## Why this setup uses wp-env
+## Common test class examples
 
-`wp-env` already provides the WordPress PHPUnit framework in the test container (`WP_TESTS_DIR=/wordpress-phpunit`, `includes/functions.php`, and `includes/bootstrap.php`), plus an auto-generated test config. This keeps the setup small: no custom `tests/wp-config.php`, no manual DB credential wiring in npm scripts, and no manual test database cleanup logic.
+### Test behavior that depends on WordPress data
 
-## Optional: load dependencies before the plugin under test
+```php title="tests/php/PostMetaBehaviorTest.php"
+<?php
 
-If your plugin depends on another plugin (for example ACF), load that dependency in the `muplugins_loaded` callback before requiring `demo-plugin.php`.
+class PostMetaBehaviorTest extends WP_UnitTestCase {
+	public function test_can_store_and_read_post_meta(): void {
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, '_demo_flag', 'yes' );
+
+		$this->assertSame( 'yes', get_post_meta( $post_id, '_demo_flag', true ) );
+	}
+}
+```
+
+### Test hooks or filters from your plugin
+
+```php title="tests/php/FilterRegistrationTest.php"
+<?php
+
+class FilterRegistrationTest extends WP_UnitTestCase {
+	public function test_demo_filter_modifies_value(): void {
+		$result = apply_filters( 'demo_plugin/example_value', 'before' );
+		$this->assertNotSame( 'before', $result );
+	}
+}
+```
+
+## Useful upstream resources
+
+- [WordPress PHPUnit handbook](https://make.wordpress.org/core/handbook/testing/automated-testing/phpunit/)
+- [@wordpress/env reference](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/)
+- [WordPress core PHPUnit test examples](https://github.com/WordPress/wordpress-develop/tree/trunk/tests/phpunit/tests)
+
+## Why this guide uses wp-env
+
+`wp-env` gives Demo Plugin a ready WordPress + PHPUnit runtime with test config already wired, so you can focus on writing assertions instead of maintaining local test infrastructure.
