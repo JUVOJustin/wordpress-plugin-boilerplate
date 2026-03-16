@@ -13,6 +13,10 @@
  *   --source-plugin-text-domain Text domain currently in the files (default: "demo-plugin")
  */
 
+const DEFAULT_SOURCE_PLUGIN_NAME = 'Demo Plugin';
+const DEFAULT_SOURCE_PLUGIN_NAMESPACE = 'Demo_Plugin';
+const DEFAULT_SOURCE_PLUGIN_TEXT_DOMAIN = 'demo-plugin';
+
 exit( main() );
 
 /**
@@ -39,9 +43,9 @@ function main(): int {
 
 		// Source options default to the boilerplate defaults so the script works
 		// on a fresh clone without any extra arguments.
-		$source_plugin_name        = get_option_string( $options, 'source-plugin-name', 'Demo Plugin' );
-		$source_plugin_namespace   = get_option_string( $options, 'source-plugin-namespace', 'Demo_Plugin' );
-		$source_plugin_text_domain = get_option_string( $options, 'source-plugin-text-domain', 'demo-plugin' );
+		$source_plugin_name        = get_option_string( $options, 'source-plugin-name', DEFAULT_SOURCE_PLUGIN_NAME );
+		$source_plugin_namespace   = get_option_string( $options, 'source-plugin-namespace', DEFAULT_SOURCE_PLUGIN_NAMESPACE );
+		$source_plugin_text_domain = get_option_string( $options, 'source-plugin-text-domain', DEFAULT_SOURCE_PLUGIN_TEXT_DOMAIN );
 
 		apply_replacements( $plugin_path, $plugin_name, $plugin_namespace, $plugin_text_domain, $source_plugin_name, $source_plugin_namespace, $source_plugin_text_domain );
 
@@ -76,7 +80,7 @@ function main(): int {
  *
  * @return void
  */
-function apply_replacements( string $plugin_path, string $plugin_name, string $plugin_namespace, string $plugin_text_domain, string $source_plugin_name = 'Demo Plugin', string $source_plugin_namespace = 'Demo_Plugin', string $source_plugin_text_domain = 'demo-plugin' ): void {
+function apply_replacements( string $plugin_path, string $plugin_name, string $plugin_namespace, string $plugin_text_domain, string $source_plugin_name = DEFAULT_SOURCE_PLUGIN_NAME, string $source_plugin_namespace = DEFAULT_SOURCE_PLUGIN_NAMESPACE, string $source_plugin_text_domain = DEFAULT_SOURCE_PLUGIN_TEXT_DOMAIN ): void {
 	$plugin_slug = to_slug( $plugin_text_domain );
 	if ( '' === $plugin_slug ) {
 		throw new RuntimeException( 'Plugin text domain cannot be empty.' );
@@ -301,7 +305,7 @@ function matches_file_patterns( string $path, array $file_patterns ): bool {
  *
  * @return void
  */
-function rename_template_files( string $plugin_path, string $plugin_namespace, string $plugin_slug, string $source_namespace = 'Demo_Plugin', string $source_slug = 'demo-plugin' ): void {
+function rename_template_files( string $plugin_path, string $plugin_namespace, string $plugin_slug, string $source_namespace = DEFAULT_SOURCE_PLUGIN_NAMESPACE, string $source_slug = DEFAULT_SOURCE_PLUGIN_TEXT_DOMAIN ): void {
 	rename_if_exists( $plugin_path . "/src/{$source_namespace}.php", $plugin_path . "/src/{$plugin_namespace}.php" );
 	rename_if_exists( $plugin_path . "/{$source_slug}.php", $plugin_path . "/{$plugin_slug}.php" );
 }
@@ -600,7 +604,8 @@ function get_required_option( array $options, string $key ): string {
  * @return void
  */
 function print_help(): void {
-	$help = <<<'HELP'
+	$help = sprintf(
+		<<<'HELP'
 Boilerplate replacement helper
 
 Usage:
@@ -612,9 +617,9 @@ Options:
   --plugin-name                 Human-readable plugin name (e.g. "My Awesome Plugin")
   --plugin-namespace            Root namespace (e.g. "My_Awesome_Plugin")
   --plugin-text-domain          Text domain slug (e.g. "my-awesome-plugin")
-  --source-plugin-name          Human-readable name currently in the files (default: "Demo Plugin")
-  --source-plugin-namespace     Namespace currently in the files (default: "Demo_Plugin")
-  --source-plugin-text-domain   Text domain slug currently in the files (default: "demo-plugin")
+  --source-plugin-name          Human-readable name currently in the files (default: "%s")
+  --source-plugin-namespace     Namespace currently in the files (default: "%s")
+  --source-plugin-text-domain   Text domain slug currently in the files (default: "%s")
   --cleanup-setup               Also remove setup autoload entries and setup files after replacement
   --help                        Show this help
 
@@ -627,7 +632,11 @@ Examples:
     --source-plugin-name "My Plugin" --source-plugin-namespace "My_Plugin" --source-plugin-text-domain "my-plugin" \
     --plugin-name "Better Plugin" --plugin-namespace "Better_Plugin" --plugin-text-domain "better-plugin" \
     --path /path/to/plugin
-HELP;
+HELP,
+		DEFAULT_SOURCE_PLUGIN_NAME,
+		DEFAULT_SOURCE_PLUGIN_NAMESPACE,
+		DEFAULT_SOURCE_PLUGIN_TEXT_DOMAIN
+	);
 
 	fwrite( STDOUT, $help . PHP_EOL );
 }
