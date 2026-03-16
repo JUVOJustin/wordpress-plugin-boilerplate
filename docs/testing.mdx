@@ -24,7 +24,7 @@ npm run env:start
 <?php
 
 class ExampleTest extends WP_UnitTestCase {
-	public function test_plugin_bootstraps_core_class(): void {
+	public function test_plugin_main_class_is_loaded(): void {
 		$this->assertTrue( class_exists( \Demo_Plugin\Demo_Plugin::class ) );
 	}
 }
@@ -63,8 +63,13 @@ class PostMetaBehaviorTest extends WP_UnitTestCase {
 
 class FilterRegistrationTest extends WP_UnitTestCase {
 	public function test_demo_filter_modifies_value(): void {
+		add_filter(
+			'demo_plugin/example_value',
+			static fn( string $value ): string => $value . '-modified'
+		);
+
 		$result = apply_filters( 'demo_plugin/example_value', 'before' );
-		$this->assertNotSame( 'before', $result );
+		$this->assertSame( 'before-modified', $result );
 	}
 }
 ```
