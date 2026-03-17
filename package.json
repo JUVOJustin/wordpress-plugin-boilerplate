@@ -18,6 +18,6 @@
     "env:stop": "wp-env stop",
     "env:destroy": "wp-env destroy",
     "env:cli": "wp-env run cli --env-cwd=wp-content/plugins/demo-plugin",
-    "test:php": "wp-env run tests-cli --env-cwd=wp-content/plugins/demo-plugin ./vendor/bin/phpunit"
+    "test:php": "wp-env run tests-cli --env-cwd=wp-content/plugins/demo-plugin phpunit"
   }
 }

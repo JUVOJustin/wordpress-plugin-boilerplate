@@ -2,21 +2,23 @@
 /**
  * PHPUnit bootstrap for WordPress application tests.
  *
+ * Requires the wp-env test container to be running so that WP_TESTS_DIR
+ * is available. Run tests via: npm run test:php
+ *
  * @package Demo_Plugin
  */
 
 require_once dirname( __DIR__ ) . '/vendor/autoload.php';
 
-// Prefer wp-env's bundled test framework, fall back to Composer package.
 $tests_dir = getenv( 'WP_TESTS_DIR' );
-if ( false === $tests_dir || '' === $tests_dir ) {
-	$tests_dir = dirname( __DIR__ ) . '/vendor/wp-phpunit/wp-phpunit';
-}
 
-if ( ! is_dir( $tests_dir . '/includes' ) ) {
-	fwrite( STDERR, "WordPress test framework not found. Start wp-env or install wp-phpunit/wp-phpunit.\n" );
+if ( false === $tests_dir || '' === $tests_dir ) {
+	fwrite( STDERR, "WP_TESTS_DIR is not set. Start the test environment first: npm run env:start\n" );
 	exit( 1 );
 }
+
+// Required by the WordPress test bootstrap.
+require_once dirname( __DIR__ ) . '/vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php';
 
 require_once $tests_dir . '/includes/functions.php';
 

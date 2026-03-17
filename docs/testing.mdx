@@ -6,10 +6,11 @@ description: Developer guide for writing PHPUnit application tests in Demo Plugi
 
 import { Steps } from '@astrojs/starlight/components';
 
-Use this guide to start writing application tests quickly in **Demo Plugin**.  
-Focus here is on authoring real plugin tests (assertions, factories, hook behavior), not on low-level PHPUnit wiring.
+Demo Plugin ships with a PHPUnit setup that runs exclusively inside the `wp-env` test container. Running tests outside of `wp-env` is not supported — the bootstrap will exit immediately if `WP_TESTS_DIR` is not set, which only happens inside the container.
 
-## Start your first application test
+The container provides a real WordPress database, the full WordPress function library, PHPUnit, and the `yoast/phpunit-polyfills` library required by the WordPress test bootstrap. The bootstrap lives in `tests/bootstrap.php`, configuration in `phpunit.xml.dist`, and test classes go in `tests/php`.
+
+## Write your first test
 
 <Steps>
 1. Start the test environment.
@@ -18,14 +19,14 @@ Focus here is on authoring real plugin tests (assertions, factories, hook behavi
 npm run env:start
 ```
 
-2. Create your first test class in `tests/php`.
+2. Add a test class in `tests/php`. An `ExampleTest.php` is already provided as a starting point.
 
-```php title="tests/php/ExampleTest.php"
+```php title="tests/php/MyFeatureTest.php"
 <?php
 
-class ExampleTest extends WP_UnitTestCase {
-	public function test_plugin_main_class_is_loaded(): void {
-		$this->assertTrue( class_exists( \Demo_Plugin\Demo_Plugin::class ) );
+class MyFeatureTest extends WP_UnitTestCase {
+	public function test_something(): void {
+		$this->assertTrue( true );
 	}
 }
 ```
@@ -35,13 +36,15 @@ class ExampleTest extends WP_UnitTestCase {
 ```bash title="Terminal"
 npm run test:php
 ```
-
-4. Add more test classes in `tests/php` as features grow (`phpunit.xml.dist` already points there).
 </Steps>
 
-## Common test class examples
+:::note[Why `tests-cli` and not `cli`?]
+`wp-env` exposes two containers. `cli` is the development container sharing the main database. `tests-cli` is the dedicated test container with its own isolated database and `WP_TESTS_DIR` pre-configured to the bundled WordPress test framework. `test:php` uses `tests-cli` directly — no Composer wrapper — so the PHPUnit version in the container is always matched to the bundled WP test files.
+:::
 
-### Test behavior that depends on WordPress data
+## Common test patterns
+
+### WordPress data with factories
 
 ```php title="tests/php/PostMetaBehaviorTest.php"
 <?php
@@ -56,7 +59,7 @@ class PostMetaBehaviorTest extends WP_UnitTestCase {
 }
 ```
 
-### Test hooks or filters from your plugin
+### Hooks and filters
 
 ```php title="tests/php/FilterRegistrationTest.php"
 <?php
@@ -74,12 +77,19 @@ class FilterRegistrationTest extends WP_UnitTestCase {
 }
 ```
 
-## Useful upstream resources
+## Configuration notes
+
+**Namespaces in test files** — `WP_UnitTestCase` is a global class so test classes conventionally use no namespace. If you prefer a namespace, add a `Tests\` autoload entry in `composer.json`.
+
+**Local `phpunit.xml`** — `phpunit.xml.dist` is committed as the shared default. Create a local `phpunit.xml` to override settings for your environment (it is already listed in `.gitignore`).
+
+
+## CI
+
+The `test-application` job in `.github/workflows/test-analyse.yml` runs the full test suite on every push via wp-env.
+
+## References
 
 - [WordPress PHPUnit handbook](https://make.wordpress.org/core/handbook/testing/automated-testing/phpunit/)
 - [@wordpress/env reference](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/)
 - [WordPress core PHPUnit test examples](https://github.com/WordPress/wordpress-develop/tree/trunk/tests/phpunit/tests)
-
-## Why this guide uses wp-env
-
-`wp-env` gives Demo Plugin a ready WordPress + PHPUnit runtime with test config already wired, so you can focus on writing assertions instead of maintaining local test infrastructure.
