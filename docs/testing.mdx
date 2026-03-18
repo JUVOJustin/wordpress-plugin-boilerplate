@@ -46,6 +46,10 @@ npm run test:php
 
 ### WordPress data with factories
 
+:::note[Automatic database rollback]
+`WP_UnitTestCase` wraps each test in a transaction and rolls it back automatically when the test finishes. You never need to manually clean up posts, users, or meta — each test starts with a clean slate.
+:::
+
 ```php title="tests/php/PostMetaBehaviorTest.php"
 <?php
 
