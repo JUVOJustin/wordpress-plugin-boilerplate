@@ -11,7 +11,7 @@ The plugin ships three GitHub Actions workflows in `.github/workflows/`. They sh
 | Workflow | File | Trigger | Purpose |
 |----------|------|---------|---------|
 | Setup Environment | `setup.yml` | `workflow_call` | Installs and caches PHP/Node dependencies; shared by the other two workflows |
-| Test / Analyse | `test-analyse.yml` | Push to any branch | Lints JS/CSS, builds assets, runs PHPStan and PHPCS |
+| Test / Analyse | `test-analyse.yml` | Push to any branch | Lints JS/CSS, builds assets, runs PHPStan, PHPCS, and PHPUnit application tests |
 | Deploy | `deploy.yml` | Push of any tag | Builds the distributable archive and publishes a GitHub release |
 
 ## setup.yml
@@ -25,16 +25,27 @@ A reusable workflow (`workflow_call`) that the other two workflows call via `use
 
 ## test-analyse.yml
 
-Runs on every branch push (with concurrency cancellation so stale runs are skipped). It calls `setup.yml` in `dev` mode, then runs two parallel jobs:
+Runs on every branch push (with concurrency cancellation so stale runs are skipped). It calls `setup.yml` in `dev` mode, then runs jobs in two stages:
+
+**Stage 1 — parallel fast feedback**
 
 **`test-js`** — JS/CSS quality and build
 - Lints JavaScript with `npm run lint:js`
 - Lints styles with `npm run lint:style`
 - Verifies the production build succeeds with `npm run build`
 
-**`test-php`** — PHP quality
+**`test-php`** — PHP static analysis
 - Runs PHPStan static analysis (`composer run phpstan:ci`)
 - Runs PHPCS (`composer run phpcs:ci`) and surfaces violations as inline PR annotations via `cs2pr`
+
+**Stage 2 — application tests**
+
+**`test-application`** — PHPUnit integration tests (runs after both stage 1 jobs pass)
+- Starts the `wp-env` Docker environment
+- Runs PHPUnit inside the `tests-cli` container via `npm run test:php`
+- Stops the environment after tests finish (even on failure)
+
+Sequencing `test-application` after the static analysis jobs avoids spinning up Docker when faster checks have already found a problem.
 
 ## deploy.yml
 

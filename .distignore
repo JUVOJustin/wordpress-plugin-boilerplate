@@ -9,6 +9,7 @@ composer.lock
 package.json
 package-lock.json
 phpunit.xml.dist
+phpunit.xml
 phpcs.xml
 phpstan.neon
 phpcs-report.xml

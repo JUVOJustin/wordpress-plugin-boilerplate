@@ -1,0 +1,127 @@
+---
+title: Application Testing with PHPUnit
+short_title: Testing
+description: Developer guide for writing PHPUnit application tests in Demo Plugin using wp-env.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Demo Plugin ships with a PHPUnit setup that runs exclusively inside the `wp-env` test container. Running tests outside of `wp-env` is not supported — the bootstrap will exit immediately if `WP_TESTS_DIR` is not set, which only happens inside the container.
+
+The container provides a real WordPress database, the full WordPress function library, PHPUnit, and the `yoast/phpunit-polyfills` library required by the WordPress test bootstrap. The bootstrap lives in `tests/bootstrap.php`, configuration in `phpunit.xml.dist`, and test classes go in `tests/php`.
+
+## Write your first test
+
+<Steps>
+1. Start the test environment.
+
+```bash title="Terminal"
+npm run env:start
+```
+
+2. Add a test class in `tests/php`. An `ExampleTest.php` is already provided as a starting point.
+
+```php title="tests/php/MyFeatureTest.php"
+<?php
+
+class MyFeatureTest extends WP_UnitTestCase {
+	public function test_something(): void {
+		$this->assertTrue( true );
+	}
+}
+```
+
+3. Run tests.
+
+```bash title="Terminal"
+npm run test:php
+```
+</Steps>
+
+:::note[Why `tests-cli` and not `cli`?]
+`wp-env` exposes two containers. `cli` is the development container sharing the main database. `tests-cli` is the dedicated test container with its own isolated database and `WP_TESTS_DIR` pre-configured to the bundled WordPress test framework. `test:php` uses `tests-cli` directly — no Composer wrapper — so the PHPUnit version in the container is always matched to the bundled WP test files.
+:::
+
+## Common test patterns
+
+### WordPress data with factories
+
+:::note[Automatic database rollback]
+`WP_UnitTestCase` wraps each test in a transaction and rolls it back automatically when the test finishes. You never need to manually clean up posts, users, or meta — each test starts with a clean slate.
+:::
+
+```php title="tests/php/PostMetaBehaviorTest.php"
+<?php
+
+class PostMetaBehaviorTest extends WP_UnitTestCase {
+	public function test_can_store_and_read_post_meta(): void {
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, '_demo_flag', 'yes' );
+
+		$this->assertSame( 'yes', get_post_meta( $post_id, '_demo_flag', true ) );
+	}
+}
+```
+
+### Hooks and filters
+
+```php title="tests/php/FilterRegistrationTest.php"
+<?php
+
+class FilterRegistrationTest extends WP_UnitTestCase {
+	public function test_demo_filter_modifies_value(): void {
+		add_filter(
+			'demo_plugin/example_value',
+			static fn( string $value ): string => $value . '-modified'
+		);
+
+		$result = apply_filters( 'demo_plugin/example_value', 'before' );
+		$this->assertSame( 'before-modified', $result );
+	}
+}
+```
+
+## Plugin dependencies for testing
+
+Some tests require other plugins to be present and active in the test environment. Use WP-CLI's `plugin install` command inside the `tests-cli` container — this installs the plugin files and activates it in the **test database** (isolated from the development site).
+
+### Persistent dependency
+
+For plugins that every test run needs, add the install command to `lifecycleScripts.afterStart` in `.wp-env.json` so it runs automatically on `env:start`:
+
+```json title=".wp-env.json"
+{
+	"lifecycleScripts": {
+		"afterStart": "wp-env run cli wp plugin activate demo-plugin && wp-env run tests-cli wp plugin install advanced-custom-fields --activate"
+	}
+}
+```
+
+The plugin slug is the same as on wordpress.org/plugins. You can also pin a specific version:
+
+```bash
+wp-env run tests-cli wp plugin install advanced-custom-fields --version=6.3.0 --activate
+```
+
+Or install from a remote ZIP (useful for premium plugins via a direct download URL):
+
+```bash
+wp-env run tests-cli wp plugin install https://example.com/my-plugin.zip --activate
+```
+
+## Configuration notes
+
+**Namespaces in test files** — `WP_UnitTestCase` is a global class so test classes conventionally use no namespace. If you prefer a namespace, add a `Tests\` autoload entry in `composer.json`.
+
+**Local `phpunit.xml`** — `phpunit.xml.dist` is committed as the shared default. Create a local `phpunit.xml` to override settings for your environment (it is already listed in `.gitignore`).
+
+
+## CI
+
+The `test-application` job in `.github/workflows/test-analyse.yml` runs the full test suite on every push via wp-env.
+
+## References
+
+- [WordPress PHPUnit handbook](https://make.wordpress.org/core/handbook/testing/automated-testing/phpunit/)
+- [@wordpress/env reference](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/)
+- [WordPress core PHPUnit test examples](https://github.com/WordPress/wordpress-develop/tree/trunk/tests/phpunit/tests)

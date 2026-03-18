@@ -17,6 +17,7 @@ This plugin is a modern WordPress plugin with strict conventions and automated w
 | @docs/i18n.mdx           | Translation workflow, extract/compile scripts, JSON translations |
 | @docs/create-blocks.mdx  | Block scaffolding, auto-registration, editor style sharing |
 | @docs/wp-env.mdx         | Docker dev environment, script structure, CI/CD usage |
+| @docs/testing.mdx        | PHPUnit application testing with wp-env bootstrap and scripts |
 | @docs/github-actions.mdx | CI/CD workflows, release process, PHP version configuration |
 | @docs/acf-json-sync.mdx  | ACF field group JSON storage patterns |
 | @docs/work-with-ai.mdx   | AI integration: commands, skills, AGENTS.md, WordPress agent skills |
@@ -62,6 +63,7 @@ This plugin is a modern WordPress plugin with strict conventions and automated w
 - **Abilities API**: Implement interfaces in `src/Abilities/`, register via Loader. See `docs/abilities.mdx`.
 - **i18n**: Extract with `composer run i18n:extract`, compile with `composer run i18n:compile`. See `docs/i18n.mdx`.
 - **wp-env**: Start with `npm run env:start`. See `docs/wp-env.mdx`.
+- **Testing**: Run application tests with `npm run test:php`. See `docs/testing.mdx`. Use the `application-testing` skill when writing tests.
 
 ### Maintaining the plugin
 
