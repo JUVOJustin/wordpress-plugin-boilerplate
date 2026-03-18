@@ -77,6 +77,34 @@ class FilterRegistrationTest extends WP_UnitTestCase {
 }
 ```
 
+## Plugin dependencies for testing
+
+Some tests require other plugins to be present and active in the test environment. Use WP-CLI's `plugin install` command inside the `tests-cli` container — this installs the plugin files and activates it in the **test database** (isolated from the development site).
+
+### Persistent dependency
+
+For plugins that every test run needs, add the install command to `lifecycleScripts.afterStart` in `.wp-env.json` so it runs automatically on `env:start`:
+
+```json title=".wp-env.json"
+{
+	"lifecycleScripts": {
+		"afterStart": "wp-env run cli wp plugin activate demo-plugin && wp-env run tests-cli wp plugin install advanced-custom-fields --activate"
+	}
+}
+```
+
+The plugin slug is the same as on wordpress.org/plugins. You can also pin a specific version:
+
+```bash
+wp-env run tests-cli wp plugin install advanced-custom-fields --version=6.3.0 --activate
+```
+
+Or install from a remote ZIP (useful for premium plugins via a direct download URL):
+
+```bash
+wp-env run tests-cli wp plugin install https://example.com/my-plugin.zip --activate
+```
+
 ## Configuration notes
 
 **Namespaces in test files** — `WP_UnitTestCase` is a global class so test classes conventionally use no namespace. If you prefer a namespace, add a `Tests\` autoload entry in `composer.json`.
