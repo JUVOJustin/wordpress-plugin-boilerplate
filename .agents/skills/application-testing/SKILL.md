@@ -46,15 +46,6 @@ class MyFeatureTest extends WP_UnitTestCase {
 - One class per file; filename must match the class name (`MyFeatureTest.php`)
 - Method names describe the expected behaviour: `test_filter_appends_suffix`, `test_meta_is_saved`
 
-## Finding the plugin namespace
-
-Check `composer.json` → `autoload.psr-4` for the PSR-4 root namespace mapped to `src/`. Use it to reference plugin classes in tests:
-
-```php
-$instance = new \Demo_Plugin\MyClass();
-$this->assertTrue( class_exists( \Demo_Plugin\MyClass::class ) );
-```
-
 ## Factories — creating WordPress data
 
 Use `self::factory()` to create posts, users, terms, and comments. Never insert raw SQL. Database state is rolled back automatically between every test.
