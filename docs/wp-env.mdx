@@ -7,7 +7,7 @@ description: Containerized WordPress development environment with @wordpress/env
 The plugin uses [@wordpress/env](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) to provide a consistent, containerized WordPress development environment. This is useful for local development and CI/CD pipelines where a full WordPress installation is required.
 
 :::note
-WP-CLI is treated as an environment dependency. Commands such as `composer run i18n:extract` and `composer run i18n:compile` assume that `wp` and the required WP-CLI packages are already available in the active environment. `wp-env` installs the WP-CLI i18n package automatically during `env:start`. If you run the commands outside `wp-env`, install WP-CLI yourself and ensure the needed packages are available. See the [official WP-CLI installation guide](https://make.wordpress.org/cli/handbook/guides/installing/).
+WP-CLI is treated as an environment dependency. Commands such as `composer run i18n:extract` and `composer run i18n:compile` assume that `wp` and the required WP-CLI packages are already available in the active environment. If you run the commands outside `wp-env`, install WP-CLI yourself. See the [official WP-CLI installation guide](https://make.wordpress.org/cli/handbook/guides/installing/).
 :::
 
 ## Configuration
@@ -77,13 +77,11 @@ npm run env:cli -- composer run my-script
 
 ## Usage in CI/CD
 
-The boilerplate uses wp-env in the deploy workflow to compile translations. This requires a full WordPress environment with WP-CLI available. Because the i18n package is installed through `wp-env`, the deploy workflow can rely on the same translation setup as local development.
-
-See [i18n](i18n.mdx) for details on translation compilation.
+The boilerplate uses wp-env in the deploy workflow to compile translations. This requires a full WordPress environment with WP-CLI available.
 
 ## Things to Keep in Mind
 
 - Docker must be installed and running
 - The first start downloads WordPress core and may take a few minutes
 - Data persists between starts unless you run `env:destroy`
-- The `afterStart` lifecycle script installs the pinned i18n package in the `cli` container and activates the plugin
+- The `afterStart` lifecycle script automatically activates the plugin
