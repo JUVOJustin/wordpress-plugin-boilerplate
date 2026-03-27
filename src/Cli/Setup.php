@@ -115,8 +115,6 @@ class Setup {
 		$this->run_replacement_script( $script_path, $plugin_path, $this->name, $this->namespace, $this->slug );
 		$progress->tick();
 
-		$this->remove_setup_wp_cli_dependency( $plugin_path );
-
 		$this->run_shell_command( 'composer dump-autoload && composer update', 'Error running composer update' );
 		$progress->tick();
 
@@ -133,9 +131,8 @@ class Setup {
 	/**
 	 * Invoke the shared replacement script with the user-provided identity values.
 	 *
-	 * Passing --cleanup-setup removes setup autoload entries and setup files as
-	 * part of this call, before any subsequent composer commands regenerate the
-	 * autoloader, so the vendor autoload map is built from a clean composer.json.
+	 * Passing --cleanup-setup lets the helper remove setup-only Composer entries
+	 * and files before any subsequent Composer commands regenerate the autoloader.
 	 *
 	 * @param string $script_path Absolute path to replacement script.
 	 * @param string $plugin_path Absolute plugin root path.
@@ -166,53 +163,6 @@ class Setup {
 		);
 
 		$this->run_shell_command( $command, 'Error running replacement script' );
-	}
-
-	/**
-	 * Remove the setup-only WP-CLI Composer dependency after setup has run.
-	 *
-	 * The setup command itself still depends on the local `wp` binary provided by
-	 * Composer, but the generated plugin should not keep that dependency.
-	 *
-	 * @param string $plugin_path Absolute plugin root path.
-	 *
-	 * @return void
-	 */
-	private function remove_setup_wp_cli_dependency( string $plugin_path ): void {
-		$composer_json_path = $plugin_path . '/composer.json';
-
-		if ( ! file_exists( $composer_json_path ) ) {
-			WP_CLI::error( 'Unable to find composer.json after setup replacement.' );
-		}
-
-		$composer_json = file_get_contents( $composer_json_path );
-		if ( false === $composer_json ) {
-			WP_CLI::error( 'Unable to read composer.json after setup replacement.' );
-		}
-
-		$composer_config = json_decode( $composer_json, true );
-		if ( ! is_array( $composer_config ) ) {
-			WP_CLI::error( 'composer.json contains invalid JSON after setup replacement.' );
-		}
-
-		if ( ! isset( $composer_config['require-dev']['wp-cli/wp-cli'] ) ) {
-			return;
-		}
-
-		unset( $composer_config['require-dev']['wp-cli/wp-cli'] );
-
-		if ( empty( $composer_config['require-dev'] ) ) {
-			unset( $composer_config['require-dev'] );
-		}
-
-		$file_written = file_put_contents(
-			$composer_json_path,
-			json_encode( $composer_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) . PHP_EOL
-		);
-
-		if ( false === $file_written ) {
-			WP_CLI::error( 'Unable to write composer.json after removing setup WP-CLI dependency.' );
-		}
 	}
 
 	/**
