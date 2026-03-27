@@ -127,7 +127,6 @@ Compare: `diff composer.json tmp/boilerplate-ref/composer.json`
 See docs for details: `i18n.mdx`, `bundeling.mdx`
 
 **Key items:**
-- `wp-cli/i18n-command` - Translation extraction/compilation
 - Scripts: `i18n:extract`, `i18n:compile`, `phpstan`, `phpcs`, `phpcbf`
 - Strauss config in `extra.strauss` for namespace prefixing
 - QA config files: `phpcs.xml`, `phpstan.neon`

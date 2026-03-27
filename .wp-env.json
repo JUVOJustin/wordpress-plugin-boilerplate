@@ -6,6 +6,6 @@
 		"wp-content/plugins/demo-plugin": "."
 	},
 	"lifecycleScripts": {
-		"afterStart": "wp-env run cli wp plugin activate demo-plugin"
+		"afterStart": "wp-env run cli wp package install wp-cli/i18n-command:v2.7.0 && wp-env run cli wp plugin activate demo-plugin"
 	}
 }

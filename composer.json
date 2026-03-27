@@ -16,8 +16,6 @@
     "szepeviktor/phpstan-wordpress": "^v2.0.1",
     "php-stubs/wp-cli-stubs": "^v2.5.0",
     "yoast/phpunit-polyfills": "^3.1.1",
-    "wp-cli/wp-cli": "^2",
-    "wp-cli/i18n-command": "*",
     "wp-coding-standards/wpcs": "^3.1.0"
   },
   "minimum-stability": "stable",

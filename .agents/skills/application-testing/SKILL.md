@@ -73,7 +73,7 @@ If the code under test requires another plugin, install it in the test container
 ```json
 {
     "lifecycleScripts": {
-        "afterStart": "wp-env run cli wp plugin activate demo-plugin && wp-env run tests-cli wp plugin install <plugin-slug> --activate"
+        "afterStart": "wp-env run cli wp package install wp-cli/i18n-command:v2.7.0 && wp-env run cli wp plugin activate demo-plugin && wp-env run tests-cli wp plugin install <plugin-slug> --activate"
     }
 }
 ```
