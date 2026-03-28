@@ -66,6 +66,28 @@ This does three things in one pass:
 After this step every `diff` between `tmp/boilerplate-ref/` and the target plugin
 shows only real upstream changes -- no placeholder noise and no setup-only files.
 
+### Rename an already-customised plugin
+
+The script also supports renaming a plugin that has already been set up (i.e. the
+boilerplate defaults have already been replaced). Pass the current identity as
+`--source-plugin-*` options and the desired new identity as the regular
+`--plugin-*` options:
+
+```bash
+php boilerplate-replace.php \
+  --path /path/to/plugin \
+  --source-plugin-name "My Awesome Plugin" \
+  --source-plugin-namespace "My_Awesome_Plugin" \
+  --source-plugin-text-domain "my-awesome-plugin" \
+  --plugin-name "Better Plugin" \
+  --plugin-namespace "Better_Plugin" \
+  --plugin-text-domain "better-plugin"
+```
+
+When `--source-plugin-*` options are omitted, the script falls back to the
+boilerplate defaults (`Demo Plugin` / `Demo_Plugin` / `demo-plugin`), which is
+the correct behaviour for a fresh clone.
+
 ## Workflow
 
 1. Clone fresh boilerplate for comparison:
@@ -105,7 +127,6 @@ Compare: `diff composer.json tmp/boilerplate-ref/composer.json`
 See docs for details: `i18n.mdx`, `bundeling.mdx`
 
 **Key items:**
-- `wp-cli/i18n-command` - Translation extraction/compilation
 - Scripts: `i18n:extract`, `i18n:compile`, `phpstan`, `phpcs`, `phpcbf`
 - Strauss config in `extra.strauss` for namespace prefixing
 - QA config files: `phpcs.xml`, `phpstan.neon`
