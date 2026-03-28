@@ -131,9 +131,8 @@ class Setup {
 	/**
 	 * Invoke the shared replacement script with the user-provided identity values.
 	 *
-	 * Passing --cleanup-setup removes setup autoload entries and setup files as
-	 * part of this call, before any subsequent composer commands regenerate the
-	 * autoloader, so the vendor autoload map is built from a clean composer.json.
+	 * Passing --cleanup-setup lets the helper remove setup-only Composer entries
+	 * and files before any subsequent Composer commands regenerate the autoloader.
 	 *
 	 * @param string $script_path Absolute path to replacement script.
 	 * @param string $plugin_path Absolute plugin root path.

@@ -87,12 +87,12 @@ Some tests require other plugins to be present and active in the test environmen
 
 ### Persistent dependency
 
-For plugins that every test run needs, add the install command to `lifecycleScripts.afterStart` in `.wp-env.json` so it runs automatically on `env:start`:
+For plugins that every test run needs, extend the existing `lifecycleScripts.afterStart` command in `.wp-env.json` so it runs automatically on `env:start`:
 
 ```json title=".wp-env.json"
 {
 	"lifecycleScripts": {
-		"afterStart": "wp-env run cli wp plugin activate demo-plugin && wp-env run tests-cli wp plugin install advanced-custom-fields --activate"
+		"afterStart": "<existing_commands> && wp-env run tests-cli wp plugin install advanced-custom-fields --activate"
 	}
 }
 ```

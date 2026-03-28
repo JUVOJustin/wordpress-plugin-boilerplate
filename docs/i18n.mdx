@@ -6,6 +6,10 @@ description: Translation workflow and extraction/compilation scripts.
 
 The plugin is prepared to support internationalization (i18n) and translations for your WordPress plugin.
 
+:::note
+The i18n Composer scripts assume that WP-CLI is available in the current environment. You can either use `wp-env` or install WP-CLI separately. See the [official WP-CLI installation guide](https://make.wordpress.org/cli/handbook/guides/installing/).
+:::
+
 ## Translate your plugin
 1. Run bundling using `npm run build` for js script extraction.
 2. Run `composer run i18n:extract` to generate the `.pot` file in the `languages/` directory and update existing `.po` files.
