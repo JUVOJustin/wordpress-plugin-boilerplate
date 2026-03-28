@@ -109,13 +109,12 @@ The boilerplate includes detailed docs at `tmp/boilerplate-ref/docs/`:
 |------|--------|
 | `index.mdx` | Documentation landing page that routes users to the right guide |
 | `abilities.mdx` | Abilities API interfaces, category/ability creation, Loader registration |
-| `acf-json-sync.mdx` | Root-level ACF JSON sync workflow and environment-aware save/load behavior |
 | `bundeling.mdx` | wp-scripts bundling, entry points, asset enqueueing, localization |
 | `i18n.mdx` | Translation workflow, extract/compile scripts, JSON translations, caveats |
 | `create-blocks.mdx` | Block scaffolding, auto-registration via manifest, editor style sharing |
 | `wp-env.mdx` | Docker-based dev environment, script structure, CI/CD usage |
 | `testing.mdx` | PHPUnit application testing with wp-env, `tests-cli`, and common patterns |
-| `integrations/acf.mdx` | ACF field group JSON storage patterns |
+| `integrations/acf.mdx` | ACF integration patterns, including field group JSON sync and configuration |
 | `integrations/sentry.mdx` | Sentry bootstrap ordering and error monitoring integration |
 | `work-with-ai.mdx` | AI integration: commands, skills, AGENTS.md, WordPress agent skills |
 | `documentation.mdx` | Documentation structure, front matter metadata, heading rules |
