@@ -107,12 +107,16 @@ The boilerplate includes detailed docs at `tmp/boilerplate-ref/docs/`:
 
 | File | Covers |
 |------|--------|
+| `index.mdx` | Documentation landing page that routes users to the right guide |
 | `abilities.mdx` | Abilities API interfaces, category/ability creation, Loader registration |
+| `acf-json-sync.mdx` | Root-level ACF JSON sync workflow and environment-aware save/load behavior |
 | `bundeling.mdx` | wp-scripts bundling, entry points, asset enqueueing, localization |
 | `i18n.mdx` | Translation workflow, extract/compile scripts, JSON translations, caveats |
 | `create-blocks.mdx` | Block scaffolding, auto-registration via manifest, editor style sharing |
 | `wp-env.mdx` | Docker-based dev environment, script structure, CI/CD usage |
+| `testing.mdx` | PHPUnit application testing with wp-env, `tests-cli`, and common patterns |
 | `integrations/acf.mdx` | ACF field group JSON storage patterns |
+| `integrations/sentry.mdx` | Sentry bootstrap ordering and error monitoring integration |
 | `work-with-ai.mdx` | AI integration: commands, skills, AGENTS.md, WordPress agent skills |
 | `documentation.mdx` | Documentation structure, front matter metadata, heading rules |
 
@@ -143,7 +147,7 @@ See docs for details: `bundeling.mdx`, `wp-env.mdx`, `create-blocks.mdx`
 **Key items:**
 - `@wordpress/scripts` - Bundling, linting, formatting
 - `@wordpress/env` - Containerized WordPress for dev/CI
-- Scripts: `start`, `build` (with `--blocks-manifest`), `lint:*`, `format`, `create-block`, `env:*`
+- Scripts: `start`, `build` (with `--blocks-manifest`), `lint:*`, `format`, `create-block`, `env:*`, `test:php`
 - QA config: `.eslintrc`
 
 ### 3. GitHub Actions (.github/workflows/)
@@ -151,7 +155,7 @@ See docs for details: `bundeling.mdx`, `wp-env.mdx`, `create-blocks.mdx`
 Compare: `diff -r .github/workflows tmp/boilerplate-ref/.github/workflows`
 
 - `setup.yml` - Reusable workflow with dependency caching
-- `test-analyse.yml` - PHPStan, PHPCS, JS linting on push
+- `test-analyse.yml` - PHPStan, PHPCS, JS linting, and PHPUnit application tests on push
 - `deploy.yml` - Release automation, translation compilation via wp-env
 
 ### 4. Loader.php
@@ -209,4 +213,5 @@ Compare:
 2. Ran `npm run build` after changes
 3. Ran `composer phpstan && composer phpcs` after changes
 4. Ran `npm run lint:js && npm run lint:style` after changes
-5. Test plugin functionality
+5. Ran `npm run test:php` after starting `wp-env` when PHPUnit-related files changed
+6. Test plugin functionality
