@@ -88,18 +88,95 @@ When `--source-plugin-*` options are omitted, the script falls back to the
 boilerplate defaults (`Demo Plugin` / `Demo_Plugin` / `demo-plugin`), which is
 the correct behaviour for a fresh clone.
 
-## Workflow
+## Main Update Workflow
 
-1. Clone fresh boilerplate for comparison:
+Follow this workflow in order. Do not start raw `diff` comparisons before step 3. The replacement script is what turns the cloned boilerplate into a meaningful reference copy.
+
+1. Clone a fresh boilerplate reference:
    ```bash
-   git clone --depth 1 https://github.com/JUVOJustin/wordpress-plugin-boilerplate.git ./tmp/boilerplate-ref
+   git clone --depth 1 https://github.com/JUVOJustin/wordpress-plugin-boilerplate.git tmp/boilerplate-ref
    ```
-2. Determine target plugin identity (see above).
-3. Run the replacement script on `tmp/boilerplate-ref` with `--cleanup-setup` (see above).
-4. Use one **subtask/subagent** per key area. Delegate comparison using `diff` against `tmp/boilerplate-ref/`.
-5. Present findings to user, categorized by confirmation requirement.
-6. Apply changes incrementally.
-7. Cleanup: `rm -rf tmp/boilerplate-ref`
+2. Determine the target plugin identity from the plugin being updated:
+   - **plugin-name** — `Plugin Name:` header in the main plugin PHP file
+   - **plugin-text-domain** — `Text Domain:` header in the same file
+   - **plugin-namespace** — the PSR-4 namespace mapped to `src/` in `composer.json`, or the namespace used in `src/*.php`
+3. Run the replacement script against the cloned boilerplate before comparing anything:
+   ```bash
+   php tmp/boilerplate-ref/.agents/skills/boilerplate-update/scripts/boilerplate-replace.php \
+     --path tmp/boilerplate-ref \
+     --plugin-name "My Awesome Plugin" \
+     --plugin-namespace "My_Awesome_Plugin" \
+     --plugin-text-domain "my-awesome-plugin" \
+     --cleanup-setup
+   ```
+   This step replaces boilerplate placeholders, strips `BOILERPLATE-DOCS` sections, and removes setup-only files. All later `diff`s should compare the target plugin against `tmp/boilerplate-ref/`, not against the untouched upstream clone.
+4. Compare PHP and QA.
+   - Compare: `diff composer.json tmp/boilerplate-ref/composer.json`
+   - Docs to read: `i18n.mdx`, `bundeling.mdx`
+   - Key items:
+     - Scripts: `i18n:extract`, `i18n:compile`, `phpstan`, `phpcs`, `phpcbf`
+     - Strauss config in `extra.strauss` for namespace prefixing
+     - QA config files: `phpcs.xml`, `phpstan.neon`
+5. Compare JS and bundling.
+   - Compare:
+     - `diff package.json tmp/boilerplate-ref/package.json`
+     - `diff webpack.config.js tmp/boilerplate-ref/webpack.config.js`
+   - Docs to read: `bundeling.mdx`, `wp-env.mdx`, `create-blocks.mdx`
+   - Key items:
+     - `@wordpress/scripts` - Bundling, linting, formatting
+     - `@wordpress/env` - Containerized WordPress for dev/CI
+     - Scripts: `start`, `build` (with `--blocks-manifest`), `lint:*`, `format`, `create-block`, `env:*`, `test:php`
+     - QA config: `.eslintrc`
+6. Compare GitHub Actions.
+   - Compare: `diff -r .github/workflows tmp/boilerplate-ref/.github/workflows`
+   - Key items:
+     - `setup.yml` - Reusable workflow with dependency caching
+     - `test-analyse.yml` - PHPStan, PHPCS, JS linting, and PHPUnit application tests on push
+     - `deploy.yml` - Release automation, translation compilation via wp-env
+7. Compare `Loader.php`.
+   - Compare: `diff src/Loader.php tmp/boilerplate-ref/src/Loader.php`
+   - New methods:
+     - `add_shortcode($tag, $component, $callback)`
+     - `add_cli($name, $instance, $args)`
+     - `add_ability($ability_class)` - Categories auto-register
+8. Compare the main plugin class.
+   - Compare: `diff src/*.php tmp/boilerplate-ref/src/Demo_Plugin.php`
+   - New patterns:
+     - `enqueue_entrypoint($entry)` - See `tmp/boilerplate-ref/docs/bundeling.mdx`
+     - `register_blocks()` - See `tmp/boilerplate-ref/docs/create-blocks.mdx`
+9. Compare the i18n workflow.
+   - Key scripts: `i18n:extract` (creates `.pot`, updates `.po`) and `i18n:compile` (generates `.mo`, `.json`, `.php`)
+   - Docs to read: `tmp/boilerplate-ref/docs/i18n.mdx`
+10. Compare the Abilities API.
+    - Docs to read: `tmp/boilerplate-ref/docs/abilities.mdx`
+    - Key pattern: `$this->loader->add_ability(Abilities\My_Ability::class)`
+11. Compare agent configuration.
+    - Compare:
+      - `diff -r .opencode/command tmp/boilerplate-ref/.opencode/command`
+      - `diff -r .agents/skills tmp/boilerplate-ref/.agents/skills`
+    - Docs to read: `tmp/boilerplate-ref/docs/work-with-ai.mdx`
+    - Sync strategy:
+      - Add new items from upstream
+      - Update existing items; ask the user if the diff is significant
+      - Ask before removing local-only items
+      - Adapt text domain and paths after copying
+      - Remove redundant skills/commands if upstream now includes them or if they were renamed
+12. Compare file-control files.
+    - Compare:
+      - `diff .distignore tmp/boilerplate-ref/.distignore`
+      - `diff .gitignore tmp/boilerplate-ref/.gitignore`
+13. Present findings and apply changes incrementally.
+    - Use one **subtask/subagent** per comparison area from steps 4-12, but only after step 3 is complete.
+    - Categorize findings by confirmation requirement.
+    - Apply changes incrementally instead of replacing everything wholesale.
+14. Verify the result and clean up.
+    - Run `composer install && npm install` after changes
+    - Run `npm run build` after changes
+    - Run `composer phpstan && composer phpcs` after changes
+    - Run `npm run lint:js && npm run lint:style` after changes
+    - Run `npm run test:php` after starting `wp-env` when PHPUnit-related files changed
+    - Test plugin functionality
+    - Clean up: `rm -rf tmp/boilerplate-ref`
 
 ## Documentation Reference
 
@@ -114,103 +191,10 @@ The boilerplate includes detailed docs at `tmp/boilerplate-ref/docs/`:
 | `create-blocks.mdx` | Block scaffolding, auto-registration via manifest, editor style sharing |
 | `wp-env.mdx` | Docker-based dev environment, script structure, CI/CD usage |
 | `testing.mdx` | PHPUnit application testing with wp-env, `tests-cli`, and common patterns |
+| `github-actions.mdx` | CI/CD workflows, release process, and PHP version configuration |
 | `integrations/acf.mdx` | ACF integration patterns, including field group JSON sync and configuration |
 | `integrations/sentry.mdx` | Sentry bootstrap ordering and error monitoring integration |
 | `work-with-ai.mdx` | AI integration: commands, skills, AGENTS.md, WordPress agent skills |
 | `documentation.mdx` | Documentation structure, front matter metadata, heading rules |
 
 Read these docs for implementation details. This skill only provides high-level guidance.
-
-## Key Areas to Compare
-
-### 1. PHP (composer.json & QA)
-
-Compare: `diff composer.json tmp/boilerplate-ref/composer.json`
-
-See docs for details: `i18n.mdx`, `bundeling.mdx`
-
-**Key items:**
-- Scripts: `i18n:extract`, `i18n:compile`, `phpstan`, `phpcs`, `phpcbf`
-- Strauss config in `extra.strauss` for namespace prefixing
-- QA config files: `phpcs.xml`, `phpstan.neon`
-
-
-### 2. JS & Bundling (package.json, webpack.config.js)
-
-Compare:
-- `diff package.json tmp/boilerplate-ref/package.json`
-- `diff webpack.config.js tmp/boilerplate-ref/webpack.config.js`
-
-See docs for details: `bundeling.mdx`, `wp-env.mdx`, `create-blocks.mdx`
-
-**Key items:**
-- `@wordpress/scripts` - Bundling, linting, formatting
-- `@wordpress/env` - Containerized WordPress for dev/CI
-- Scripts: `start`, `build` (with `--blocks-manifest`), `lint:*`, `format`, `create-block`, `env:*`, `test:php`
-- QA config: `.eslintrc`
-
-### 3. GitHub Actions (.github/workflows/)
-
-Compare: `diff -r .github/workflows tmp/boilerplate-ref/.github/workflows`
-
-- `setup.yml` - Reusable workflow with dependency caching
-- `test-analyse.yml` - PHPStan, PHPCS, JS linting, and PHPUnit application tests on push
-- `deploy.yml` - Release automation, translation compilation via wp-env
-
-### 4. Loader.php
-
-Compare: `diff src/Loader.php tmp/boilerplate-ref/src/Loader.php`
-
-**New methods:**
-- `add_shortcode($tag, $component, $callback)`
-- `add_cli($name, $instance, $args)`
-- `add_ability($ability_class)` - Categories auto-register
-
-### 5. Main Plugin Class
-
-Compare: `diff src/*.php tmp/boilerplate-ref/src/Demo_Plugin.php`
-
-**New patterns:**
-- `enqueue_entrypoint($entry)` - See `tmp/boilerplate-ref/docs/bundeling.mdx`
-- `register_blocks()` - See `tmp/boilerplate-ref/docs/create-blocks.mdx`
-
-### 6. i18n Workflow
-
-Scripts: `i18n:extract` (creates .pot, updates .po) and `i18n:compile` (generates .mo, .json, .php)
-
-See `tmp/boilerplate-ref/docs/i18n.mdx` for workflow, caveats, and AI command.
-
-### 7. Abilities API (WordPress 6.9+)
-
-See `tmp/boilerplate-ref/docs/abilities.mdx` for interface reference and examples.
-
-**Key pattern:** `$this->loader->add_ability(Abilities\My_Ability::class)`
-
-### 8. Agent Configuration
-
-Compare:
-- `diff -r .opencode/command tmp/boilerplate-ref/.opencode/command`
-- `diff -r .agents/skills tmp/boilerplate-ref/.agents/skills`
-
-See `tmp/boilerplate-ref/docs/work-with-ai.mdx` for AI integration details.
-
-**Sync strategy:**
-- Add new items from upstream
-- Update existing (ask user if diff is significant)
-- Ask user before removing local-only items
-- Adapt text domain and paths after copying
-- Remove redundant skills/commands if upstream now includes them or they are possibly renamed
-
-### 9. File Control files
-Compare:
-- `diff .distignore tmp/boilerplate-ref/.distignore`
-- `diff .gitignore tmp/boilerplate-ref/.gitignore`
-
-## Verification
-
-1. Ran `composer install && npm install` after changes
-2. Ran `npm run build` after changes
-3. Ran `composer phpstan && composer phpcs` after changes
-4. Ran `npm run lint:js && npm run lint:style` after changes
-5. Ran `npm run test:php` after starting `wp-env` when PHPUnit-related files changed
-6. Test plugin functionality
