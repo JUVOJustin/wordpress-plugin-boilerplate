@@ -1,0 +1,17 @@
+{
+	"name": "demo-plugin/test-dependencies",
+	"description": "Test-only dependencies for demo-plugin. Add premium or private plugins here.",
+	"require": {},
+	"extra": {
+		"installer-paths": {
+			"setup/plugins/my-premium-plugin/": [
+				"vendor/my-premium-plugin"
+			]
+		}
+	},
+	"config": {
+		"allow-plugins": {
+			"composer/installers": true
+		}
+	}
+}

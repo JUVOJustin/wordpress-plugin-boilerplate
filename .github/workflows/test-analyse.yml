@@ -98,6 +98,10 @@ jobs:
           key: ${{ needs.setup.outputs.node-cache-key }}
           fail-on-cache-miss: true
 
+      - name: Write Composer auth for test dependencies
+        if: ${{ vars.COMPOSER_AUTH != '' }}
+        run: echo '${{ vars.COMPOSER_AUTH }}' > tests/auth.json
+
       - name: Start wp-env
         run: npm run env:start
 
