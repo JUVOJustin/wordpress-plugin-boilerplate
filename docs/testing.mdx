@@ -83,11 +83,11 @@ class FilterRegistrationTest extends WP_UnitTestCase {
 
 ## Plugin dependencies for testing
 
-Some tests require other plugins to be present and active in the test environment. Use WP-CLI's `plugin install` command inside the `tests-cli` container — this installs the plugin files and activates it in the **test database** (isolated from the development site).
+Some tests require other plugins to be present and active in the test environment.
 
-### Persistent dependency
+### Free plugins from WordPress.org
 
-For plugins that every test run needs, extend the existing `lifecycleScripts.afterStart` command in `.wp-env.json` so it runs automatically on `env:start`:
+Use WP-CLI's `plugin install` command inside the `tests-cli` container. Extend the existing `lifecycleScripts.afterStart` command in `.wp-env.json` so it runs automatically on `env:start`:
 
 ```json title=".wp-env.json"
 {
@@ -103,11 +103,94 @@ The plugin slug is the same as on wordpress.org/plugins. You can also pin a spec
 wp-env run tests-cli wp plugin install advanced-custom-fields --version=6.3.0 --activate
 ```
 
-Or install from a remote ZIP (useful for premium plugins via a direct download URL):
+### Premium or private plugins
 
-```bash
-wp-env run tests-cli wp plugin install https://example.com/my-plugin.zip --activate
-```
+Private and premium plugins are managed through a dedicated `tests/composer.json`. Composer installs them into `tests/setup/plugins/`, which is mapped into the wp-env WordPress installation before the environment starts.
+
+Run `npm run env:install-test-deps` before `npm run env:start` to ensure the plugins are present when the environment starts. On CI this step runs explicitly before wp-env.
+
+<Steps>
+1. Add the private Composer repository and package to `tests/composer.json`. Use an explicit installer path keyed to the package name so the install directory is predictable.
+
+   ```json title="tests/composer.json"
+   {
+     "repositories": [
+       {
+         "type": "composer",
+         "url": "https://composer.my-premium-plugin.com"
+       }
+     ],
+     "require": {
+       "vendor/my-premium-plugin": "*"
+     },
+     "extra": {
+       "installer-paths": {
+         "setup/plugins/my-premium-plugin/": ["vendor/my-premium-plugin"]
+       }
+     },
+     "config": {
+       "allow-plugins": {
+         "composer/installers": true
+       }
+     }
+   }
+   ```
+
+   Add one `installer-paths` entry per package. The directory name you choose here must match the mapping in `.wp-env.json` in the next step.
+
+2. Map each installed plugin directory into wp-env in `.wp-env.json`.
+
+   ```json title=".wp-env.json"
+   {
+     "mappings": {
+       "wp-content/plugins/demo-plugin": ".",
+       "wp-content/plugins/my-premium-plugin": "tests/setup/plugins/my-premium-plugin"
+     }
+   }
+   ```
+
+   wp-env requires one explicit mapping per plugin. Pointing the mapping at `tests/setup/plugins` as a whole directory is not supported.
+
+3. Create `tests/auth.json` locally with credentials for the private repository.
+
+   ```json title="tests/auth.json"
+   {
+     "http-basic": {
+       "composer.my-premium-plugin.com": {
+         "username": "your-license-email",
+         "password": "your-license-key"
+       }
+     }
+   }
+   ```
+
+   :::caution
+   `tests/auth.json` is listed in `.gitignore` and must never be committed.
+   :::
+
+4. Start the environment. Composer installs the plugins before wp-env launches.
+
+   ```bash title="Terminal"
+   npm run env:start
+   ```
+
+5. For CI, add a `COMPOSER_AUTH` secret in GitHub Actions with the same JSON content as `auth.json`. The `test-application` workflow writes it to `tests/auth.json` before `env:start` runs.
+
+   ```json title="GitHub Actions secret: COMPOSER_AUTH"
+   {
+     "http-basic": {
+       "composer.my-premium-plugin.com": {
+         "username": "your-license-email",
+         "password": "your-license-key"
+       }
+     }
+   }
+   ```
+
+   :::note
+   If `COMPOSER_AUTH` is not set, the write step is skipped and only the packages in `tests/composer.json` that require no authentication are installed.
+   :::
+</Steps>
 
 ## Configuration notes
 

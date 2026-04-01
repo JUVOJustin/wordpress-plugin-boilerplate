@@ -1,0 +1,95 @@
+---
+title: Plugin Documentation
+description: Start here to explore the boilerplate workflows and extension points.
+---
+
+import { FileTree, Steps } from '@astrojs/starlight/components';
+
+This boilerplate gives you a structured starting point for building modern WordPress plugins. Use this landing page to choose the workflow you need, understand the moving parts, and jump directly to the relevant guide.
+
+## Start Here
+
+<Steps>
+1. Create your plugin from the boilerplate.
+
+   ```bash title="Terminal"
+   composer create-project juvo/wordpress-plugin-boilerplate
+   ```
+
+2. Start the local WordPress environment.
+
+   ```bash title="Terminal"
+   npm run env:start
+   ```
+
+3. Pick the guide that matches your next task.
+
+   - Building blocks: [create-blocks.mdx](./create-blocks.mdx)
+   - Managing assets: [bundeling.mdx](./bundeling.mdx)
+   - Running tests: [testing.mdx](./testing.mdx)
+   - Preparing translations: [i18n.mdx](./i18n.mdx)
+</Steps>
+
+## Choose Your Path
+
+### Build And Run The Plugin
+
+| If you want to... | Open this guide |
+| --- | --- |
+| start the Docker-based WordPress environment | [wp-env.mdx](./wp-env.mdx) |
+| run PHPUnit application tests | [testing.mdx](./testing.mdx) |
+| understand CI and release automation | [github-actions.mdx](./github-actions.mdx) |
+| compile and bundle scripts or styles | [bundeling.mdx](./bundeling.mdx) |
+
+### Extend Plugin Features
+
+| If you want to... | Open this guide |
+| --- | --- |
+| scaffold and register Gutenberg blocks | [create-blocks.mdx](./create-blocks.mdx) |
+| register WordPress abilities | [abilities.mdx](./abilities.mdx) |
+| wire in translation extraction and compilation | [i18n.mdx](./i18n.mdx) |
+
+### Add Integrations
+
+| If you want to... | Open this guide |
+| --- | --- |
+| store ACF field groups in version control | [integrations/acf.mdx](./integrations/acf.mdx) |
+| configure broader ACF integration patterns | [integrations/acf.mdx](./integrations/acf.mdx) |
+| capture runtime errors with Sentry | [integrations/sentry.mdx](./integrations/sentry.mdx) |
+
+### Work Effectively With AI And Docs
+
+| If you want to... | Open this guide |
+| --- | --- |
+| understand AI commands, skills, and repo instructions | [work-with-ai.mdx](./work-with-ai.mdx) |
+| keep docs consistent and well-structured | [documentation.mdx](./documentation.mdx) |
+
+## Repo At A Glance
+
+<FileTree>
+- demo-plugin.php Main bootstrap file
+- src/
+  - Abilities/ WordPress abilities and categories
+  - API/ REST API-specific code
+  - Blocks/ Gutenberg block implementations
+  - CLI/ WP-CLI commands
+  - Integrations/ Third-party and platform integrations
+- resources/
+  - admin/ Admin-side scripts and styles
+  - frontend/ Frontend scripts and styles
+- tests/
+  - php/ PHPUnit application tests
+- docs/ This documentation site
+</FileTree>
+
+## What The Boilerplate Optimizes For
+
+- clear separation between bootstrap code, plugin logic, assets, docs, and tests
+- reproducible local development with `wp-env`
+- production-ready quality gates for PHP, JavaScript, styles, and application tests
+- documented extension points for blocks, abilities, translations, and integrations
+- AI-friendly project instructions without replacing human-readable docs
+
+## Looking For The Repository Overview?
+
+The root `README.md` in the source repository is the developer-oriented repo introduction. It is the best place to understand the repository layout, command surface, AI instructions, and maintenance expectations.

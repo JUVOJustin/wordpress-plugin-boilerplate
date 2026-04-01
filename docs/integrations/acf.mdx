@@ -1,24 +1,26 @@
 ---
-title: ACF JSON Sync
-short_title: ACF JSON
-description: Store and sync ACF field group JSON with the plugin.
+title: ACF Integration
+description: Advanced Custom Fields integration for field group JSON sync and configuration.
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-There is no ultimate way how to do it but throughout the year the following pattern has proven to be effective and flexible.
+This integration provides patterns for working with [Advanced Custom Fields (ACF)](https://www.advancedcustomfields.com/) in your WordPress plugin.
 
-All ACF field group JSON files should be stored in `acf-json/` at the plugin root level.
+## ACF JSON Sync
 
-To enable ACF JSON sync in your plugin:
+All ACF field group JSON files should be stored in `acf-json/` at the plugin root level. This enables version control of your field groups and automatic synchronization across environments.
+
+### Setup
 
 1. Create the `acf-json` directory at the plugin root
-2. Add the following code to your `load_dependencies()` method in the main Demo_Plugin class:
+2. Add the following code to your `load_dependencies()` method in the main Demo_Plugin class
 
-The code examples are based on ACF´s documentation for [local JSON](https://www.advancedcustomfields.com/resources/local-json/).
+The code examples are based on ACF's documentation for [local JSON](https://www.advancedcustomfields.com/resources/local-json/).
 
 <Tabs>
   <TabItem label="Option 1: Direct approach">
+
 ```php title="src/Demo_Plugin.php"
 /**
  * Load the required dependencies for this plugin.
@@ -48,9 +50,12 @@ private function load_dependencies(): void {
     );
 }
 ```
+
   </TabItem>
   <TabItem label="Option 2: Separate class">
+
 For more complex setups with multiple field groups, create a dedicated class:
+
 ```php title="src/Integrations/ACF/Config.php"
 <?php
 /**
@@ -106,7 +111,9 @@ class Config {
     }
 }
 ```
+
 Then initialize it in your main plugin class:
+
 ```php title="src/Demo_Plugin.php"
 private function load_dependencies(): void {
     $this->loader = new Loader();
@@ -115,5 +122,12 @@ private function load_dependencies(): void {
     new \Demo_Plugin\Integrations\ACF\Config();
 }
 ```
+
   </TabItem>
 </Tabs>
+
+## Best Practices
+
+- **JSON files should be committed** to your repository so field groups sync across environments
+- **Disable saving in production** to prevent accidental field group modifications
+- **Use separate classes** for complex integrations to keep your main plugin class clean

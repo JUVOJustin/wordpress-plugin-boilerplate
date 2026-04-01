@@ -4,158 +4,96 @@
 [![PHPCS](https://img.shields.io/badge/PHPCS-WordPress-green)](https://github.com/WordPress/WordPress-Coding-Standards)
 [![Test/Analyse](https://github.com/JUVOJustin/wordpress-plugin-boilerplate/actions/workflows/test-analyse.yml/badge.svg)](https://github.com/JUVOJustin/wordpress-plugin-boilerplate/actions/workflows/test-analyse.yml)
 
-This boilerplate is a fork of [WordPress Boilerplate](https://github.com/DevinVinson/WordPress-Plugin-Boilerplate) with additional features and improvements. It provides a modern, organized, and object-oriented foundation for building high-quality WordPress plugins.
+This repository is a modern, object-oriented WordPress plugin boilerplate. It is intended as a source repo, starter template, and reference implementation for developers and AI coding agents building production-ready plugins.
 
-## Features of this boilerplate
-- Namespaces support using composer
-- Automatic Namespace prefixing with [Strauss](https://github.com/BrianHenryIE/strauss)
-- Easy Shortcode, CLI Command Registration through the loader
-- PHPStan with ready-made Github actions
-- PHPCS with ready-made Github actions
-- [@wordpress/scripts](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/) for simple bundling, linting and formatting of JS and CSS/SCSS files
-- Ready-made Github actions for building and bundling
-- [AI-optimized](docs/work-with-ai.mdx) with AGENTS.md, commands, and skills
-- Documentation guidelines in `docs/documentation.mdx` with front matter metadata
-- Simple [Gutenberg Block generation](/docs/create-blocks.mdx) and automated loading
+If you want the user-facing documentation site entry point, start with [`docs/index.mdx`](docs/index.mdx).
 
-# Setup
+## What This Repository Includes
 
-## Step 1: Create Your Project
-Run the following command to create your project in the current folder. This will download the boilerplate and automatically run the script for initial configuration:
+- Composer-based PHP structure with namespacing
+- Centralized WordPress hook registration through the loader
+- `@wordpress/scripts` for bundling, linting, and formatting
+- `@wordpress/env` for reproducible local WordPress development
+- PHPUnit application testing in the dedicated `tests-cli` container
+- GitHub Actions for analysis, testing, and release automation
+- AI-oriented project instructions in `AGENTS.md`, `.opencode/command/`, and `.agents/skills/`
 
-```bash title="Terminal"
+## Typical Use
+
+Use this repo when you want to:
+
+- create a new plugin with sane defaults
+- inspect the preferred project structure before extending a plugin
+- sync an existing plugin with upstream boilerplate changes
+- give an AI agent enough repo context to make safe edits
+
+## Repository Map
+
+```text
+.
+|- demo-plugin.php          Main bootstrap file only
+|- src/                     Plugin logic grouped by feature/domain
+|- resources/               Admin and frontend assets
+|- docs/                    User-facing documentation site content
+|- tests/php/               PHPUnit application tests
+|- .agents/skills/          Reusable AI skills for this project
+|- .opencode/command/       Custom OpenCode slash commands
+|- .github/workflows/       CI/CD workflows
+`- README.txt               WordPress.org plugin readme template
+```
+
+## Local Development
+
+### Create a Plugin From the Boilerplate
+
+```bash
 composer create-project juvo/wordpress-plugin-boilerplate
 ```
 
-The boilerplate will be set up in the current directory, and the setup script will run automatically.
+The setup script then asks for the plugin name, namespace, and slug and rewrites the boilerplate identity.
 
-## Step 2: Configure Your Plugin (Automatic Prompt)
-Upon project creation, you'll be guided through a series of prompts to configure your plugin:
+### Common Commands
 
-- **Plugin Name**: Enter the name of your plugin.
-- **Namespace (optional)**: Suggests a default namespace based on your plugin name but allows customization.
-- **Plugin Slug (optional)**: Choose a slug for your plugin; a default based on your plugin name is suggested.
+| Command | Purpose |
+| --- | --- |
+| `npm run env:start` | Start the local WordPress environment |
+| `npm run env:stop` | Stop the environment |
+| `npm run build` | Build production assets |
+| `npm run start` | Watch and rebuild assets during development |
+| `npm run test:php` | Run PHPUnit application tests in `wp-env` |
+| `npm run lint:js` | Lint JavaScript |
+| `npm run lint:style` | Lint styles |
+| `composer run phpstan` | Run PHP static analysis |
+| `composer run phpcs` | Run WordPress coding standards checks |
+| `composer run i18n:extract` | Extract translatable strings |
+| `composer run i18n:compile` | Compile translation files |
 
-Your inputs will automatically tailor the boilerplate to match your plugin's identity.
+## Architecture Notes
 
-## Step 3: Finalization (Optional)
-Congrats! Your plugins is ready.
+- Keep business logic in `src/`; do not place it in `demo-plugin.php`
+- Register hooks, filters, shortcodes, CLI commands, and abilities through the loader
+- Put assets in `resources/admin/` and `resources/frontend/`
+- Add PHPUnit application tests in `tests/php/`
+- Treat `docs/` as user-facing documentation and keep it in sync with repo behavior
 
-To boost AI performance you proabably want to tune your `AGENTS.md` rules.
-For improved AI capabilities you can add official [WordPress Agent Skills](docs/work-with-ai.mdx) stored in `.agents/skills`.
-Default set includes `wp-block-development`, `wp-interactivity-api`, `wp-project-triage`, `wp-phpstan`, and `wp-rest-api`.
+## Where To Look Next
 
-# Development Guide
+| Goal | Start here |
+| --- | --- |
+| Understand the docs site structure | [`docs/index.mdx`](docs/index.mdx) |
+| Learn local environment workflows | [`docs/wp-env.mdx`](docs/wp-env.mdx) |
+| Write application tests | [`docs/testing.mdx`](docs/testing.mdx) |
+| Work on bundling or block assets | [`docs/bundeling.mdx`](docs/bundeling.mdx), [`docs/create-blocks.mdx`](docs/create-blocks.mdx) |
+| Configure translations | [`docs/i18n.mdx`](docs/i18n.mdx) |
+| Review AI-specific repo rules | [`AGENTS.md`](AGENTS.md), [`docs/work-with-ai.mdx`](docs/work-with-ai.mdx) |
 
-## Project Structure
+## AI And Maintenance Notes
 
-### Source Code Organization
+- `AGENTS.md` contains the high-level repository rules and doc map
+- `.agents/skills/` contains reusable task-specific guidance
+- `.opencode/command/` contains custom commands such as `/readme-update`
+- when repo structure or workflows change, update both `README.md` and the relevant files in `docs/`
 
-All plugin logic should go into the `src` folder. This separation helps maintain a clean structure and follows modern PHP development practices. Example: 
+## Upstream Reference
 
-```
-src/
-├── Abilities/     # Abilitis and their categories
-├── API/           # Rest API-specific functionality
-├── Blocks/        # Gutenberg Blocks
-├── CLI/           # CLI commands
-└── Integrations/  # Core plugin functions and utilities
-    └── BricksBuilder/ # Bricks Builder integration
-    └── Elementor/ # Elementor integration
-    └── ACF/ # ACF integration
-    └── WC/ # WooCommerce integration
-```
-
-Avoid placing logic directly in the plugin's root files. The main plugin file should primarily be used for bootstrapping your plugin.
-
-## Loader and Hooks Registration
-
-### Using the Loader Correctly
-
-The plugin uses a loader pattern to centralize the registration of hooks, filters, and shortcodes. Instead of registering hooks in class constructors, always use the loader in the root class:
-
-```php title="src/Demo_Plugin.php"
-public function __construct() {
-    $this->loader = new Loader();
-    $this->define_admin_hooks();
-    $this->define_public_hooks();
-}
-
-private function define_admin_hooks() {
-    $admin = new Admin\Admin($this->get_plugin_name(), $this->get_version());
-    $this->loader->add_action('admin_enqueue_scripts', $admin, 'enqueue_styles');
-    $this->loader->add_action('admin_enqueue_scripts', $admin, 'enqueue_scripts');
-}
-
-private function define_shortcodes() {
-    $example_shortcode = new Shortcodes\ExampleShortcode();
-    $this->loader->add_shortcode('example', $example_shortcode, 'render');
-}
-```
-
-This approach provides several benefits:
-1. Centralized hook management
-2. Easier debugging
-3. Better testability
-4. Cleaner class implementations
-
-## Frontend Assets Management
-
-### Resources Organization
-
-All frontend-facing assets (scripts, styles, images, etc.) should be placed in the `resources` directory, organized by context:
-
-```
-resources/
-├── admin/            # Admin-specific assets
-│   ├── css/
-│   ├── js/
-│   └── images/
-├── frontend/         # Frontend-specific assets
-│   ├── css/
-│   ├── js/
-│   └── images/
-├── acf-json/         # ACF field group JSON files
-└── webpack.config.js     # webpack/wp-scripts configuration
-```
-
-### Asset Compilation
-
-The boilerplate uses [@wordpress/scripts](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/) for asset compilation and bundling.
-
-To compile assets:
-```
-npm run start        # Watch for changes during development and compile assets
-npm run build         # For production. Compiles assets and minifies them
-```
-
-To add a new entry point for scripts or styles, modify the `webpack.config.js` file.
-
-### Gutenberg Block Development
-Generate blocks using `npm run create-block` and follow the interactive prompts. This command scaffolds a new block in the `src/Blocks` directory.
-Under the hood the npm script uses `@wordpress/create-block` package.
-
-Blocks are automatically registered using `wp_register_block_types_from_metadata_collection` in the main plugin class.
-Scripts and styles for the blocks are enqueued and bundled automatically.
-
-## Quality Assurance and Workflows
-
-### Default Checks and Quality Pipelines
-
-The boilerplate comes with the following quality assurance tools configured:
-
-1. **PHP CodeSniffer (PHPCS)**: Enforces WordPress coding standards
-2. **PHPStan**: Provides static analysis to catch potential bugs
-3. **@wp-scripts**: Enables bundling, linting and formatting of JS and CSS/SCSS files
-4. **GitHub Actions**: Automates testing and building processes
-
-These checks run automatically in GitHub pipelines when you push code to your repository.
-
-See [docs/github-actions.mdx](docs/github-actions.mdx) for a full breakdown of each workflow, the release process, and how to change the PHP version.
-
-### Wrapping Up
-
-That's it! Your plugin is now ready for development. Dive into creating your next remarkable WordPress plugin with ease and efficiency.
-
----
-This plugin was created using the [wordpress-plugin-boilerplate](https://github.com/JUVOJustin/wordpress-plugin-boilerplate). Consult the upstream repository for changes, updates or IDE setups. LLM instructions can be found here: https://github.com/JUVOJustin/wordpress-plugin-boilerplate/wiki/LLM-AI. Keep this reference, to allow later updates.
+This plugin was created using the [wordpress-plugin-boilerplate](https://github.com/JUVOJustin/wordpress-plugin-boilerplate). Keep that upstream reference so future updates and comparisons stay straightforward.

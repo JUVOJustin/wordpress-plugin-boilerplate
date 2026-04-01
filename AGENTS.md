@@ -12,6 +12,7 @@ This plugin is a modern WordPress plugin with strict conventions and automated w
 
 | File               | Covers |
 |--------------------|--------|
+| @docs/index.mdx | Documentation landing page and guide selection |
 | @docs/abilities.mdx | Abilities API: interfaces, category/ability creation, Loader registration |
 | @docs/bundeling.mdx      | wp-scripts bundling, entry points, asset enqueueing, localization |
 | @docs/i18n.mdx           | Translation workflow, extract/compile scripts, JSON translations |
@@ -19,7 +20,8 @@ This plugin is a modern WordPress plugin with strict conventions and automated w
 | @docs/wp-env.mdx         | Docker dev environment, script structure, CI/CD usage |
 | @docs/testing.mdx        | PHPUnit application testing with wp-env bootstrap and scripts |
 | @docs/github-actions.mdx | CI/CD workflows, release process, PHP version configuration |
-| @docs/acf-json-sync.mdx  | ACF field group JSON storage patterns |
+| @docs/integrations/acf.mdx | ACF integration patterns, including field group JSON sync and configuration |
+| @docs/integrations/sentry.mdx | Sentry SDK bootstrap and early error capture patterns |
 | @docs/work-with-ai.mdx   | AI integration: commands, skills, AGENTS.md, WordPress agent skills |
 | @docs/documentation.mdx  | Documentation structure, front matter metadata, heading rules |
 

@@ -23,3 +23,8 @@ phpunit.xml
 languages/*.mo
 languages/*.json
 languages/*.php
+
+# Test dependencies — installed locally and on CI, never committed
+tests/vendor/
+tests/setup/plugins/
+tests/auth.json

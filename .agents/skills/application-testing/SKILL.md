@@ -11,16 +11,31 @@ description: |
 
 # Application Testing
 
-Tests run exclusively inside the `wp-env` test container via:
-
-```bash
-npm run env:start   # once, if the environment isn't running yet
-npm run test:php    # run the full suite
-```
-
-The bootstrap and PHPUnit config are pre-wired. Do not modify `tests/bootstrap.php` or `phpunit.xml.dist`. The plugin is already loaded when tests run — no manual require needed.
+Tests run exclusively inside the `wp-env` test container. The bootstrap and PHPUnit config are pre-wired. Do not modify `tests/bootstrap.php` or `phpunit.xml.dist`. The plugin is already loaded when tests run — no manual require needed.
 
 For full reference including common patterns, plugin dependencies, and CI details, read `references/testing.mdx`.
+
+## Running the test suite
+
+Follow these steps in order:
+
+1. **Install test dependencies** — requires `composer` to be available in the current environment (locally or via a container such as DDEV). Installs packages from `tests/composer.json` into `tests/setup/plugins/`. If there are no packages declared this is a no-op, but always run it so CI and local stay consistent.
+
+   ```bash
+   npm run env:install-test-deps
+   ```
+
+2. **Start wp-env** — requires Docker. Spins up the WordPress development and test containers. Skip if the environment is already running.
+
+   ```bash
+   npm run env:start
+   ```
+
+3. **Run the full test suite** — executes PHPUnit inside the `tests-cli` container against the isolated test database.
+
+   ```bash
+   npm run test:php
+   ```
 
 ## Creating a test file
 
