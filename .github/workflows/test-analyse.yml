@@ -102,6 +102,9 @@ jobs:
         if: ${{ vars.COMPOSER_AUTH != '' }}
         run: echo '${{ vars.COMPOSER_AUTH }}' > tests/auth.json
 
+      - name: Install test dependencies
+        run: npm run env:install-test-deps
+
       - name: Start wp-env
         run: npm run env:start
 
