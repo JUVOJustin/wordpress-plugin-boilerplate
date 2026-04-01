@@ -107,7 +107,7 @@ wp-env run tests-cli wp plugin install advanced-custom-fields --version=6.3.0 --
 
 Private and premium plugins are managed through a dedicated `tests/composer.json`. Composer installs them into `tests/setup/plugins/`, which is mapped into the wp-env WordPress installation before the environment starts.
 
-`env:start` runs `composer install --working-dir=tests` automatically before launching wp-env, so the plugins are always present when the environment starts.
+Run `npm run env:install-test-deps` before `npm run env:start` to ensure the plugins are present when the environment starts. On CI this step runs explicitly before wp-env.
 
 <Steps>
 1. Add the private Composer repository and package to `tests/composer.json`. Use an explicit installer path keyed to the package name so the install directory is predictable.
@@ -151,7 +151,7 @@ Private and premium plugins are managed through a dedicated `tests/composer.json
 
    wp-env requires one explicit mapping per plugin. Pointing the mapping at `tests/setup/plugins` as a whole directory is not supported.
 
-4. Create `tests/auth.json` locally with credentials for the private repository.
+3. Create `tests/auth.json` locally with credentials for the private repository.
 
    ```json title="tests/auth.json"
    {
@@ -168,15 +168,15 @@ Private and premium plugins are managed through a dedicated `tests/composer.json
    `tests/auth.json` is listed in `.gitignore` and must never be committed.
    :::
 
-5. Start the environment. Composer installs the plugins before wp-env launches.
+4. Start the environment. Composer installs the plugins before wp-env launches.
 
    ```bash title="Terminal"
    npm run env:start
    ```
 
-6. For CI, add a `COMPOSER_AUTH` repository variable in GitHub Actions with the same JSON content as `auth.json`. The `test-application` workflow writes it to `tests/auth.json` before `env:start` runs.
+5. For CI, add a `COMPOSER_AUTH` secret in GitHub Actions with the same JSON content as `auth.json`. The `test-application` workflow writes it to `tests/auth.json` before `env:start` runs.
 
-   ```json title="GitHub Actions repository variable: COMPOSER_AUTH"
+   ```json title="GitHub Actions secret: COMPOSER_AUTH"
    {
      "http-basic": {
        "composer.my-premium-plugin.com": {

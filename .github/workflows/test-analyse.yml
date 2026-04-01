@@ -99,8 +99,11 @@ jobs:
           fail-on-cache-miss: true
 
       - name: Write Composer auth for test dependencies
-        if: ${{ vars.COMPOSER_AUTH != '' }}
-        run: echo '${{ vars.COMPOSER_AUTH }}' > tests/auth.json
+        if: ${{ secrets.COMPOSER_AUTH != '' }}
+        run: |
+          cat << 'EOF' > tests/auth.json
+          ${{ secrets.COMPOSER_AUTH }}
+          EOF
 
       - name: Install test dependencies
         run: npm run env:install-test-deps
