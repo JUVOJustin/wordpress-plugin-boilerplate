@@ -53,22 +53,24 @@ Triggered when any tag is pushed.
 
 ### Release process
 
-1. **Resolve source branch** — `git branch -r --contains <sha>` finds which branch the tagged commit lives on. The workflow fails immediately with a clear error if no branch can be resolved. When the commit exists on multiple branches, the first one returned by git is used; tag from a unique branch context to avoid ambiguity.
-
-2. **Update version files** — replaces the version string in:
+1. **Update version files** — replaces the version string in:
    - `src/Demo_Plugin.php` (`PLUGIN_VERSION` constant)
    - `demo-plugin.php` (plugin header `Version:`)
    - `README.txt` (`Stable tag:`)
 
-3. **Build** — starts wp-env, compiles translations inside the container, then generates the distributable `.zip` with `wp dist-archive`. Files listed in `.distignore` (e.g. source maps, dev dependencies, test files) are automatically excluded from the archive — no manual cleanup needed.
+2. **Build** — starts wp-env, compiles translations inside the container, then generates the distributable `.zip` with `wp dist-archive`. Files listed in `.distignore` (e.g. source maps, dev dependencies, test files) are automatically excluded from the archive — no manual cleanup needed.
 
-4. **Commit and push version updates** — commits the three changed files and pushes them to the resolved source branch (not always `main`). You do not need to update version numbers manually — the workflow handles this automatically when a tag is pushed.
+3. **Persist stable release versions** — for stable tags only, the workflow commits the three changed files and pushes them back to the repository default branch. Stable releases are assumed to be created from that default branch.
 
-5. **Publish GitHub release** — attaches the `.zip` as a release artifact.
+4. **Publish GitHub release** — attaches the `.zip` as a release artifact.
 
 ### Stable vs. prerelease tags
 
-Tags whose name contains `-alpha`, `-beta`, or `-rc` (e.g. `v1.0.0-beta.1`) are automatically published as **prereleases** and are **not** marked as the latest release. All other tags produce standard releases that are eligible to become latest.
+Tags whose name contains `-alpha`, `-beta`, or `-rc` (e.g. `v1.0.0-beta.1`) are automatically published as **prereleases** and are **not** marked as the latest release.
+
+Prerelease tags can be created from any branch. The workflow will only replace version tags in the bundled ZIP and not persist them back to the repo.
+
+All other tags produce stable releases that are eligible to become latest.
 
 ## PHP Version Configuration
 

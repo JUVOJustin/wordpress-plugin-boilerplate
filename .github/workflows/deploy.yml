@@ -23,21 +23,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          # Full history keeps the tag checkout consistent with release metadata.
           fetch-depth: 0
-
-      - name: Resolve source branch
-        id: resolve-branch
-        run: |
-          BRANCH=$(git branch -r --contains "${{ github.sha }}" \
-            | grep -v 'HEAD' \
-            | sed 's|[[:space:]]*origin/||' \
-            | head -1 \
-            | xargs)
-          if [ -z "$BRANCH" ]; then
-            echo "::error::Could not resolve source branch for tag ${{ github.ref_name }}"
-            exit 1
-          fi
-          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
 
       - name: PHP dependencies cache
         uses: actions/cache@v4
@@ -99,7 +86,8 @@ jobs:
         if: always()
         run: npm run env:stop
 
-      - name: Commit and push version updates
+      - name: Persist stable version to default branch
+        if: env.IS_PRERELEASE == 'false'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -107,8 +95,8 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit; skipping commit and push."
           else
-            git commit -m "Update Version in WordPress specific files"
-            git push origin "$(git rev-parse HEAD):refs/heads/${{ steps.resolve-branch.outputs.branch }}"
+            git commit -m "Update version to ${{ env.RELEASE_VERSION }}"
+            git push origin HEAD:refs/heads/${{ github.event.repository.default_branch }}
           fi
 
       - name: Release
