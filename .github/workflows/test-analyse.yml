@@ -20,10 +20,10 @@ jobs:
     needs: setup
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Restore Node dependencies cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: |
             node_modules
@@ -45,10 +45,10 @@ jobs:
     needs: setup
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Restore PHP dependencies cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: |
             vendor
@@ -78,10 +78,10 @@ jobs:
     needs: [setup, test-php, test-js]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Restore PHP dependencies cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: |
             vendor
@@ -90,7 +90,7 @@ jobs:
           fail-on-cache-miss: true
 
       - name: Restore Node dependencies cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: |
             node_modules

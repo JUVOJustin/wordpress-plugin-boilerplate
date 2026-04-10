@@ -24,7 +24,7 @@ jobs:
       node-cache-key: ${{ steps.cache-keys.outputs.node-key }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Generate cache keys
         id: cache-keys
@@ -33,7 +33,7 @@ jobs:
           echo "node-key=node-${{ inputs.mode }}-${{ runner.os }}-${{ hashFiles('package-lock.json') }}" >> $GITHUB_OUTPUT
 
       - name: PHP Dependencies cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: php-cache
         with:
           path: |
@@ -45,7 +45,7 @@ jobs:
             php-${{ runner.os }}-
 
       - name: Node Dependencies cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: node-cache
         with:
           path: |
@@ -66,7 +66,7 @@ jobs:
         if: steps.node-cache.outputs.cache-hit != 'true'
         uses: actions/setup-node@v6
         with:
-          node-version: '22'
+          node-version: '24'
 
       - name: Install Composer dependencies
         if: steps.php-cache.outputs.cache-hit != 'true'

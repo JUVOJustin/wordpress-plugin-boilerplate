@@ -21,13 +21,13 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           # Full history keeps the tag checkout consistent with release metadata.
           fetch-depth: 0
 
       - name: PHP dependencies cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             vendor
@@ -36,7 +36,7 @@ jobs:
           fail-on-cache-miss: true
 
       - name: Node dependencies cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             node_modules
