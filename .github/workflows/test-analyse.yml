@@ -115,7 +115,3 @@ jobs:
 
       - name: Run application tests
         run: npm run test:php
-
-      - name: Stop wp-env
-        if: always()
-        run: npm run env:stop
