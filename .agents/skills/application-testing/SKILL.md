@@ -19,19 +19,13 @@ For full reference including common patterns, plugin dependencies, and CI detail
 
 Follow these steps in order:
 
-1. **Install test dependencies** — requires `composer` to be available in the current environment (locally or via a container such as DDEV). Installs packages from `tests/composer.json` into `tests/setup/plugins/`. If there are no packages declared this is a no-op, but always run it so CI and local stay consistent.
-
-   ```bash
-   npm run env:install-test-deps
-   ```
-
-2. **Start wp-env** — requires Docker. Spins up the WordPress development and test containers. Skip if the environment is already running.
+1. **Start wp-env** — requires Docker. Spins up the WordPress development and test containers. Skip if the environment is already running.
 
    ```bash
    npm run env:start
    ```
 
-3. **Run the full test suite** — executes PHPUnit inside the `tests-cli` container against the isolated test database.
+2. **Run the full test suite** — executes PHPUnit inside the `tests-cli` container against the isolated test database.
 
    ```bash
    npm run test:php
@@ -93,4 +87,8 @@ If the code under test requires another plugin, install it in the test container
 }
 ```
 
-Restart with `npm run env:start` after editing `.wp-env.json`. See `references/testing.mdx` for details and a concrete example.
+Restart with `npm run env:start` after editing `.wp-env.json`.
+
+## References
+- `references/testing.mdx` - Common test patterns, managing plugin dependencies in tests, CI setup
+- `references/action-scheduler.mdx` - Knowledge about Action Scheduler and how to make it work in tests if it's a dependency

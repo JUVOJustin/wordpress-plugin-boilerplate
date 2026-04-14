@@ -6,8 +6,8 @@
 	},
 	"extra": {
 		"installer-paths": {
-			"setup/plugins/my-premium-plugin/": [
-				"vendor/my-premium-plugin"
+			"setup/plugins/{$name}/": [
+				"type:wordpress-plugin"
 			]
 		}
 	},

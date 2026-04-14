@@ -6,9 +6,13 @@ description: Developer guide for writing PHPUnit application tests in Demo Plugi
 
 import { Steps } from '@astrojs/starlight/components';
 
-Demo Plugin ships with a PHPUnit setup that runs exclusively inside the `wp-env` test container. Running tests outside of `wp-env` is not supported — the bootstrap will exit immediately if `WP_TESTS_DIR` is not set, which only happens inside the container.
+Demo Plugin ships with a PHPUnit setup that runs exclusively inside the `wp-env` test container. Running tests outside of `wp-env` is not encouraged — the bootstrap will exit immediately if `WP_TESTS_DIR` is not set, which only happens inside the container.
 
 The container provides a real WordPress database, the full WordPress function library, PHPUnit, and the `yoast/phpunit-polyfills` library required by the WordPress test bootstrap. The bootstrap lives in `tests/bootstrap.php`, configuration in `phpunit.xml.dist`, and test classes go in `tests/php`.
+
+:::note
+The plugin ships and uses its own PHPUnit version due to incompatibility with PHPUnit > 9.6.
+:::
 
 ## Write your first test
 
@@ -107,7 +111,7 @@ wp-env run tests-cli wp plugin install advanced-custom-fields --version=6.3.0 --
 
 Private and premium plugins are managed through a dedicated `tests/composer.json`. Composer installs them into `tests/setup/plugins/`, which is mapped into the wp-env WordPress installation before the environment starts.
 
-Run `npm run env:install-test-deps` before `npm run env:start` to ensure the plugins are present when the environment starts. On CI this step runs explicitly before wp-env.
+Run `npm run env:cli composer update --working-dir=tests` before `npm run env:start` to ensure the plugins are present when the environment starts. On CI this step runs explicitly before wp-env.
 
 <Steps>
 1. Add the private Composer repository and package to `tests/composer.json`. Use an explicit installer path keyed to the package name so the install directory is predictable.
@@ -123,11 +127,6 @@ Run `npm run env:install-test-deps` before `npm run env:start` to ensure the plu
      "require": {
        "vendor/my-premium-plugin": "*"
      },
-     "extra": {
-       "installer-paths": {
-         "setup/plugins/my-premium-plugin/": ["vendor/my-premium-plugin"]
-       }
-     },
      "config": {
        "allow-plugins": {
          "composer/installers": true
@@ -136,22 +135,11 @@ Run `npm run env:install-test-deps` before `npm run env:start` to ensure the plu
    }
    ```
 
-   Add one `installer-paths` entry per package. The directory name you choose here must match the mapping in `.wp-env.json` in the next step.
+   :::tip
+  We assume plugins installed via composer have `type:wordpress-plugin` in their `composer.json`. If they don't, you need to add an explicit `installer-paths` entry in `tests/composer.json` as long as the `mappings` in `.wp-env.json`.
+  :::
 
-2. Map each installed plugin directory into wp-env in `.wp-env.json`.
-
-   ```json title=".wp-env.json"
-   {
-     "mappings": {
-       "wp-content/plugins/demo-plugin": ".",
-       "wp-content/plugins/my-premium-plugin": "tests/setup/plugins/my-premium-plugin"
-     }
-   }
-   ```
-
-   wp-env requires one explicit mapping per plugin. Pointing the mapping at `tests/setup/plugins` as a whole directory is not supported.
-
-3. Create `tests/auth.json` locally with credentials for the private repository.
+2. Create `tests/auth.json` locally with credentials for the private repository.
 
    ```json title="tests/auth.json"
    {
@@ -168,13 +156,13 @@ Run `npm run env:install-test-deps` before `npm run env:start` to ensure the plu
    `tests/auth.json` is listed in `.gitignore` and must never be committed.
    :::
 
-4. Start the environment. Composer installs the plugins before wp-env launches.
+3. Start the environment. Composer installs the plugins before wp-env launches.
 
    ```bash title="Terminal"
    npm run env:start
    ```
 
-5. For CI, add a `COMPOSER_AUTH` secret in GitHub Actions with the same JSON content as `auth.json`. The `test-application` workflow writes it to `tests/auth.json` before `env:start` runs.
+4. For CI, add a `COMPOSER_AUTH` secret in GitHub Actions with the same JSON content as `auth.json`. The `test-application` workflow writes it to `tests/auth.json` before `env:start` runs.
 
    ```json title="GitHub Actions secret: COMPOSER_AUTH"
    {
