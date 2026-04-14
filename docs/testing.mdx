@@ -11,7 +11,7 @@ Demo Plugin ships with a PHPUnit setup that runs exclusively inside the `wp-env`
 The container provides a real WordPress database, the full WordPress function library, PHPUnit, and the `yoast/phpunit-polyfills` library required by the WordPress test bootstrap. The bootstrap lives in `tests/bootstrap.php`, configuration in `phpunit.xml.dist`, and test classes go in `tests/php`.
 
 :::note
-The plugin ships and uses its own PHPUnit version due to incompatibility with PHPUnit > 9.6.
+The plugin ships and uses its own PHPUnit version because the WordPress test bootstrap used here does not support PHPUnit 10 or newer. PHPUnit 9.6.x is the supported range.
 :::
 
 ## Write your first test
