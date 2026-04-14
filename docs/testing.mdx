@@ -136,8 +136,8 @@ Run `npm run env:cli composer update --working-dir=tests` before `npm run env:st
    ```
 
    :::tip
-  We assume plugins installed via composer have `type:wordpress-plugin` in their `composer.json`. If they don't, you need to add an explicit `installer-paths` entry in `tests/composer.json` as long as the `mappings` in `.wp-env.json`.
-  :::
+   We assume plugins installed via Composer declare `type:wordpress-plugin` in their `composer.json`. If a package does not, add an explicit `installer-paths` entry in `tests/composer.json` that installs it into the same directory that `.wp-env.json` maps into `wp-content/plugins`.
+   :::
 
 2. Create `tests/auth.json` locally with credentials for the private repository.
 
