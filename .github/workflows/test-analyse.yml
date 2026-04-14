@@ -107,9 +107,6 @@ jobs:
           $COMPOSER_AUTH
           EOF
 
-      - name: Install test dependencies
-        run: npm run env:install-test-deps
-
       - name: Start wp-env
         run: npm run env:start
 

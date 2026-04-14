@@ -1,0 +1,23 @@
+---
+title: Action Scheduler Integration
+description: Action Scheduler integration for background job management and scheduling.
+---
+import { Steps } from '@astrojs/starlight/components';
+
+<Steps>
+
+1. Install
+
+   ```bash title="Terminal"
+    composer require woocommerce/action-scheduler
+   ```
+
+2. Load the library in your main plugin file
+
+   ```php title="demo-plugin.php"
+   require_once plugin_dir_path( __FILE__ ) . 'vendor/woocommerce/action-scheduler/action-scheduler.php';
+   ```
+
+   While it is possible to use a file autoloader this is strongly discouraged. PHPUnit loads Composer before WordPress exists, so Action Scheduler's plugin bootstrap can run too early and skip its WordPress hook registration.
+
+</Steps>

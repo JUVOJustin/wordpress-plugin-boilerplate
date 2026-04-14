@@ -3,7 +3,8 @@
 	"core": null,
 	"phpVersion": "8.0",
 	"mappings": {
-		"wp-content/plugins/demo-plugin": "."
+		"wp-content/plugins/demo-plugin": ".",
+		"wp-content/plugins/": "./tests/setup/plugins/"
 	},
 	"lifecycleScripts": {
 		"afterStart": "wp-env run cli wp plugin activate demo-plugin"
