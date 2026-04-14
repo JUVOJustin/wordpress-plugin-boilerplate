@@ -90,5 +90,5 @@ If the code under test requires another plugin, install it in the test container
 Restart with `npm run env:start` after editing `.wp-env.json`.
 
 ## References
-- `references/testing.mdx` - Common test patterns, managing plugin dependencies in tests, CI setup
+- `references/testing.mdx` - Common test patterns, managing plugin dependencies using composer in tests, CI setup
 - `references/action-scheduler.mdx` - Knowledge about Action Scheduler and how to make it work in tests if it's a dependency

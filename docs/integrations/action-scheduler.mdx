@@ -6,26 +6,13 @@ import { Steps } from '@astrojs/starlight/components';
 
 <Steps>
 
-1. Map Install path
-
-   ```json title="composer.json"
-   "extra": {
-       "installer-paths": {
-           "vendor/{$vendor}/{$name}/": [
-               "type:wordpress-plugin"
-           ]
-       }
-   }
-   ```
-    Using this configuration, composer will install action-scheduler into `vendor/woocommerce/action-scheduler/`.
-
-2. Install
+1. Install
 
    ```bash title="Terminal"
     composer require woocommerce/action-scheduler
    ```
 
-3. Load the library in your main plugin file
+2. Load the library in your main plugin file
 
    ```php title="demo-plugin.php"
    require_once plugin_dir_path( __FILE__ ) . 'vendor/woocommerce/action-scheduler/action-scheduler.php';

@@ -8,10 +8,10 @@ import { Steps } from '@astrojs/starlight/components';
 
 Demo Plugin ships with a PHPUnit setup that runs exclusively inside the `wp-env` test container. Running tests outside of `wp-env` is not encouraged — the bootstrap will exit immediately if `WP_TESTS_DIR` is not set, which only happens inside the container.
 
-The container provides a real WordPress database, the full WordPress function library, PHPUnit, and the `yoast/phpunit-polyfills` library required by the WordPress test bootstrap. The bootstrap lives in `tests/bootstrap.php`, configuration in `phpunit.xml.dist`, and test classes go in `tests/php`.
+The container provides a real WordPress database and the full WordPress environment required by the WordPress test bootstrap. The bootstrap lives in `tests/bootstrap.php`, configuration in `phpunit.xml.dist`, and test classes go in `tests/php`.
 
 :::note
-The plugin ships and uses its own PHPUnit version due to incompatibility with PHPUnit > 9.6.
+The plugin ships and uses its own PHPUnit and polyfill version due to incompatibility with PHPUnit > 9.6.
 :::
 
 ## Write your first test
@@ -111,7 +111,7 @@ wp-env run tests-cli wp plugin install advanced-custom-fields --version=6.3.0 --
 
 Private and premium plugins are managed through a dedicated `tests/composer.json`. Composer installs them into `tests/setup/plugins/`, which is mapped into the wp-env WordPress installation before the environment starts.
 
-Run `npm run env:cli composer update --working-dir=tests` before `npm run env:start` to ensure the plugins are present when the environment starts. On CI this step runs explicitly before wp-env.
+Run `npm run env:cli composer update --working-dir=tests` if you want to update your test dependencies.
 
 <Steps>
 1. Add the private Composer repository and package to `tests/composer.json`. Use an explicit installer path keyed to the package name so the install directory is predictable.
@@ -156,7 +156,7 @@ Run `npm run env:cli composer update --working-dir=tests` before `npm run env:st
    `tests/auth.json` is listed in `.gitignore` and must never be committed.
    :::
 
-3. Start the environment. Composer installs the plugins before wp-env launches.
+3. Start the environment.
 
    ```bash title="Terminal"
    npm run env:start
