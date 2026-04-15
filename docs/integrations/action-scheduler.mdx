@@ -21,3 +21,157 @@ import { Steps } from '@astrojs/starlight/components';
    While it is possible to use a file autoloader this is strongly discouraged. PHPUnit loads Composer before WordPress exists, so Action Scheduler's plugin bootstrap can run too early and skip its WordPress hook registration.
 
 </Steps>
+
+## Testing Plugin Functionality with Action Scheduler
+
+Test the full dispatch path, not just the callback. When you call the callback directly, you bypass argument serialization, hook resolution, and status transitions. Bugs that only surface during real execution (type coercion, missing hooks, argument shape mismatches) stay hidden.
+
+Shared Test Helper
+
+```php title="tests/Support/Helpers/Action_Scheduler_Test_Helper.php"
+<?php
+
+namespace Demo_Plugin\Tests\Support\Helpers;
+
+use ActionScheduler_QueueRunner;
+use ActionScheduler_Store;
+
+class Action_Scheduler_Test_Helper {
+
+    /**
+     * Run a single queued job through the real queue runner.
+     *
+     * Mirrors production: fetch action, validate status, log execution,
+     * call $action->execute(), mark complete or failed.
+     */
+    public static function run_action( int $action_id ): void {
+        $runner = ActionScheduler_QueueRunner::instance();
+        $runner->process_action( $action_id, 'PHPUnit' );
+    }
+
+    /**
+     * Run all pending actions for a hook and optional group.
+     */
+    public static function run_all_pending( string $hook, ?string $group = null ): int {
+        $query = array(
+            'hook'     => $hook,
+            'status'   => ActionScheduler_Store::STATUS_PENDING,
+            'per_page' => 100,
+        );
+
+        if ( null !== $group ) {
+            $query['group'] = $group;
+        }
+
+        $action_ids = as_get_scheduled_actions( $query, 'ids' );
+        $processed  = 0;
+
+        foreach ( $action_ids as $action_id ) {
+            self::run_action( (int) $action_id );
+            ++$processed;
+        }
+
+        return $processed;
+    }
+}
+```
+
+### Test Pattern
+
+Every test that involves Action Scheduler should follow this sequence:
+
+1. Arrange  — set up entities, user context, and state
+2. Act      — trigger the code that schedules the async job
+3. Assert   — verify the job was queued (count, args, group)
+4. Execute  — run the queued job through the real AS runner
+5. Assert   — verify the end result (translated content, status, relationships)
+
+### Cleanup in tear_down()
+
+Always unschedule leftover jobs so tests don't leak state:
+
+```php title="tests/Integration/SomeFeature/Some_Test.php"
+public function tear_down(): void {
+    // Remove any pending actions for your hook
+    as_unschedule_all_actions( 'demo_plugin/my_async_hook' );
+
+    // Also clean up any related data
+    delete_option( 'demo_plugin_job_results' );
+
+    parent::tear_down();
+}
+```
+
+### Full example
+
+This example demonstrates testing a background job that exports user data to a CSV file. It shows the complete test pattern with proper cleanup in `tear_down()`.
+
+```php title="tests/Integration/Export/User_Data_Export_Test.php"
+<?php
+
+namespace Demo_Plugin\Tests\Integration\Export;
+
+use Demo_Plugin\Tests\Support\Helpers\Action_Scheduler_Test_Helper;
+use Demo_Plugin\Export\User_Data_Export;
+use WP_UnitTestCase;
+
+class User_Data_Export_Test extends WP_UnitTestCase {
+
+    public function test_scheduled_export_job_creates_csv_file(): void {
+        // Arrange: Create test users
+        $user_id = self::factory()->user->create( array(
+            'user_email' => 'test@example.com',
+            'role'       => 'subscriber',
+        ) );
+        update_user_meta( $user_id, 'company_name', 'Demo Corp' );
+
+        // Act: Schedule the export job
+        $job_id = User_Data_Export::schedule( array(
+            'user_ids'   => array( $user_id ),
+            'fields'     => array( 'email', 'company_name' ),
+            'export_dir' => wp_upload_dir()['path'],
+        ) );
+
+        // Assert: Verify job was queued correctly
+        $this->assertIsInt( $job_id );
+        $this->assertGreaterThan( 0, $job_id );
+
+        $pending = as_get_scheduled_actions( array(
+            'hook'   => User_Data_Export::AS_HOOK,
+            'status' => \ActionScheduler_Store::STATUS_PENDING,
+        ), 'ids' );
+        $this->assertCount( 1, $pending );
+
+        // Execute: Run the job through the real AS runner
+        Action_Scheduler_Test_Helper::run_action( $job_id );
+
+        // Assert: Verify the export result
+        $export_file = get_option( 'demo_plugin_last_export_file' );
+        $this->assertNotFalse( $export_file );
+        $this->assertFileExists( $export_file );
+        $this->assertStringContainsString( 'test@example.com', file_get_contents( $export_file ) );
+        $this->assertStringContainsString( 'Demo Corp', file_get_contents( $export_file ) );
+    }
+
+    public function tear_down(): void {
+        // Cleanup: Unschedule leftover jobs to prevent state leakage
+        as_unschedule_all_actions( User_Data_Export::AS_HOOK );
+
+        // Cleanup: Remove test export files
+        $export_file = get_option( 'demo_plugin_last_export_file' );
+        if ( $export_file && file_exists( $export_file ) ) {
+            wp_delete_file( $export_file );
+        }
+        delete_option( 'demo_plugin_last_export_file' );
+
+        parent::tear_down();
+    }
+}
+```
+
+### Key testing Rules
+
+- Never call the async callback directly in integration tests. Always schedule then run through the AS runner.
+- Direct callback tests are fine for unit-level checks (permission failures, input validation, error paths) where you intentionally bypass scheduling.
+- Always assert the job count before executing. If scheduling is broken, the runner call silently does nothing.
+- Always assert the final state after the runner executes. The job completing without an exception does not mean the result is correct.
