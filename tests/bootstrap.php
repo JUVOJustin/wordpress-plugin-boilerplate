@@ -8,6 +8,27 @@
  * @package Demo_Plugin
  */
 
+/**
+ * IMPORTANT: Do not add WordPress config constants here.
+ *
+ * The WordPress PHPUnit test environment is included and set up automatically
+ * by wp-env — there is no need to install or load it manually.
+ *
+ * All wp-config.php / wp-tests-config.php constants should be configured
+ * via the wp-env "config" key in .wp-env.json.
+ *
+ * Example:
+ * {
+ *     "config": {
+ *         "WP_DEBUG": true,
+ *         "WP_DEBUG_LOG": true
+ *     }
+ * }
+ *
+ * @link https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/#using-included-wordpress-phpunit-test-files
+ * @link https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/#customizing-the-wp-tests-config-php-file
+ */
+
 require_once dirname( __DIR__ ) . '/vendor/autoload.php';
 
 $tests_dir = getenv( 'WP_TESTS_DIR' );
