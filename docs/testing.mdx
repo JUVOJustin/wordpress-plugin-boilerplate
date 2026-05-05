@@ -17,29 +17,31 @@ The plugin ships and uses its own PHPUnit version because the WordPress test boo
 ## Write your first test
 
 <Steps>
+
 1. Start the test environment.
 
-```bash title="Terminal"
-npm run env:start
-```
+   ```bash title="Terminal"
+   npm run env:start
+   ```
 
 2. Add a test class in `tests/php`. An `ExampleTest.php` is already provided as a starting point.
 
-```php title="tests/php/MyFeatureTest.php"
-<?php
+   ```php title="tests/php/MyFeatureTest.php"
+   <?php
 
-class MyFeatureTest extends WP_UnitTestCase {
-	public function test_something(): void {
-		$this->assertTrue( true );
-	}
-}
-```
+   class MyFeatureTest extends WP_UnitTestCase {
+   	public function test_something(): void {
+   		$this->assertTrue( true );
+   	}
+   }
+   ```
 
 3. Run tests.
 
-```bash title="Terminal"
-npm run test:php
-```
+   ```bash title="Terminal"
+   npm run test:php
+   ```
+
 </Steps>
 
 :::note[Why `tests-cli` and not `cli`?]
@@ -114,6 +116,7 @@ Private and premium plugins are managed through a dedicated `tests/composer.json
 Run `npm run env:cli composer update --working-dir=tests` if you want to update your test dependencies.
 
 <Steps>
+
 1. Add the private Composer repository and package to `tests/composer.json`. Use an explicit installer path keyed to the package name so the install directory is predictable.
 
    ```json title="tests/composer.json"
@@ -178,6 +181,7 @@ Run `npm run env:cli composer update --working-dir=tests` if you want to update 
    :::note
    If `COMPOSER_AUTH` is not set, the write step is skipped and only the packages in `tests/composer.json` that require no authentication are installed.
    :::
+
 </Steps>
 
 ## Configuration notes
