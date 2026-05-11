@@ -17,6 +17,17 @@ use WP_Error;
  * Interface Ability_Interface
  *
  * Contract for ability classes that integrate with WordPress Abilities API.
+ *
+ * @see https://developer.wordpress.org/apis/abilities-api/rest-api-endpoints/#execute-an-ability Execute via REST API.
+ * @see https://developer.wordpress.org/apis/abilities-api/php-reference/#executing-an-ability-ability-execute Execute via PHP API.
+ *
+ * Minimal PHP API example:
+ * ```php
+ * $ability = wp_get_ability( 'namespace/ability-name' );
+ * if ( $ability->check_permissions( $input ) ) {
+ *     $result = $ability->execute( $input );
+ * }
+ * ```
  */
 interface Ability_Interface {
 
@@ -94,6 +105,7 @@ interface Ability_Interface {
 	 *
 	 * @param mixed $input Optional. The input data for the ability.
 	 * @return mixed|WP_Error Result data or error.
+	 * @see https://developer.wordpress.org/apis/abilities-api/rest-api-endpoints/#execute-an-ability
 	 */
 	public static function execute( mixed $input = null ): mixed;
 }
