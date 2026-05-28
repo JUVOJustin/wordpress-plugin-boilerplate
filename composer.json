@@ -33,6 +33,23 @@
       "setup.php"
     ]
   },
+  "archive": {
+    "exclude": [
+      "/.agents",
+      "/.agents/",
+      "/.agents/*",
+      "/.agents/*/*",
+      "/.agents/*/*/*",
+      "/.agents/*/*/*/*",
+      "/.agents/skills/plugin/references/doc-*",
+      "/.agents/skills/plugin/scripts/plugin-replace.php",
+      "/.agents/**",
+      ".agents",
+      ".agents/*",
+      ".agents/**",
+      "**/.agents/**"
+    ]
+  },
   "scripts": {
     "post-create-project-cmd": [
       "composer exec -- wp setup"

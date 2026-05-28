@@ -3,7 +3,7 @@
  * WP_CLI Setup command integration.
  *
  * Collects user input and delegates all replacement logic to the shared
- * boilerplate-replace.php script in .agents/skills/boilerplate-update/scripts/.
+ * plugin-replace.php script packaged with the setup command.
  *
  * @package Demo_Plugin
  */
@@ -69,7 +69,7 @@ class Setup {
 		}
 
 		$plugin_path = (string) $this->path;
-		$script_path = $plugin_path . '/.agents/skills/boilerplate-update/scripts/boilerplate-replace.php';
+		$script_path = $plugin_path . '/src/Cli/plugin-replace.php';
 		if ( ! file_exists( $script_path ) ) {
 			WP_CLI::error( "Missing replacement script: {$script_path}" );
 		}
@@ -125,7 +125,13 @@ class Setup {
 		$progress->tick();
 
 		$progress->finish();
+
 		WP_CLI::success( 'Setup completed' );
+		WP_CLI::confirm( 'Install the agent skill for this plugin?' );
+
+		$install_skills_command = 'npx skills add https://github.com/JUVOJustin/wordpress-plugin-boilerplate ' . escapeshellarg( '--skill=*' );
+		$this->run_shell_command( $install_skills_command, 'Error installing agent skills' );
+		WP_CLI::success( 'Agent skill installed' );
 	}
 
 	/**
