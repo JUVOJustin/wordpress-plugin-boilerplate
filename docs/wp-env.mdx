@@ -12,7 +12,7 @@ WP-CLI is treated as an environment dependency. Commands such as `composer run i
 
 ## Configuration
 
-See `.wp-env.json` for the configuration. The setup uses `mappings` instead of the common `plugins: ["."]` approach.
+See `.wp-env.json` for the configuration. The setup uses `mappings` instead of the common `plugins: ["."]` approach and runs the containers with PHP 8.1 or newer so WP-CLI i18n commands support the `make-php` compilation step.
 
 ### Why `mappings` instead of `plugins: ["."]`
 
@@ -45,7 +45,7 @@ npm run env:cli -- composer run i18n:compile
 npm run env:cli -- composer run phpstan
 ```
 
-On every `env:start`, the `afterStart` hook installs the pinned `wp-cli/i18n-command` package in the `cli` container and activates Demo Plugin.
+On every `env:start`, the `afterStart` hook activates Demo Plugin in the `cli` container.
 
 ## Adding Custom Scripts
 
@@ -85,3 +85,4 @@ The plugin uses wp-env in the deploy workflow to compile translations. This requ
 - The first start downloads WordPress core and may take a few minutes
 - Data persists between starts unless you run `env:destroy`
 - The `afterStart` lifecycle script automatically activates the plugin
+- The PHP version is pinned to 8.1 because `composer run i18n:compile` uses `wp i18n make-php`
