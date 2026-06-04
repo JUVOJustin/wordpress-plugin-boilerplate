@@ -290,7 +290,12 @@ class Setup {
 	 * @return string
 	 */
 	private function to_pascal_snake_case( string $value ): string {
-		$words = preg_split( '/[\s_]+/', $value );
+		$words = preg_split( '/[^a-zA-Z0-9]+/', $value );
+		if ( false === $words ) {
+			return '';
+		}
+
+		$words = array_filter( $words, 'strlen' );
 
 		return implode( '_', array_map( 'ucfirst', $words ) );
 	}
