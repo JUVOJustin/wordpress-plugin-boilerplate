@@ -140,11 +140,11 @@ class Setup {
 	 */
 	private function replacement_script_path( string $plugin_path ): string {
 		$script_path = $plugin_path . '/' . self::SETUP_SKILL_SCRIPT;
-		if ( file_exists( $script_path ) ) {
-			return $script_path;
+		if ( ! file_exists( $script_path ) ) {
+			WP_CLI::error( "Missing replacement script: {$script_path}" );
 		}
 
-		WP_CLI::error( "Missing replacement script: {$script_path}" );
+		return $script_path;
 	}
 
 	/**
