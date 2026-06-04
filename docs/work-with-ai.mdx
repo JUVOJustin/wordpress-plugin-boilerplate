@@ -1,15 +1,15 @@
 ---
 title: Working with AI
 short_title: AI Workflow
-description: Commands, skills, and instructions for AI-assisted development.
+description: Skills and instructions for AI-assisted development.
 ---
 
-This boilerplate is optimized for AI-assisted development using [opencode](https://opencode.ai). It provides a complete set of commands, skills, and instructions that guide AI agents to work effectively with your plugin.
-These resources are kept up to date and it makes sense to update them with the latest version of the boilerplate. You can add your own resources anytime.
+This plugin setup is optimized for AI-assisted development. It provides one unified `wp-plugin-bp` skill plus focused WordPress skills that guide AI agents to work effectively with your plugin.
+These resources are kept up to date and it makes sense to update them with upstream project conventions. You can add your own resources anytime.
 
 ## How It Works
 
-The AI integration consists of three layers that work together:
+The AI integration consists of two layers that work together:
 
 ### 1. AGENTS.md — The Rulebook
 
@@ -21,73 +21,53 @@ The `AGENTS.md` file in the root directory is the primary instruction set for AI
 
 **This file is your single source of truth** for how AI agents should interact with your codebase.
 
-### 2. Commands — Quick Actions
+### 2. `wp-plugin-bp` Skill And WordPress Skills
 
-Commands are one-off tasks you can trigger via slash commands (e.g., `/translations-upsert`). They live in `.opencode/command/` and provide:
-- Fast, repeatable operations
-- Consistent execution patterns
-- Automatic context awareness
-
-### 3. Skills — Complex Workflows
-
-Skills are sophisticated, multi-step workflows for complex tasks. They live in `.agents/skills/` and handle:
+The `wp-plugin-bp` skill lives in `.agents/skills/wp-plugin-bp/` and handles:
 - Multi-file operations
 - Decision trees and conditional logic
 - Integration with external tools
+- Automatic task routing for natural-language requests
 
-## Available Commands
+Official WordPress skills live in `.agents/skills/wp-*/` and provide focused guidance for blocks, Interactivity API, PHPStan, project triage, and REST API work.
 
-| Command | Description |
+Agents should infer the right task from natural language. For example, "sync this plugin with upstream project conventions" routes to `upgrade`.
+
+## Available Tasks
+
+| Task | Description |
 |---------|-------------|
-| `/translations-upsert [lang1 lang2...]` | Update or create translations. Without arguments: updates all existing `.po` files. With arguments: creates/updates specific languages. |
-| `/wp-skills-upsert [skillnames]` | Download and install official WordPress agent skills. Default: `wp-interactivity-api`, `wp-project-triage`, `wp-block-development`, `wp-phpstan`, `wp-rest-api`. |
-| `/commands-upsert` | Sync commands and skills from the upstream boilerplate. |
-| `/readme-update` | Update README.md with current plugin information, blocks, CLI commands, etc. |
-| `/qa-run` | Run quality assurance tools (PHPCS, PHPStan, ESLint, stylelint). |
+| `upgrade [scope]` | Sync with the latest upstream project conventions. Natural prompts like "update plugin conventions" route here. |
+| `translation [lang1 lang2...]` | Update or create translations. Without arguments: updates existing `.po` files. With arguments: creates or updates specific languages. |
+| `testing [target]` | Write or debug PHPUnit application tests using wp-env conventions. |
+| `action-scheduler [target]` | Add or test Action Scheduler integration. |
+| `qa [scope]` | Run configured quality checks and fix errors. |
+| `readme [target]` | Update README.md with current plugin information. |
+| `wp-skills [skillnames]` | Download and install official WordPress agent skills. |
+| `blocks [target]` | Scaffold or maintain Gutenberg blocks. |
+| `abilities [target]` | Implement or update Abilities API code. |
+| `bundling [target]` | Work on wp-scripts entry points, assets, or enqueueing. |
+| `acf [target]` | Add or maintain ACF integration patterns. |
+| `sentry [target]` | Add or maintain Sentry integration patterns. |
 
 ## Built-in Skills
 
-### plugin-translations-update
+### wp-plugin-bp
 
-Handles the complete translation workflow:
-1. Builds JS assets to extract strings
-2. Generates `.pot` template file
-3. Updates or creates `.po` files
-4. Compiles to `.mo`, `.json`, and `.php` formats
+The `wp-plugin-bp` skill is the unified router for plugin workflows. Its `SKILL.md` stays small, command-specific files live in `.agents/skills/wp-plugin-bp/references/`, and detailed docs are linked as `doc-*.mdx` references.
 
-See [i18n](i18n.mdx) for detailed translation documentation.
-
-### boilerplate-update
-
-Syncs your plugin with the latest boilerplate features:
-- Build tools and dependencies
-- CI/CD workflows
-- QA configurations
-- New architectural patterns (Abilities API, etc.)
-- Deterministic placeholder replacement via `scripts/boilerplate-replace.php`
-
-See [boilerplate-update skill](../.agents/skills/boilerplate-update) for the full workflow.
-
-### application-testing
-
-Guides the AI when writing or extending PHPUnit application tests:
-- Enforces the wp-env-exclusive test setup
-- Applies correct conventions (file location, class naming, no namespace)
-- Uses WordPress factories for test data and explains automatic rollback
-- Handles plugin dependencies via `lifecycleScripts`
-
-See [Testing](testing.mdx) for the full testing documentation.
+The initial Composer package includes `.agents/` so setup can run `wp-plugin-bp/scripts/plugin-replace.php` for identity replacement. Setup removes `.agents/` after replacement, then asks whether to install agent skills for ongoing AI-assisted work.
 
 ### Skills are not available?
-Ask your agent to clone the skills or use skills.sh to install them.
+Install the skills from the upstream repository:
 
 ```bash title="Terminal"
-npx skills add https://github.com/JUVOJustin/wordpress-plugin-boilerplate
+npx skills add https://github.com/JUVOJustin/wordpress-plugin-boilerplate --skill=*
 ```
 
-## WordPress Agent Skills (Recommended)
+## WordPress Agent Skills
 
-The WordPress project provides official skills for WordPress development. Install them with `/wp-skills-upsert`:
+The WordPress project provides official skills for WordPress development. This project includes the default set installed from `https://github.com/WordPress/agent-skills`:
 
 | Skill | Purpose |
 |-------|---------|
@@ -97,19 +77,11 @@ The WordPress project provides official skills for WordPress development. Instal
 | `wp-project-triage` | Project analysis and task management |
 | `wp-rest-api` | REST API routes, auth, and schema guidance |
 
-These skills are maintained in `https://github.com/WordPress/agent-skills` and follow WordPress core best practices.
-
-## Customizing for Other AI Tools
-
-While optimized for opencode, the structure works with any AI assistant:
-
-To adapt for another tool:
-- For claude code: copy `AGENTS.md` to `CLAUDE.md`.
-- Commands are basically prompts. You can copy their body to any tool. You might need to adjust the `frontmatter` header.
+Ask the `wp-plugin-bp` skill to run the `wp-skills` workflow to refresh these skills or install another official WordPress skill.
 
 ## Tips for Effective AI Collaboration
 
 - **Be specific**: Instead of "fix the bug", say "fix the PHP notice in src/Admin/Settings.php line 42"
 - **Reference conventions**: Mention "follow the Loader pattern" or "use the enqueue_entrypoint method"
-- **Use commands**: They're faster and more consistent than describing the same task repeatedly
+- **Use the `wp-plugin-bp` skill**: It is faster and more consistent than describing the same task repeatedly
 - **Update docs**: When you add new patterns, update `AGENTS.md` so future AI interactions benefit

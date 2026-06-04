@@ -2,8 +2,8 @@
 /**
  * WP_CLI Setup command integration.
  *
- * Collects user input and delegates all replacement logic to the shared
- * boilerplate-replace.php script in .agents/skills/boilerplate-update/scripts/.
+ * Collects user input and delegates replacement logic to the setup script
+ * packaged with the wp-plugin-bp skill.
  *
  * @package Demo_Plugin
  */
@@ -18,6 +18,10 @@ use function WP_CLI\Utils\format_items;
  * Perform initial plugin setup from the boilerplate template.
  */
 class Setup {
+
+	private const SETUP_SKILL_REPOSITORY = 'https://github.com/JUVOJustin/wordpress-plugin-boilerplate';
+
+	private const SETUP_SKILL_SCRIPT = '.agents/skills/wp-plugin-bp/scripts/plugin-replace.php';
 
 	/**
 	 * Plugin name provided by the user.
@@ -69,10 +73,7 @@ class Setup {
 		}
 
 		$plugin_path = (string) $this->path;
-		$script_path = $plugin_path . '/.agents/skills/boilerplate-update/scripts/boilerplate-replace.php';
-		if ( ! file_exists( $script_path ) ) {
-			WP_CLI::error( "Missing replacement script: {$script_path}" );
-		}
+		$script_path = $this->replacement_script_path( $plugin_path );
 
 		// If setup file still exists, assume setup has to be made.
 		if ( ! file_exists( $plugin_path . '/setup.php' ) ) {
@@ -125,7 +126,61 @@ class Setup {
 		$progress->tick();
 
 		$progress->finish();
+
 		WP_CLI::success( 'Setup completed' );
+		$this->maybe_install_agent_skills( $plugin_path );
+	}
+
+	/**
+	 * Return the packaged replacement script path.
+	 *
+	 * @param string $plugin_path Absolute plugin root path.
+	 *
+	 * @return string
+	 */
+	private function replacement_script_path( string $plugin_path ): string {
+		$script_path = $plugin_path . '/' . self::SETUP_SKILL_SCRIPT;
+		if ( ! file_exists( $script_path ) ) {
+			WP_CLI::error( "Missing replacement script: {$script_path}" );
+		}
+
+		return $script_path;
+	}
+
+	/**
+	 * Optionally install agent skills into the initialized plugin.
+	 *
+	 * The packaged `.agents` directory is removed during replacement cleanup,
+	 * so accepting this prompt fetches a fresh skill install for ongoing work.
+	 *
+	 * @param string $plugin_path Absolute plugin root path.
+	 *
+	 * @return void
+	 */
+	private function maybe_install_agent_skills( string $plugin_path ): void {
+		if ( ! $this->ask_confirmation( 'Install agent skills for this plugin? [y/N]' ) ) {
+			WP_CLI::log( 'Agent skills were not installed.' );
+
+			return;
+		}
+
+		$command = implode(
+			' ',
+			array(
+				'cd',
+				escapeshellarg( $plugin_path ),
+				'&&',
+				'npx',
+				'--yes',
+				'skills',
+				'add',
+				escapeshellarg( self::SETUP_SKILL_REPOSITORY ),
+				escapeshellarg( '--skill=*' ),
+			)
+		);
+
+		$this->run_shell_command( $command, 'Error installing agent skills' );
+		WP_CLI::success( 'Agent skills installed' );
 	}
 
 	/**
@@ -212,6 +267,19 @@ class Setup {
 		$output = trim( (string) fgets( STDIN ) );
 
 		return '' !== $output ? $output : (string) $default_value;
+	}
+
+	/**
+	 * Ask a yes/no question without aborting setup when the answer is no.
+	 *
+	 * @param string $question Prompt shown in CLI.
+	 *
+	 * @return bool
+	 */
+	private function ask_confirmation( string $question ): bool {
+		$answer = strtolower( $this->ask( $question, 'n' ) );
+
+		return in_array( $answer, array( 'y', 'yes' ), true );
 	}
 
 	/**
