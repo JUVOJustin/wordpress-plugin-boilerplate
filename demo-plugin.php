@@ -14,7 +14,7 @@
  * @wordpress-plugin
  * Plugin Name:       Demo Plugin
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           1.0.0
+ * Version:           2.1.0
  * Requires PHP:      8.0
  * Requires at least: 6.9
  * License:           GPL-2.0+
