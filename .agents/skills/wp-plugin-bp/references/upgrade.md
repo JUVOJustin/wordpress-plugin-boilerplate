@@ -17,7 +17,7 @@ Proceed without confirmation for:
 - Updating dependency versions
 - Adding or renaming scripts with equivalent functionality
 - Syncing QA config files
-- Copying `.agents/skills`
+- Installing or updating `.agents/skills` with `npx skills add`
 
 ## Identity Replacement Script
 
@@ -36,7 +36,7 @@ Read these sources from the target plugin:
 Run the script against the cloned reference directory before comparing anything:
 
 ```bash
-php tmp/plugin-ref/.agents/skills/plugin/scripts/plugin-replace.php \
+php tmp/plugin-ref/.agents/skills/wp-plugin-bp/scripts/plugin-replace.php \
   --path tmp/plugin-ref \
   --plugin-name "My Awesome Plugin" \
   --plugin-namespace "My_Awesome_Plugin" \
@@ -44,14 +44,14 @@ php tmp/plugin-ref/.agents/skills/plugin/scripts/plugin-replace.php \
   --cleanup-setup
 ```
 
-This pass replaces placeholders, strips setup-only docs sections, materializes skill doc references, empties `docs/`, and removes setup-only files. Later diffs should compare the target plugin against `tmp/plugin-ref/`, not against the untouched upstream clone.
+This pass replaces placeholders in plugin files, strips setup-only docs sections, empties `docs/`, removes setup-only files, and deletes `.agents/`. It does not rewrite skill files; initialized plugins can reinstall current skills from upstream with `npx skills add`. Later diffs should compare the target plugin against `tmp/plugin-ref/`, not against the untouched upstream clone.
 
 ### Rename an already-customized plugin
 
 Pass the current identity as `--source-plugin-*` options and the desired identity as the regular `--plugin-*` options:
 
 ```bash
-php .agents/skills/plugin/scripts/plugin-replace.php \
+php .agents/skills/wp-plugin-bp/scripts/plugin-replace.php \
   --path /path/to/plugin \
   --source-plugin-name "My Awesome Plugin" \
   --source-plugin-namespace "My_Awesome_Plugin" \
@@ -100,6 +100,7 @@ php .agents/skills/plugin/scripts/plugin-replace.php \
     - docs to load: `references/doc-abilities.mdx`
 11. Compare agent configuration:
     - `.agents/skills`
+    - prefer `npx skills add https://github.com/JUVOJustin/wordpress-plugin-boilerplate --skill=*` for the boilerplate skill
     - add new upstream items, update existing items, ask before removing local-only items
 12. Compare file-control files:
     - `.distignore`

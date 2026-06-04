@@ -1,4 +1,0 @@
-.agents export-ignore
-.agents/** export-ignore
-.agents/skills/plugin/references/doc-* export-ignore
-.agents/skills/plugin/scripts/plugin-replace.php export-ignore

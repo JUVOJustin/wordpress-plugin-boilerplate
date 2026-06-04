@@ -16,7 +16,7 @@ If you want the user-facing documentation site entry point, start with [`docs/in
 - `@wordpress/env` for reproducible local WordPress development
 - PHPUnit application testing in the dedicated `tests-cli` container
 - GitHub Actions for analysis, testing, and release automation
-- AI-oriented project instructions in `AGENTS.md`, `.agents/skills/plugin/`, and official WordPress skills in `.agents/skills/wp-*/`
+- AI-oriented project instructions in `AGENTS.md`, `.agents/skills/wp-plugin-bp/`, and official WordPress skills in `.agents/skills/wp-*/`
 
 ## Typical Use
 
@@ -36,7 +36,7 @@ Use this repo when you want to:
 |- resources/               Admin and frontend assets
 |- docs/                    Source documentation site content; emptied after plugin setup
 |- tests/php/               PHPUnit application tests
-|- .agents/skills/plugin/   Unified plugin AI skill with task references
+|- .agents/skills/wp-plugin-bp/   Unified plugin AI skill with task references
 |- .agents/skills/wp-*/     Official WordPress agent skills for focused workflows
 |- .github/workflows/       CI/CD workflows
 `- README.txt               WordPress.org plugin readme template
@@ -50,8 +50,8 @@ Use this repo when you want to:
 composer create-project juvo/wordpress-plugin-boilerplate
 ```
 
-The setup script asks for the plugin name, namespace, and slug, rewrites the boilerplate identity, and offers to install the agent skill.
-Composer excludes `.agents/` from generated projects; when accepted, setup installs the skill with `npx skills add https://github.com/JUVOJustin/wordpress-plugin-boilerplate --skill=*`.
+The setup script asks for the plugin name, namespace, and slug, runs the packaged `wp-plugin-bp` replacement script, and removes `.agents/` from the initialized plugin.
+After replacement, setup asks whether to install agent skills for ongoing AI-assisted work.
 
 ### Common Commands
 
@@ -86,16 +86,15 @@ Composer excludes `.agents/` from generated projects; when accepted, setup insta
 | Write application tests | [`docs/testing.mdx`](docs/testing.mdx) |
 | Work on bundling or block assets | [`docs/bundeling.mdx`](docs/bundeling.mdx), [`docs/create-blocks.mdx`](docs/create-blocks.mdx) |
 | Configure translations | [`docs/i18n.mdx`](docs/i18n.mdx) |
-| Review AI-specific repo rules | [`AGENTS.md`](AGENTS.md), [`docs/work-with-ai.mdx`](docs/work-with-ai.mdx), [`.agents/skills/plugin/SKILL.md`](.agents/skills/plugin/SKILL.md) |
+| Review AI-specific repo rules | [`AGENTS.md`](AGENTS.md), [`docs/work-with-ai.mdx`](docs/work-with-ai.mdx), [`.agents/skills/wp-plugin-bp/SKILL.md`](.agents/skills/wp-plugin-bp/SKILL.md) |
 
 ## AI And Maintenance Notes
 
 - `AGENTS.md` contains the high-level repository rules and doc map
-- `.agents/skills/plugin/` contains the unified skill, task references, doc snapshots, and scripts
+- `.agents/skills/wp-plugin-bp/` contains the unified skill, task references, doc snapshots, and scripts
 - `.agents/skills/wp-*/` contains official WordPress skills for block development, Interactivity API, PHPStan, project triage, and REST API work
-- generated projects install skills via `npx skills add https://github.com/JUVOJustin/wordpress-plugin-boilerplate --skill=*` instead of shipping `.agents/` in the Composer package
-- natural requests such as "sync with upstream project conventions" should route through the `plugin` skill and infer the upgrade workflow
-- when repo structure or workflows change, update `README.md`, the relevant files in `docs/`, and `.agents/skills/plugin/`
+- natural requests such as "sync with upstream project conventions" should route through the `wp-plugin-bp` skill and infer the upgrade workflow
+- when repo structure or workflows change, update `README.md`, the relevant files in `docs/`, and `.agents/skills/wp-plugin-bp/`
 
 ## Upstream Reference
 

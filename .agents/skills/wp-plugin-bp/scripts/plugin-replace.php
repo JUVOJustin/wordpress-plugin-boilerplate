@@ -115,7 +115,6 @@ function apply_replacements(string $plugin_path, string $plugin_name, string $pl
 		'.*README\.md',
 		'.*docs\/.*\.(md|mdx)',
 		'.*AGENTS\.md',
-		'.*\.agents\/skills\/.*\.md',
 	);
 
 	// kebab-case slug (demo-plugin -> my-plugin)
@@ -204,7 +203,8 @@ function apply_replacements(string $plugin_path, string $plugin_name, string $pl
 // ---------------------------------------------------------------------------
 
 /**
- * Create a recursive file iterator that skips vendor, node_modules, and .git.
+ * Create a recursive file iterator that skips generated dependencies, Git data,
+ * and agent skills.
  *
  * @param string $plugin_path Absolute plugin root.
  *
@@ -224,6 +224,10 @@ function create_filtered_file_iterator(string $plugin_path): RecursiveIteratorIt
 			}
 
 			if (false !== strpos($pathname, '/node_modules/') || str_ends_with($pathname, '/node_modules')) {
+				return false;
+			}
+
+			if (false !== strpos($pathname, '/.agents/') || str_ends_with($pathname, '/.agents')) {
 				return false;
 			}
 
@@ -395,58 +399,17 @@ function remove_setup_docs(string $plugin_path): void
  */
 function cleanup_setup_artifacts(string $plugin_path): void
 {
-	materialize_plugin_skill_doc_references($plugin_path);
 	reset_docs_directory($plugin_path);
 	cleanup_setup_composer_config($plugin_path);
 	remove_file_if_exists($plugin_path . '/setup.php');
 	remove_file_if_exists($plugin_path . '/src/Cli/Setup.php');
-	remove_file_if_exists($plugin_path . '/src/Cli/plugin-replace.php');
 	remove_file_if_exists($plugin_path . '/context7.json');
+	remove_directory_if_exists($plugin_path . '/.agents');
 }
 
 /**
- * Convert source-repo documentation symlinks into regular files before docs
- * are removed from initialized plugins.
- *
- * @param string $plugin_path Plugin root path.
- *
- * @return void
- */
-function materialize_plugin_skill_doc_references(string $plugin_path): void
-{
-	$references_path = $plugin_path . '/.agents/skills/plugin/references';
-	if (! is_dir($references_path)) {
-		return;
-	}
-
-	$reference_files = glob($references_path . '/doc-*.mdx');
-	if (false === $reference_files) {
-		throw new RuntimeException("Unable to inspect skill references in: {$references_path}");
-	}
-
-	foreach ($reference_files as $reference_file) {
-		if (! is_link($reference_file)) {
-			continue;
-		}
-
-		$content = file_get_contents($reference_file);
-		if (false === $content) {
-			throw new RuntimeException("Unable to read skill documentation reference: {$reference_file}");
-		}
-
-		if (! unlink($reference_file)) {
-			throw new RuntimeException("Unable to replace symlinked skill reference: {$reference_file}");
-		}
-
-		if (false === file_put_contents($reference_file, $content)) {
-			throw new RuntimeException("Unable to write materialized skill reference: {$reference_file}");
-		}
-	}
-}
-
-/**
- * Empty the user-facing docs directory after its content has been copied into
- * skill references for downstream plugin use.
+ * Empty the user-facing docs directory after setup-only boilerplate docs are
+ * removed from initialized plugins.
  *
  * @param string $plugin_path Plugin root path.
  *
@@ -509,6 +472,28 @@ function remove_directory_recursively(string $directory): void
 	if (! rmdir($directory)) {
 		throw new RuntimeException("Unable to remove directory: {$directory}");
 	}
+}
+
+/**
+ * Remove a directory if it exists.
+ *
+ * @param string $directory Directory path.
+ *
+ * @return void
+ */
+function remove_directory_if_exists(string $directory): void
+{
+	if (! file_exists($directory) && ! is_link($directory)) {
+		return;
+	}
+
+	if (is_link($directory) || ! is_dir($directory)) {
+		remove_file_if_exists($directory);
+
+		return;
+	}
+
+	remove_directory_recursively($directory);
 }
 
 /**

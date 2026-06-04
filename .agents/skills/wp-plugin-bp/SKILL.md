@@ -1,10 +1,10 @@
 ---
-name: plugin
-description: Use this skill whenever working on this WordPress plugin. Use for plugin upgrades/sync tasks, adopting latest upstream project conventions, translations/i18n, PHPUnit application tests, QA checks, Action Scheduler, blocks, Abilities API, bundling, ACF, Sentry, README updates, wp-env, and AI workflow maintenance. If the user asks naturally about any of these, infer and run the matching task workflow.
+name: wp-plugin-bp
+description: Use this skill whenever working on Demo Plugin or a downstream WordPress plugin based on this project. Use for plugin upgrades/sync tasks, adopting latest upstream project conventions, translations/i18n, PHPUnit application tests, QA checks, Action Scheduler, blocks, Abilities API, bundling, ACF, Sentry, README updates, wp-env, and AI workflow maintenance. If the user asks naturally about any of these, infer and run the matching task workflow.
 compatibility: Some commands require PHP, Composer, Node.js, npm, Docker, wp-env, WP-CLI, or network access.
 ---
 
-# Plugin Skill
+# WP Plugin BP Skill
 
 Operate this WordPress plugin. Keep this file as the router and load command references only when the task calls for them.
 
@@ -49,9 +49,13 @@ Do not continue with generic WordPress advice when a task applies. The task refe
 - Route to `acf` for: Advanced Custom Fields, ACF JSON sync, field groups.
 - Route to `sentry` for: Sentry SDK, error monitoring, early bootstrap capture.
 
+## Skill Scripts
+
+- `scripts/plugin-replace.php`: deterministic identity replacement and setup cleanup helper. Use this script for initialization and upgrade reference rewrites instead of hand-editing placeholders.
+
 ## References
 
-Detailed docs are available as `references/doc-*.mdx`. Some development copies use symlinks for these docs; initialized plugins keep them as local files.
+Detailed docs are available as `references/doc-*.mdx`. In the source repo these may be symlinks into `docs/`; setup removes packaged `.agents/` from initialized plugins, then asks whether to install the current skills with `npx skills add https://github.com/JUVOJustin/wordpress-plugin-boilerplate --skill=*`.
 
 ## Environment
 
