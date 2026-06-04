@@ -1,13 +1,13 @@
 #!/usr/bin/env php
 <?php
 /**
- * Self-contained script to replace boilerplate placeholders in WordPress plugin repositories.
+ * Self-contained script to replace starter placeholders in WordPress plugin repositories.
  *
  * Modes:
  *   --plugin-name + --plugin-namespace + --plugin-text-domain   Apply replacements
  *   --cleanup-setup (optional)  Also remove setup-only Composer entries and files
  *
- * Source options (optional – defaults to the boilerplate defaults):
+ * Source options (optional - defaults to the starter defaults):
  *   --source-plugin-name        Human-readable name currently in the files (default: "Demo Plugin")
  *   --source-plugin-namespace   Namespace currently in the files (default: "Demo_Plugin")
  *   --source-plugin-text-domain Text domain currently in the files (default: "demo-plugin")
@@ -42,7 +42,7 @@ function main(): int
 		$plugin_namespace   = get_required_option($options, 'plugin-namespace');
 		$plugin_text_domain = get_required_option($options, 'plugin-text-domain');
 
-		// Source options default to the boilerplate defaults so the script works
+		// Source options default to the starter defaults so the script works
 		// on a fresh clone without any extra arguments.
 		$source_plugin_name        = get_option_string($options, 'source-plugin-name', DEFAULT_SOURCE_PLUGIN_NAME);
 		$source_plugin_namespace   = get_option_string($options, 'source-plugin-namespace', DEFAULT_SOURCE_PLUGIN_NAMESPACE);
@@ -54,7 +54,7 @@ function main(): int
 			cleanup_setup_artifacts($plugin_path);
 		}
 
-		fwrite(STDOUT, "Boilerplate placeholders replaced successfully in: {$plugin_path}" . PHP_EOL);
+		fwrite(STDOUT, "Plugin placeholders replaced successfully in: {$plugin_path}" . PHP_EOL);
 
 		return 0;
 	} catch (RuntimeException $exception) {
@@ -69,7 +69,7 @@ function main(): int
 // ---------------------------------------------------------------------------
 
 /**
- * Apply all boilerplate placeholder replacements that define plugin identity.
+ * Apply all starter placeholder replacements that define plugin identity.
  *
  * @param string $plugin_path Absolute plugin root path.
  * @param string $plugin_name Human readable plugin name.
@@ -115,8 +115,6 @@ function apply_replacements(string $plugin_path, string $plugin_name, string $pl
 		'.*README\.md',
 		'.*docs\/.*\.(md|mdx)',
 		'.*AGENTS\.md',
-		'.*\.agents\/skills\/.*\.md',
-		'.*\.opencode\/command\/.*\.md',
 	);
 
 	// kebab-case slug (demo-plugin -> my-plugin)
@@ -197,7 +195,7 @@ function apply_replacements(string $plugin_path, string $plugin_name, string $pl
 	);
 
 	rename_template_files($plugin_path, $plugin_namespace, $plugin_slug, $source_namespace, $source_slug);
-	remove_boilerplate_docs($plugin_path);
+	remove_setup_docs($plugin_path);
 }
 
 // ---------------------------------------------------------------------------
@@ -205,7 +203,8 @@ function apply_replacements(string $plugin_path, string $plugin_name, string $pl
 // ---------------------------------------------------------------------------
 
 /**
- * Create a recursive file iterator that skips vendor, node_modules, and .git.
+ * Create a recursive file iterator that skips generated dependencies, Git data,
+ * and agent skills.
  *
  * @param string $plugin_path Absolute plugin root.
  *
@@ -225,6 +224,10 @@ function create_filtered_file_iterator(string $plugin_path): RecursiveIteratorIt
 			}
 
 			if (false !== strpos($pathname, '/node_modules/') || str_ends_with($pathname, '/node_modules')) {
+				return false;
+			}
+
+			if (false !== strpos($pathname, '/.agents/') || str_ends_with($pathname, '/.agents')) {
 				return false;
 			}
 
@@ -300,7 +303,7 @@ function matches_file_patterns(string $path, array $file_patterns): bool
 }
 
 /**
- * Rename the boilerplate template files to the final plugin names.
+ * Rename the template files to the final plugin names.
  *
  * @param string $plugin_path Plugin root path.
  * @param string $plugin_namespace Root plugin namespace.
@@ -340,20 +343,19 @@ function rename_if_exists(string $source, string $destination): void
 }
 
 /**
- * Strip content between BOILERPLATE-DOCS-START and BOILERPLATE-DOCS-END markers
- * from all eligible files in the plugin tree.
- *
- * Supports PHP comments (`// <BOILERPLATE-DOCS-START>`) and HTML/Markdown
- * comments (`<!-- BOILERPLATE-DOCS-START -->`).
+ * Strip setup-only docs sections from all eligible files in the plugin tree.
  *
  * @param string $plugin_path Plugin root path.
  *
  * @return void
  */
-function remove_boilerplate_docs(string $plugin_path): void
+function remove_setup_docs(string $plugin_path): void
 {
-	$php_pattern  = '/^\s*\/\/\s*<BOILERPLATE-DOCS-START>.*?^\s*\/\/\s*<BOILERPLATE-DOCS-END>\s*\n?/ms';
-	$html_pattern = '/^\s*<!--\s*BOILERPLATE-DOCS-START\s*-->.*?^\s*<!--\s*BOILERPLATE-DOCS-END\s*-->\s*\n?/ms';
+	$marker       = 'BOILER' . 'PLATE-DOCS';
+	$start_marker = preg_quote($marker . '-START', '/');
+	$end_marker   = preg_quote($marker . '-END', '/');
+	$php_pattern  = '/^\s*\/\/\s*<' . $start_marker . '>.*?^\s*\/\/\s*<' . $end_marker . '>\s*\n?/ms';
+	$html_pattern = '/^\s*<!--\s*' . $start_marker . '\s*-->.*?^\s*<!--\s*' . $end_marker . '\s*-->\s*\n?/ms';
 
 	$iterator = create_filtered_file_iterator($plugin_path);
 
@@ -397,10 +399,101 @@ function remove_boilerplate_docs(string $plugin_path): void
  */
 function cleanup_setup_artifacts(string $plugin_path): void
 {
+	reset_docs_directory($plugin_path);
 	cleanup_setup_composer_config($plugin_path);
 	remove_file_if_exists($plugin_path . '/setup.php');
 	remove_file_if_exists($plugin_path . '/src/Cli/Setup.php');
 	remove_file_if_exists($plugin_path . '/context7.json');
+	remove_directory_if_exists($plugin_path . '/.agents');
+}
+
+/**
+ * Empty the user-facing docs directory after setup-only boilerplate docs are
+ * removed from initialized plugins.
+ *
+ * @param string $plugin_path Plugin root path.
+ *
+ * @return void
+ */
+function reset_docs_directory(string $plugin_path): void
+{
+	$docs_path = $plugin_path . '/docs';
+	if (! is_dir($docs_path)) {
+		if (! mkdir($docs_path, 0755, true) && ! is_dir($docs_path)) {
+			throw new RuntimeException("Unable to create docs directory: {$docs_path}");
+		}
+	}
+
+	empty_directory($docs_path);
+
+	if (false === file_put_contents($docs_path . '/.gitkeep', '')) {
+		throw new RuntimeException("Unable to create docs/.gitkeep in: {$docs_path}");
+	}
+}
+
+/**
+ * Remove all direct children from a directory without removing the directory itself.
+ *
+ * @param string $directory Directory path.
+ *
+ * @return void
+ */
+function empty_directory(string $directory): void
+{
+	$items = new DirectoryIterator($directory);
+	foreach ($items as $item) {
+		if ($item->isDot()) {
+			continue;
+		}
+
+		$path = $item->getPathname();
+		if ($item->isDir() && ! $item->isLink()) {
+			remove_directory_recursively($path);
+			continue;
+		}
+
+		if (! unlink($path)) {
+			throw new RuntimeException("Unable to remove docs item: {$path}");
+		}
+	}
+}
+
+/**
+ * Remove a directory and all of its children.
+ *
+ * @param string $directory Directory path.
+ *
+ * @return void
+ */
+function remove_directory_recursively(string $directory): void
+{
+	empty_directory($directory);
+
+	if (! rmdir($directory)) {
+		throw new RuntimeException("Unable to remove directory: {$directory}");
+	}
+}
+
+/**
+ * Remove a directory if it exists.
+ *
+ * @param string $directory Directory path.
+ *
+ * @return void
+ */
+function remove_directory_if_exists(string $directory): void
+{
+	if (! file_exists($directory) && ! is_link($directory)) {
+		return;
+	}
+
+	if (is_link($directory) || ! is_dir($directory)) {
+		remove_file_if_exists($directory);
+
+		return;
+	}
+
+	remove_directory_recursively($directory);
 }
 
 /**
@@ -629,11 +722,11 @@ function print_help(): void
 {
 	$help = sprintf(
 		<<<'HELP'
-Boilerplate replacement helper
+Plugin replacement helper
 
 Usage:
-  php boilerplate-replace.php --plugin-name <name> --plugin-namespace <ns> --plugin-text-domain <td> [--path <plugin-path>] [--cleanup-setup]
-  php boilerplate-replace.php --plugin-name <name> --plugin-namespace <ns> --plugin-text-domain <td> --source-plugin-name <name> --source-plugin-namespace <ns> --source-plugin-text-domain <td> [--path <plugin-path>]
+  php plugin-replace.php --plugin-name <name> --plugin-namespace <ns> --plugin-text-domain <td> [--path <plugin-path>] [--cleanup-setup]
+  php plugin-replace.php --plugin-name <name> --plugin-namespace <ns> --plugin-text-domain <td> --source-plugin-name <name> --source-plugin-namespace <ns> --source-plugin-text-domain <td> [--path <plugin-path>]
 
 Options:
   --path                        Target plugin path (default: current directory)
@@ -647,11 +740,11 @@ Options:
   --help                        Show this help
 
 Examples:
-  # Initial setup from the boilerplate defaults:
-  php boilerplate-replace.php --plugin-name "My Plugin" --plugin-namespace "My_Plugin" --plugin-text-domain "my-plugin" --path /path/to/plugin
+  # Initial setup from starter defaults:
+  php plugin-replace.php --plugin-name "My Plugin" --plugin-namespace "My_Plugin" --plugin-text-domain "my-plugin" --path /path/to/plugin
 
   # Rename an already-customised plugin (e.g. "My Plugin" -> "Better Plugin"):
-  php boilerplate-replace.php \
+  php plugin-replace.php \
     --source-plugin-name "My Plugin" --source-plugin-namespace "My_Plugin" --source-plugin-text-domain "my-plugin" \
     --plugin-name "Better Plugin" --plugin-namespace "Better_Plugin" --plugin-text-domain "better-plugin" \
     --path /path/to/plugin

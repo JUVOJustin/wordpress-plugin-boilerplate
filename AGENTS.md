@@ -8,27 +8,6 @@ Instead of calling this a boilerplate, reference the boilerplate by "Demo Plugin
 
 This plugin is a modern WordPress plugin with strict conventions and automated workflows. Follow these guidelines.
 
-### Documentation
-
-| File               | Covers |
-|--------------------|--------|
-| @docs/index.mdx | Documentation landing page and guide selection |
-| @docs/abilities.mdx | Abilities API: interfaces, category/ability creation, Loader registration |
-| @docs/bundeling.mdx      | wp-scripts bundling, entry points, asset enqueueing, localization |
-| @docs/i18n.mdx           | Translation workflow, extract/compile scripts, JSON translations |
-| @docs/create-blocks.mdx  | Block scaffolding, auto-registration, editor style sharing |
-| @docs/wp-env.mdx         | Docker dev environment, script structure, CI/CD usage |
-| @docs/testing.mdx        | PHPUnit application testing with wp-env bootstrap and scripts |
-| @docs/github-actions.mdx | CI/CD workflows, release process, PHP version configuration |
-| @docs/integrations/acf.mdx | ACF integration patterns, including field group JSON sync and configuration |
-| @docs/integrations/sentry.mdx | Sentry SDK bootstrap and early error capture patterns |
-| @docs/work-with-ai.mdx   | AI integration: commands, skills, AGENTS.md, WordPress agent skills |
-| @docs/documentation.mdx  | Documentation structure, front matter metadata, heading rules |
-
-- Read docs for implementation details.
-- Keep the docs updated
-- Suggest to implement new docs when adding new features or patterns.
-
 ### Architecture & Source Layout
 
 - **All plugin logic lives in `src/`**. Organize by feature/context (e.g., `Admin/`, `Frontend/`, `Integrations/`).
@@ -61,11 +40,14 @@ This plugin is a modern WordPress plugin with strict conventions and automated w
 
 ### Feature Quick Reference
 
-- **Blocks**: Run `npm run create-block`. See `docs/create-blocks.mdx`.
-- **Abilities API**: Implement interfaces in `src/Abilities/`, register via Loader. See `docs/abilities.mdx`.
-- **i18n**: Extract with `composer run i18n:extract`, compile with `composer run i18n:compile`. See `docs/i18n.mdx`.
-- **wp-env**: Start with `npm run env:start`. See `docs/wp-env.mdx`.
-- **Testing**: Run application tests with `npm run test:php`. See `docs/testing.mdx`. Use the `application-testing` skill when writing tests.
+- **Blocks**: Run `npm run create-block`. Use the `wp-plugin-bp` skill for block guidance.
+- **Abilities API**: Implement interfaces in `src/Abilities/`, register via Loader. Use the `wp-plugin-bp` skill for ability guidance.
+- **i18n**: Extract with `composer run i18n:extract`, compile with `composer run i18n:compile`. Use the `wp-plugin-bp` skill for translation work.
+- **wp-env**: Start with `npm run env:start`. Use the `wp-plugin-bp` skill when tests are involved.
+- **Testing**: Run application tests with `npm run test:php`. Use the `wp-plugin-bp` skill for testing guidance.
+- **Plugin upgrades**: Use the `wp-plugin-bp` skill or ask naturally to sync with upstream project conventions.
+- **Official WordPress skills**: `.agents/skills/wp-*/` contains focused skills for block development, Interactivity API, PHPStan, project triage, and REST API work. Use the `wp-plugin-bp` skill `wp-skills` workflow to refresh or add official WordPress skills.
+- **Composer setup**: `.agents/` ships in the initial Composer package so setup can run `wp-plugin-bp/scripts/plugin-replace.php`; replacement cleanup removes `.agents/`, then setup asks whether to install agent skills for ongoing work.
 
 ### Maintaining the plugin
 
@@ -74,5 +56,5 @@ When adding new primitives, patterns, or documentation to this plugin:
 1. Update `docs/` with detailed implementation guides
 2. Update @AGENTS.md with high-level reference
 <!-- BOILERPLATE-DOCS-START -->
-3. Update @.agents/skills/boilerplate-update so downstream plugins can adopt changes
+3. Update @.agents/skills/wp-plugin-bp so downstream plugins can adopt changes
 <!-- BOILERPLATE-DOCS-END -->
