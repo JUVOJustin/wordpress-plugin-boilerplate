@@ -58,7 +58,7 @@ Triggered when any tag is pushed.
    - `demo-plugin.php` (plugin header `Version:`)
    - `README.txt` (`Stable tag:`)
 
-2. **Build** — starts wp-env, compiles translations inside the container, then generates the distributable `.zip` with `wp dist-archive`. Files listed in `.distignore` (e.g. source maps, dev dependencies, test files) are automatically excluded from the archive — no manual cleanup needed.
+2. **Build** — starts wp-env, installs `wp-cli/dist-archive-command` inside the `cli` container, compiles translations inside the container, then generates the distributable `.zip` with `wp dist-archive` from the same containerized environment. Files listed in `.distignore` (e.g. source maps, dev dependencies, test files) are automatically excluded from the archive — no manual cleanup needed.
 
 3. **Persist stable release versions** — for stable tags only, the workflow commits the three changed files and pushes them back to the repository default branch. Stable releases are assumed to be created from that default branch.
 
