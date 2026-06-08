@@ -14,7 +14,7 @@
     "format": "wp-scripts format ./resources",
     "packages-update": "wp-scripts packages-update",
     "create-block": "bash -lc \"mkdir -p src/Blocks && cd src/Blocks && npx @wordpress/create-block --no-plugin --namespace=demo-plugin --textdomain=demo-plugin\"",
-    "env:start": "wp-env start --update --autoPort",
+    "env:start": "wp-env start --update",
     "env:stop": "wp-env stop",
     "env:destroy": "wp-env destroy",
     "env:cli": "wp-env run cli --env-cwd=wp-content/plugins/demo-plugin",

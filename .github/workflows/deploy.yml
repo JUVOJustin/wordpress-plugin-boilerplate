@@ -44,6 +44,17 @@ jobs:
           key: ${{ needs.setup.outputs.node-cache-key }}
           fail-on-cache-miss: true
 
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: wp-cli
+
+      # Keep v3.1.0 on the host because this version uses the external zip binary,
+      # which is not available in wp-env. When WP-CLI 3.0.0 is available in wp-env,
+      # move bundling inline there with dist-archive-command:@stable, which uses PHP ZipArchive.
+      - name: Install dist-archive-command on host
+        run: wp package install wp-cli/dist-archive-command:v3.1.0
+
       - name: Set env
         run: |
           RELEASE_VERSION="${GITHUB_REF#refs/*/}"
@@ -65,20 +76,12 @@ jobs:
       - name: Start wp-env
         run: npm run env:start
 
-      - name: Download latest WP-CLI in wp-env
-        run: |
-          npm run env:cli -- bash -lc 'curl -fL -o /tmp/wp-cli-nightly.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli-nightly.phar'
-          npm run env:cli -- php /tmp/wp-cli-nightly.phar cli version
-
-      - name: Install dist-archive-command in wp-env
-        run: npm run env:cli -- php -d memory_limit=-1 /tmp/wp-cli-nightly.phar package install wp-cli/dist-archive-command:@stable
-
       - name: Compile translations in wp-env from po files
         run: npm run env:cli composer run i18n:compile
 
-      - name: Build dist-archive in wp-env
+      - name: Build dist-archive on host
         run: |
-          npm run env:cli -- php -d memory_limit=-1 /tmp/wp-cli-nightly.phar dist-archive . ./demo-plugin-${{ env.RELEASE_VERSION }}.zip --plugin-dirname=demo-plugin
+          wp dist-archive . ./demo-plugin-${{ env.RELEASE_VERSION }}.zip --plugin-dirname=demo-plugin
           mkdir tmp-build
           unzip demo-plugin-${{ env.RELEASE_VERSION }}.zip -d tmp-build
 
