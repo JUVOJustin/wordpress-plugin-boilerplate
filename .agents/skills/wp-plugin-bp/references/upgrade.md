@@ -21,7 +21,7 @@ Proceed without confirmation for:
 
 ## Identity Replacement Script
 
-Use `scripts/plugin-replace.php` from this skill for deterministic identity replacement. This avoids manual AI search-and-replace across copied upstream files.
+Use `scripts/plugin-replace.php` from this skill for deterministic identity replacement. This avoids manual search-and-replace across copied upstream files.
 
 ### Determine the target plugin identity
 
@@ -69,57 +69,61 @@ php .agents/skills/wp-plugin-bp/scripts/plugin-replace.php \
    ```
 2. Determine the target plugin identity from the plugin being updated.
 3. Run the replacement script against the cloned reference before comparing anything.
-4. Compare PHP and QA:
+4. Detemine parts to upgrade. If user did not specifiy upgrade all.
+5. Apply upgrade. Per part use one subagent.
+6. Verify and clean up:
+ - run `composer install` and `npm install` if dependency files changed
+ - run `npm run build`
+ - run `composer run phpstan` and `composer run phpcs`
+ - run `npm run lint:js` and `npm run lint:style` when JS or styles changed
+ - run `npm run test:php` after starting wp-env when PHPUnit behavior changed
+ - remove `tmp/plugin-ref`
+
+## Upgradable parts
+### PHP and QA:
    - `composer.json`
    - `phpcs.xml`
    - `phpstan.neon`
-   - docs to load: `references/doc-i18n.mdx`, `references/doc-bundling.mdx`
-5. Compare JS and bundling:
+   - reference docs to consult only: `references/doc-i18n.mdx`, `references/doc-bundling.mdx`
+### JS and bundling:
    - `package.json`
    - `webpack.config.js`
-   - docs to load: `references/doc-bundling.mdx`, `references/doc-wp-env.mdx`, `references/doc-create-blocks.mdx`
-6. Compare GitHub Actions:
+   - reference docs to consult only: `references/doc-bundling.mdx`, `references/doc-wp-env.mdx`, `references/doc-create-blocks.mdx`
+### GitHub Actions:
    - `.github/workflows`
    - key workflows: setup, analysis, tests, deploy, release, translation compilation
-   - docs to load: `references/doc-github-actions.mdx`
-7. Compare `src/Loader.php`:
+   - reference docs to consult only: `references/doc-github-actions.mdx`
+### `src/Loader.php`:
    - shortcode registration
    - WP-CLI registration
    - Abilities API registration
-8. Compare the main plugin class:
+### Main plugin class:
    - asset enqueueing via entry points
    - block registration
    - loader registration patterns
-9. Compare i18n workflow:
+### i18n workflow:
    - `i18n:extract`
    - `i18n:compile`
    - generated language file expectations
-10. Compare Abilities API:
+### Abilities API:
     - interfaces under `src/Abilities/`
     - loader `add_ability()` usage
-    - docs to load: `references/doc-abilities.mdx`
-11. Compare agent configuration:
+    - reference docs to consult only: `references/doc-abilities.mdx`
+### Agent configuration:
     - `.agents/skills`
     - prefer `npx skills add https://github.com/JUVOJustin/wordpress-plugin-boilerplate --skill=*` for the boilerplate skill
     - add new upstream items, update existing items, ask before removing local-only items
-12. Compare file-control files:
+### File-control files:
     - `.distignore`
     - `.gitignore`
-13. Present findings and apply changes incrementally:
+### Present findings and apply changes incrementally:
     - categorize changes by whether confirmation is required
     - avoid replacing whole files when a scoped patch is enough
     - adapt text domain, namespace, paths, and plugin-specific behavior after copying
-14. Verify and clean up:
-    - run `composer install` and `npm install` if dependency files changed
-    - run `npm run build`
-    - run `composer run phpstan` and `composer run phpcs`
-    - run `npm run lint:js` and `npm run lint:style` when JS or styles changed
-    - run `npm run test:php` after starting wp-env when PHPUnit behavior changed
-    - remove `tmp/plugin-ref`
 
-## Documentation Map
+## Reference Documentation Map
 
-Load only the docs needed for the current comparison:
+Load only the docs needed for the current comparison. These files explain upstream conventions; they are not files to copy or sync into the target plugin's `docs/` directory.
 
 | Reference | Covers |
 | --- | --- |
