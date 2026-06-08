@@ -7,6 +7,6 @@
 		"wp-content/plugins/": "./tests/setup/plugins/"
 	},
 	"lifecycleScripts": {
-		"afterStart": "wp-env run cli wp plugin activate demo-plugin"
+		"afterStart": "npm run env:bootstrap"
 	}
 }
