@@ -295,7 +295,10 @@ class Setup {
 			return '';
 		}
 
-		$words = array_filter( $words, 'strlen' );
+		$words = array_filter(
+			$words,
+			static fn ( string $word ): bool => '' !== $word
+		);
 
 		return implode( '_', array_map( 'ucfirst', $words ) );
 	}
