@@ -62,18 +62,31 @@ jobs:
           sed -i -E 's/([[:blank:]]*\*[[:blank:]]*Version:[[:blank:]]*).*/\1${{ env.RELEASE_VERSION }}/' demo-plugin.php
           sed -i -E 's/Stable tag: .*/Stable tag: ${{ env.RELEASE_VERSION }}/' README.txt
 
+      - name: Configure deploy wp-env
+        run: |
+          cat > .wp-env.override.json <<'JSON'
+          {
+            "phpVersion": "8.4"
+          }
+          JSON
+
       - name: Start wp-env
         run: npm run env:start
 
+      - name: Install latest WP-CLI in wp-env
+        run: |
+          npm run env:cli -- bash -lc 'curl -fL -o /tmp/wp-cli-nightly.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli-nightly.phar'
+          npm run env:cli -- php /tmp/wp-cli-nightly.phar cli version
+
       - name: Install dist-archive-command in wp-env
-        run: npm run env:cli wp package install wp-cli/dist-archive-command:v3.1.0
+        run: npm run env:cli -- php -d memory_limit=-1 /tmp/wp-cli-nightly.phar package install wp-cli/dist-archive-command:@stable
 
       - name: Compile translations in wp-env from po files
         run: npm run env:cli composer run i18n:compile
 
       - name: Build dist-archive in wp-env
         run: |
-          npm run env:cli wp dist-archive . ./demo-plugin-${{ env.RELEASE_VERSION }}.zip --plugin-dirname=demo-plugin
+          npm run env:cli -- php -d memory_limit=-1 /tmp/wp-cli-nightly.phar dist-archive . ./demo-plugin-${{ env.RELEASE_VERSION }}.zip --plugin-dirname=demo-plugin
           mkdir tmp-build
           unzip demo-plugin-${{ env.RELEASE_VERSION }}.zip -d tmp-build
 
