@@ -43,7 +43,7 @@ This plugin is a modern WordPress plugin with strict conventions and automated w
 - **Blocks**: Run `npm run create-block`. Use the `wp-plugin-bp` skill for block guidance.
 - **Abilities API**: Implement interfaces in `src/Abilities/`, register via Loader. Use the `wp-plugin-bp` skill for ability guidance.
 - **i18n**: Extract with `composer run i18n:extract`, compile with `composer run i18n:compile`. Use the `wp-plugin-bp` skill for translation work.
-- **wp-env**: Start with `npm run env:start`. Use the `wp-plugin-bp` skill when tests are involved.
+- **wp-env**: Start with `npm run env:start`. The lifecycle runs `npm run env:bootstrap`, which installs Composer dependencies inside wp-env before activating the plugin. Use `npm run env:start:no-scripts` for recovery/debugging and `npm run env:composer:install` or `npm run env:composer:update` for Composer work inside wp-env. Use the `wp-plugin-bp` skill when tests are involved.
 - **Testing**: Run application tests with `npm run test:php`. Use the `wp-plugin-bp` skill for testing guidance.
 - **Plugin upgrades**: Use the `wp-plugin-bp` skill or ask naturally to sync with upstream project conventions.
 - **Official WordPress skills**: `.agents/skills/wp-*/` contains focused skills for block development, Interactivity API, PHPStan, project triage, and REST API work. Use the `wp-plugin-bp` skill `wp-skills` workflow to refresh or add official WordPress skills.

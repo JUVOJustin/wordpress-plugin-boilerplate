@@ -15,9 +15,14 @@
     "packages-update": "wp-scripts packages-update",
     "create-block": "bash -lc \"mkdir -p src/Blocks && cd src/Blocks && npx @wordpress/create-block --no-plugin --namespace=demo-plugin --textdomain=demo-plugin\"",
     "env:start": "wp-env start --update",
+    "env:start:no-scripts": "wp-env start --update --no-scripts",
     "env:stop": "wp-env stop",
     "env:destroy": "wp-env destroy",
     "env:cli": "wp-env run cli --env-cwd=wp-content/plugins/demo-plugin",
+    "env:composer:install": "wp-env run cli --env-cwd=wp-content/plugins/demo-plugin composer install --prefer-dist --no-interaction --no-progress",
+    "env:composer:update": "wp-env run cli --env-cwd=wp-content/plugins/demo-plugin composer update --prefer-dist --no-interaction --no-progress",
+    "env:plugin:activate": "wp-env run cli wp plugin activate demo-plugin",
+    "env:bootstrap": "npm run env:composer:install && npm run env:plugin:activate",
     "test:php": "wp-env run tests-cli --env-cwd=wp-content/plugins/demo-plugin bash -lc 'composer install --working-dir=tests --no-interaction && vendor/bin/phpunit'"
   }
 }

@@ -58,6 +58,10 @@ After replacement, setup asks whether to install agent skills for ongoing AI-ass
 | Command | Purpose |
 | --- | --- |
 | `npm run env:start` | Start the local WordPress environment |
+| `npm run env:start:no-scripts` | Start wp-env without lifecycle scripts for recovery/debugging |
+| `npm run env:bootstrap` | Install Composer dependencies in wp-env and activate the plugin |
+| `npm run env:composer:install` | Install Composer dependencies inside wp-env |
+| `npm run env:composer:update` | Update Composer dependencies inside wp-env |
 | `npm run env:stop` | Stop the environment |
 | `npm run build` | Build production assets |
 | `npm run start` | Watch and rebuild assets during development |
