@@ -62,18 +62,10 @@ jobs:
           sed -i -E 's/([[:blank:]]*\*[[:blank:]]*Version:[[:blank:]]*).*/\1${{ env.RELEASE_VERSION }}/' demo-plugin.php
           sed -i -E 's/Stable tag: .*/Stable tag: ${{ env.RELEASE_VERSION }}/' README.txt
 
-      - name: Configure deploy wp-env
-        run: |
-          cat > .wp-env.override.json <<'JSON'
-          {
-            "phpVersion": "8.4"
-          }
-          JSON
-
       - name: Start wp-env
         run: npm run env:start
 
-      - name: Install latest WP-CLI in wp-env
+      - name: Download latest WP-CLI in wp-env
         run: |
           npm run env:cli -- bash -lc 'curl -fL -o /tmp/wp-cli-nightly.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli-nightly.phar'
           npm run env:cli -- php /tmp/wp-cli-nightly.phar cli version
