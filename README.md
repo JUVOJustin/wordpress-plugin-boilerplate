@@ -50,8 +50,8 @@ Use this repo when you want to:
 composer create-project juvo/wordpress-plugin-boilerplate
 ```
 
-The setup script asks for the plugin name, namespace, and slug, runs the packaged `wp-plugin-bp` replacement script, removes `.agents/` from the initialized plugin, and adds `.agents/` to the initialized plugin's `.gitignore`.
-After replacement, setup asks whether to install agent skills for ongoing AI-assisted work. Installed skills are managed with `npx skills`, not committed to downstream plugin repositories.
+The setup script asks for the plugin name, namespace, and slug, runs the packaged `wp-plugin-bp` replacement script, and removes `.agents/` from the initialized plugin.
+After replacement, setup asks whether to install agent skills for ongoing AI-assisted work.
 
 ### Common Commands
 
@@ -93,7 +93,6 @@ After replacement, setup asks whether to install agent skills for ongoing AI-ass
 - `AGENTS.md` contains the high-level repository rules and doc map
 - `.agents/skills/wp-plugin-bp/` contains the unified skill, task references, doc snapshots, and scripts
 - `.agents/skills/wp-*/` contains official WordPress skills for block development, Interactivity API, PHPStan, project triage, and REST API work
-- initialized plugins ignore `.agents/`; refresh installed skills with `npx skills update -p`
 - natural requests such as "sync with upstream project conventions" should route through the `wp-plugin-bp` skill and infer the upgrade workflow
 - when repo structure or workflows change, update `README.md`, the relevant files in `docs/`, and `.agents/skills/wp-plugin-bp/`
 
