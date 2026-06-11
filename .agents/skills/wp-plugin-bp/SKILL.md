@@ -55,7 +55,7 @@ Do not continue with generic WordPress advice when a task applies. The task refe
 
 ## References
 
-Detailed docs are available as `references/doc-*.mdx`. In the source repo these may be symlinks into `docs/`; setup removes packaged `.agents/` from initialized plugins, then asks whether to install the current skills with `npx skills add https://github.com/JUVOJustin/wordpress-plugin-boilerplate --skill=*`.
+Detailed docs are available as `references/doc-*.mdx`. In the source repo these may be symlinks into `docs/`; setup removes packaged `.agents/` from initialized plugins, adds `.agents/` to `.gitignore`, then asks whether to install the current skills with `npx skills add https://github.com/JUVOJustin/wordpress-plugin-boilerplate --skill=*`. Installed skills are managed with `npx skills update -p` instead of being committed downstream.
 
 ## Environment
 

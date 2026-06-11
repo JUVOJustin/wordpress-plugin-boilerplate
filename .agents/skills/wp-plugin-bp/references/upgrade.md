@@ -110,9 +110,10 @@ php .agents/skills/wp-plugin-bp/scripts/plugin-replace.php \
     - loader `add_ability()` usage
     - reference docs to consult only: `references/doc-abilities.mdx`
 ### Agent configuration:
-    - `.agents/skills`
-    - prefer `npx skills add https://github.com/JUVOJustin/wordpress-plugin-boilerplate --skill=*` for the boilerplate skill
-    - add new upstream items, update existing items, ask before removing local-only items
+    - do not copy or diff `.agents/skills` as boilerplate source files in downstream plugins
+    - prefer `npx skills update -p` when skills are already installed
+    - use `npx skills add https://github.com/JUVOJustin/wordpress-plugin-boilerplate --skill=*` when the boilerplate skill is missing
+    - ask before removing local-only skills or changing skill install scope
 ### File-control files:
     - `.distignore`
     - `.gitignore`
