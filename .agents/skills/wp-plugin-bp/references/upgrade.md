@@ -112,7 +112,6 @@ php .agents/skills/wp-plugin-bp/scripts/plugin-replace.php \
 ### Agent configuration:
     - do not copy or diff `.agents/skills` as boilerplate source files in downstream plugins
     - prefer `npx skills update -p` when skills are already installed
-    - use `npx skills add https://github.com/JUVOJustin/wordpress-plugin-boilerplate --skill=*` when the boilerplate skill is missing
     - ask before removing local-only skills or changing skill install scope
 ### File-control files:
     - `.distignore`
