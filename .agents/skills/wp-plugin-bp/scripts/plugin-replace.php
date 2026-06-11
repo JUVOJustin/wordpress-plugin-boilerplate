@@ -401,6 +401,7 @@ function cleanup_setup_artifacts(string $plugin_path): void
 {
 	reset_docs_directory($plugin_path);
 	cleanup_setup_composer_config($plugin_path);
+	ensure_agents_gitignore_entry($plugin_path);
 	remove_file_if_exists($plugin_path . '/setup.php');
 	remove_file_if_exists($plugin_path . '/src/Cli/Setup.php');
 	remove_file_if_exists($plugin_path . '/context7.json');
@@ -553,6 +554,31 @@ function cleanup_setup_composer_config(string $plugin_path): void
 
 	if (false === file_put_contents($composer_json_path, json_encode($composer_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL)) {
 		throw new RuntimeException('Unable to write composer.json.');
+	}
+}
+
+/**
+ * Ignore skills installed after setup so downstream plugins manage them through
+ * the skills CLI instead of committing generated copies.
+ *
+ * @param string $plugin_path Plugin root path.
+ *
+ * @return void
+ */
+function ensure_agents_gitignore_entry(string $plugin_path): void
+{
+	$gitignore_path = $plugin_path . '/.gitignore';
+	$contents       = file_exists($gitignore_path) ? (string) file_get_contents($gitignore_path) : '';
+
+	if (preg_match('#^/?\.agents/?$#m', $contents)) {
+		return;
+	}
+
+	$prefix = '' === $contents ? '' : (str_ends_with($contents, PHP_EOL) ? PHP_EOL : PHP_EOL . PHP_EOL);
+	$entry  = $prefix . '# Agent skills are installed and updated with npx skills.' . PHP_EOL . '.agents/' . PHP_EOL;
+
+	if (false === file_put_contents($gitignore_path, $contents . $entry)) {
+		throw new RuntimeException('Unable to write .gitignore.');
 	}
 }
 

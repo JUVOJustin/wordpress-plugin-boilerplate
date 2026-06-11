@@ -56,7 +56,9 @@ Agents should infer the right task from natural language. For example, "sync thi
 
 The `wp-plugin-bp` skill is the unified router for plugin workflows. Its `SKILL.md` stays small, command-specific files live in `.agents/skills/wp-plugin-bp/references/`, and detailed docs are linked as `doc-*.mdx` references.
 
-The initial Composer package includes `.agents/` so setup can run `wp-plugin-bp/scripts/plugin-replace.php` for identity replacement. Setup removes `.agents/` after replacement, then asks whether to install agent skills for ongoing AI-assisted work.
+The initial Composer package includes `.agents/` so setup can run `wp-plugin-bp/scripts/plugin-replace.php` for identity replacement. Setup removes `.agents/` after replacement, adds `.agents/` to the initialized plugin's `.gitignore`, then asks whether to install agent skills for ongoing AI-assisted work.
+
+Installed skills are intentionally untracked in initialized plugins. Use `npx skills update -p` to refresh project skills from their upstream source.
 
 ### Skills are not available?
 Install the skills from the upstream repository:

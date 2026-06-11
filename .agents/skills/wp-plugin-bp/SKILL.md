@@ -53,10 +53,6 @@ Do not continue with generic WordPress advice when a task applies. The task refe
 
 - `scripts/plugin-replace.php`: deterministic identity replacement and setup cleanup helper. Use this script for initialization and upgrade reference rewrites instead of hand-editing placeholders.
 
-## References
-
-Detailed docs are available as `references/doc-*.mdx`. In the source repo these may be symlinks into `docs/`; setup removes packaged `.agents/` from initialized plugins, then asks whether to install the current skills with `npx skills add https://github.com/JUVOJustin/wordpress-plugin-boilerplate --skill=*`.
-
 ## Environment
 
 If the host has no working environment (ddev,wp-studio etc) use wp-env.
