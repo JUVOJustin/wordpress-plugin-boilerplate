@@ -34,26 +34,18 @@ class BlockRegistrationTest extends WP_UnitTestCase {
 	);
 
 	/**
-	 * Spin up a REST server and authenticate as an administrator.
-	 *
-	 * The /wp/v2/block-types endpoint requires the `edit_posts` capability, so a
-	 * privileged user must be the current user for the request to succeed.
+	 * Every built block must be reported as registered by the REST API.
 	 */
-	public function set_up(): void {
-		parent::set_up();
+	public function test_built_blocks_are_registered(): void {
+		$blocks = $this->discover_blocks();
 
+		// The /wp/v2/block-types endpoint needs a running REST server and the
+		// `edit_posts` capability, so set both up just for this test.
 		wp_set_current_user( self::factory()->user->create( array( 'role' => 'administrator' ) ) );
 
 		global $wp_rest_server;
 		$wp_rest_server = new \WP_REST_Server();
 		do_action( 'rest_api_init' );
-	}
-
-	/**
-	 * Every built block must be reported as registered by the REST API.
-	 */
-	public function test_built_blocks_are_registered(): void {
-		$blocks = $this->discover_blocks();
 
 		$response = rest_do_request( new \WP_REST_Request( 'GET', '/wp/v2/block-types' ) );
 		$this->assertSame( 200, $response->get_status(), 'The /wp/v2/block-types endpoint should respond with HTTP 200.' );
@@ -74,8 +66,13 @@ class BlockRegistrationTest extends WP_UnitTestCase {
 
 	/**
 	 * Every asset declared by a built block must exist on disk so it cannot 404.
+	 *
+	 * Missing assets are collected and asserted once so the test always makes an
+	 * assertion (never "risky"), even for blocks that declare no file-based assets.
 	 */
 	public function test_built_block_assets_exist(): void {
+		$missing = array();
+
 		foreach ( $this->discover_blocks() as $block ) {
 			foreach ( self::ASSET_FIELDS as $field ) {
 				if ( ! isset( $block['metadata'][ $field ] ) ) {
@@ -88,18 +85,18 @@ class BlockRegistrationTest extends WP_UnitTestCase {
 					}
 
 					$path = $block['dir'] . '/' . ltrim( substr( $ref, strlen( 'file:' ) ), './' );
-					$this->assertFileExists(
-						$path,
-						sprintf(
-							'Block "%s" declares %s "%s" but the built file is missing — it will 404 when enqueued. Run `npm run build`.',
-							$block['name'],
-							$field,
-							$ref
-						)
-					);
+					if ( ! file_exists( $path ) ) {
+						$missing[] = sprintf( '%s declares %s "%s"', $block['name'], $field, $ref );
+					}
 				}
 			}
 		}
+
+		$this->assertSame(
+			array(),
+			$missing,
+			"Some built blocks declare assets missing from the build output — they will 404 when enqueued. Run `npm run build`.\n" . implode( "\n", $missing )
+		);
 	}
 
 	/**
