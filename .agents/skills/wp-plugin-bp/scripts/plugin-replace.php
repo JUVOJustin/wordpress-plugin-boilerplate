@@ -129,6 +129,8 @@ function apply_replacements(string $plugin_path, string $plugin_name, string $pl
 				'.*\.json',
 				'.*\.github\/.*\.(yml|md)',
 				'.*\.neon',
+				'.*\.po',
+				'.*\.pot',
 			),
 			$md_patterns
 		)
@@ -189,12 +191,15 @@ function apply_replacements(string $plugin_path, string $plugin_name, string $pl
 				'.*\.php',
 				'.*README\.txt',
 				'.*\.github\/.*\.(yml|md)',
+				'.*\.po',
+				'.*\.pot',
 			),
 			$md_patterns
 		)
 	);
 
 	rename_template_files($plugin_path, $plugin_namespace, $plugin_slug, $source_namespace, $source_slug);
+	rename_translation_files($plugin_path, $plugin_slug, $source_slug);
 	remove_setup_docs($plugin_path);
 }
 
@@ -317,6 +322,49 @@ function rename_template_files(string $plugin_path, string $plugin_namespace, st
 {
 	rename_if_exists($plugin_path . "/src/{$source_namespace}.php", $plugin_path . "/src/{$plugin_namespace}.php");
 	rename_if_exists($plugin_path . "/{$source_slug}.php", $plugin_path . "/{$plugin_slug}.php");
+}
+
+/**
+ * Rename translation files in languages/ that are prefixed with the source slug.
+ *
+ * Covers the POT template ("{slug}.pot") plus any shipped locale catalogs
+ * ("{slug}-{locale}.po|mo|json|l10n.php"). WordPress resolves translations by
+ * the "{text-domain}-{locale}" filename convention, so these must follow the
+ * new slug or they will never load.
+ *
+ * @param string $plugin_path Plugin root path.
+ * @param string $plugin_slug Plugin slug.
+ * @param string $source_slug Source slug currently used in file names.
+ *
+ * @return void
+ */
+function rename_translation_files(string $plugin_path, string $plugin_slug, string $source_slug): void
+{
+	if ($plugin_slug === $source_slug) {
+		return;
+	}
+
+	$languages_path = $plugin_path . '/languages';
+	if (! is_dir($languages_path)) {
+		return;
+	}
+
+	foreach (new DirectoryIterator($languages_path) as $item) {
+		if ($item->isDot() || ! $item->isFile()) {
+			continue;
+		}
+
+		$filename = $item->getFilename();
+
+		// Match "{slug}.<ext>" or "{slug}-<rest>" so we never touch an unrelated
+		// file that merely starts with the same characters.
+		if ($filename !== $source_slug && 0 !== strpos($filename, $source_slug . '.') && 0 !== strpos($filename, $source_slug . '-')) {
+			continue;
+		}
+
+		$new_filename = $plugin_slug . substr($filename, strlen($source_slug));
+		rename_if_exists($item->getPathname(), $languages_path . '/' . $new_filename);
+	}
 }
 
 /**
