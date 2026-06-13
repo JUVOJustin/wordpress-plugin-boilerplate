@@ -21,6 +21,12 @@ To make this work the `npm run start` and `npm run build` scripts make use of th
 
 Luckily this is all done for you automatically! No need for any manual registration or code.
 
+## Block loading is guarded by a test
+
+Because registration is fully automatic, it is easy to break loading without an obvious error (forgetting `npm run build`, an invalid `block.json`, or referencing an asset file that was never built). `tests/php/BlockRegistrationTest.php` guards against this generically: it discovers **every** block in `build/Blocks` and asserts each one is reported by the editor-facing `/wp/v2/block-types` REST endpoint and that every script/style declared in its `block.json` exists in the build output.
+
+The test needs no changes when you add or rename blocks, and is skipped when no blocks are built. Run it with `npm run test:php` (after `npm run build`).
+
 ## Using webpack-entrypoints styles in the editor
 There may be situations where you want to use styles defined in the `webpack-entrypoints` files in the block editor.
 For example if you want the styling of your block to be the same on frontend and backend but also requires e.g. variables from the plugins global styles.

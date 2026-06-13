@@ -40,7 +40,7 @@ This plugin is a modern WordPress plugin with strict conventions and automated w
 
 ### Feature Quick Reference
 
-- **Blocks**: Run `npm run create-block`. Use the `wp-plugin-bp` skill for block guidance.
+- **Blocks**: Run `npm run create-block`. Registration is automatic; `tests/php/BlockRegistrationTest.php` generically guards that every built block is loaded (via `/wp/v2/block-types`) and its assets exist. Use the `wp-plugin-bp` skill for block guidance.
 - **Abilities API**: Implement interfaces in `src/Abilities/`, register via Loader. Use the `wp-plugin-bp` skill for ability guidance.
 - **i18n**: Extract with `composer run i18n:extract`, compile with `composer run i18n:compile`. Use the `wp-plugin-bp` skill for translation work.
 - **wp-env**: Start with `npm run env:start`. Use the `wp-plugin-bp` skill when tests are involved.
