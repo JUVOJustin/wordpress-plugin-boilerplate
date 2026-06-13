@@ -287,6 +287,7 @@ class Loader {
 					'meta'                => array(
 						'annotations'  => $ability_class::get_annotations(),
 						'show_in_rest' => $ability_class::show_rest(),
+						'mcp'          => $ability_class::get_mcp(),
 					),
 				)
 			);
