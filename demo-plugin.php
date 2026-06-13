@@ -45,6 +45,30 @@ define( 'DEMO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
 /**
+ * Public version constant for companion plugins to detect this plugin and
+ * version-gate against it. Mirrors Demo_Plugin::PLUGIN_VERSION, the single
+ * source of truth.
+ */
+if ( ! defined( 'DEMO_PLUGIN_VERSION' ) ) {
+	define( 'DEMO_PLUGIN_VERSION', Demo_Plugin::PLUGIN_VERSION );
+}
+
+/**
+ * Fires after this plugin has loaded and registered its hooks, so companion
+ * plugins can attach to its extension points. Hooked to `plugins_loaded` to
+ * stay independent of plugin load order.
+ *
+ * @param string $version The current plugin version.
+ */
+add_action(
+	'plugins_loaded',
+	static function (): void {
+		do_action( 'demo_plugin_loaded', Demo_Plugin::PLUGIN_VERSION );
+	},
+	0
+);
+
+/**
  * The code that runs during plugin activation.
  */
 function demo_plugin_activate(): void {

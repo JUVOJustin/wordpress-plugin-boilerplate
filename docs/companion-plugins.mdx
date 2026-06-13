@@ -1,0 +1,71 @@
+---
+title: Companion Plugins
+description: Extend Demo Plugin from a separate plugin using the load handshake and version constant.
+---
+
+The plugin exposes a small, stable surface so a **companion plugin** (for
+example a WPML or WooCommerce integration shipped as its own plugin) can attach
+to it safely, without depending on plugin load order or autoloading the core
+plugin's classes.
+
+Two primitives, both defined in the bootstrap file:
+
+- the `demo_plugin_loaded` **action** — the event "core is ready, attach now"
+- the `DEMO_PLUGIN_VERSION` **constant** — a cheap presence + version check
+
+## The load action
+
+```php title="demo-plugin.php"
+add_action(
+	'plugins_loaded',
+	static function (): void {
+		do_action( 'demo_plugin_loaded', Demo_Plugin::PLUGIN_VERSION );
+	},
+	0
+);
+```
+
+It fires on `plugins_loaded` at priority `0`, and passes the current plugin
+version as its only argument.
+
+## The version constant
+
+```php title="demo-plugin.php"
+if ( ! defined( 'DEMO_PLUGIN_VERSION' ) ) {
+	define( 'DEMO_PLUGIN_VERSION', Demo_Plugin::PLUGIN_VERSION );
+}
+```
+
+`DEMO_PLUGIN_VERSION` is a global mirror of `Demo_Plugin::PLUGIN_VERSION`, which
+stays the single source of truth. It is the *public* version contract — the
+convention WordPress extension developers expect (cf. `WC_VERSION`,
+`ELEMENTOR_VERSION`) — so a companion can presence-check and version-gate with a
+cheap `defined()` / `version_compare()` against a stable name, without coupling
+to the internal `Demo_Plugin` class, which core is free to rename or restructure.
+
+## Writing a companion plugin
+
+```php title="acme-wpml-integration.php"
+// Initialize once the core plugin signals it is fully loaded.
+add_action( 'demo_plugin_loaded', 'acme_wpml_boot' );
+
+function acme_wpml_boot( string $version ): void {
+	// Version-gate against the core plugin's public API.
+	if ( version_compare( $version, '2.0.0', '<' ) ) {
+		return;
+	}
+
+	// ...attach to the core plugin's extension points here.
+}
+```
+
+A companion that initializes *after* `plugins_loaded` priority `0` (rare, but
+e.g. during late init) can detect core synchronously via the constant and the
+`did_action()` guard instead of waiting:
+
+```php title="acme-wpml-integration.php"
+if ( did_action( 'demo_plugin_loaded' )
+	&& version_compare( DEMO_PLUGIN_VERSION, '2.0.0', '>=' ) ) {
+	acme_wpml_boot( DEMO_PLUGIN_VERSION );
+}
+```
