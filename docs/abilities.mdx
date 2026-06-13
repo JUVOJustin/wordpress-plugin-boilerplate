@@ -144,6 +144,12 @@ $this->loader->add_ability( Abilities\My_Ability::class );
 
 Categories are automatically registered via the Loader when abilities reference them.
 
+### Registration is guarded by a test
+
+Because registration is manual, the easy mistake is writing an ability class but forgetting the `add_ability()` call — it then silently does nothing. `tests/php/AbilityRegistrationTest.php` guards against this: it discovers **every** class implementing `Ability_Interface` (by reflection, so it survives the setup rename) and asserts each one — and its category — is present in the live Abilities API registry (`wp_get_ability()` / `wp_get_ability_category()`).
+
+The test needs no changes when you add abilities, and is skipped when none exist or on WordPress &lt; 6.9. Run it with `npm run test:php`.
+
 ## Ability Interface Reference
 
 | Method | Returns | Purpose |

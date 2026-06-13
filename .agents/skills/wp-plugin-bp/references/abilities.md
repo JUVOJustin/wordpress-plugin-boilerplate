@@ -9,3 +9,4 @@ Implement or update WordPress Abilities API code.
 3. Register abilities through the Loader with `add_ability()`.
 4. Do not register hooks in constructors.
 5. Keep schema, permissions, and callbacks close to the owning ability class.
+6. Verify with `npm run test:php` — `tests/php/AbilityRegistrationTest.php` checks every `Ability_Interface` implementation (and its category) is registered. No edits needed when adding abilities.
