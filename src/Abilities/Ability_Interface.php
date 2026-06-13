@@ -93,6 +93,18 @@ interface Ability_Interface {
 	public static function show_rest(): bool;
 
 	/**
+	 * Get the MCP (Model Context Protocol) exposure configuration
+	 *
+	 * Registered as the ability's `meta.mcp` for the WordPress MCP Adapter. Set `public` to
+	 * `true` to expose the ability on the adapter's default server; the default empty array
+	 * keeps it off.
+	 *
+	 * @return array{public?: bool} Configuration registered as the ability's `meta.mcp`.
+	 * @see https://developer.wordpress.org/news/2026/02/from-abilities-to-ai-agents-introducing-the-wordpress-mcp-adapter/ MCP Adapter.
+	 */
+	public static function get_mcp(): array;
+
+	/**
 	 * Check if the current user can execute this ability
 	 *
 	 * @param mixed $input Optional. The input data for the ability.
