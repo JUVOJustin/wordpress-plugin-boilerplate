@@ -45,27 +45,20 @@ define( 'DEMO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
 /**
- * Expose the plugin version as a global constant: the public, convention-following
- * version contract (cf. WC_VERSION, ELEMENTOR_VERSION). It lets companion plugins
- * presence-check and version-gate with a cheap defined() / version_compare()
- * against a stable name, without coupling to the internal Demo_Plugin class, which
- * core is free to rename or restructure. Derived from the single source of truth,
- * Demo_Plugin::PLUGIN_VERSION, to avoid version drift.
+ * Public version constant for companion plugins to detect this plugin and
+ * version-gate against it. Mirrors Demo_Plugin::PLUGIN_VERSION, the single
+ * source of truth.
  */
 if ( ! defined( 'DEMO_PLUGIN_VERSION' ) ) {
 	define( 'DEMO_PLUGIN_VERSION', Demo_Plugin::PLUGIN_VERSION );
 }
 
 /**
- * Signal that the plugin is fully loaded so companion plugins can attach to its
- * extension hooks. Fired on `plugins_loaded` (priority 0) so the handshake is
- * robust to plugin load order: every active plugin has been included - and had a
- * chance to register its listener - before the action fires, regardless of which
- * plugin file WordPress includes first. By the time `plugins_loaded` runs,
- * demo_plugin_run() has already executed and registered the plugin's hooks during
- * the include phase.
+ * Fires after this plugin has loaded and registered its hooks, so companion
+ * plugins can attach to its extension points. Hooked to `plugins_loaded` to
+ * stay independent of plugin load order.
  *
- * @param string $version The current plugin version (Demo_Plugin::PLUGIN_VERSION).
+ * @param string $version The current plugin version.
  */
 add_action(
 	'plugins_loaded',
