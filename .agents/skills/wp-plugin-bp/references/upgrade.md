@@ -101,6 +101,9 @@ php .agents/skills/wp-plugin-bp/scripts/plugin-replace.php \
    - asset enqueueing via entry points
    - block registration
    - loader registration patterns
+### Bootstrap file (the root `@wordpress-plugin` file):
+   - companion-plugin handshake: a `<text_domain_snake>_loaded` action fired on `plugins_loaded` (priority 0), passing the plugin version
+   - the global `<NAMESPACE_UPPER>_VERSION` constant that mirrors the main class `PLUGIN_VERSION` (keep it as the single source of truth; do not add a second version literal)
 ### i18n workflow:
    - `i18n:extract`
    - `i18n:compile`
