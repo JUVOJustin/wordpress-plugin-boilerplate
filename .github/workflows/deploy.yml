@@ -49,7 +49,10 @@ jobs:
           php-version: '8.2'
           tools: wp-cli
 
-      - name: Install latest version of dist-archive-command
+      # Keep v3.1.0 on the host because this version uses the external zip binary,
+      # which is not available in wp-env. When WP-CLI 3.0.0 is available in wp-env,
+      # move bundling inline there with dist-archive-command:@stable, which uses PHP ZipArchive.
+      - name: Install dist-archive-command on host
         run: wp package install wp-cli/dist-archive-command:v3.1.0
 
       - name: Set env
