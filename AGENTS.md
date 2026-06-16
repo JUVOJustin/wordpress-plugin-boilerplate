@@ -18,7 +18,7 @@ This plugin is a modern WordPress plugin with strict conventions and automated w
 
 - **Assets**: Place in `resources/admin/` and `resources/frontend/`.
 - **Build**: `@wordpress/scripts` handles compilation. Entry points in `webpack.config.js`.
-- **Scripts**: `npm run start` (watch), `npm run build` (production). Both pass `--experimental-modules` so the Interactivity API ESM module build (`viewScriptModule`/`view.js`) is produced; `extendConfig` in `webpack.config.js` leaves that config untouched.
+- **Scripts**: `npm run start` (watch), `npm run build` (production).
 
 ### Quality Assurance
 
