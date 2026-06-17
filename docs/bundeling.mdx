@@ -21,6 +21,12 @@ The project uses `@wordpress/scripts` (wp-scripts) for bundling and compiling fr
 | `npm run format` | Format JavaScript files using Prettier |
 | `npm run packages-update` | Update WordPress packages to latest versions |
 
+### Interactivity API modules
+
+`start` and `build` pass `--experimental-modules`, which is required for the [Interactivity API](https://developer.wordpress.org/block-editor/reference-guides/interactivity-api/). With this flag, wp-scripts emits **two** webpack configs &mdash; the classic script build plus an ESM module build that compiles block `viewScriptModule` (`view.js`) modules. Without it, those modules are never built and interactive blocks silently ship without their frontend behavior.
+
+The `extendConfig` helper in `webpack.config.js` augments only the classic script build (jQuery shim + custom entries) and passes the ESM module config through untouched, so the module build stays clean. The flag is harmless when the plugin has no interactive blocks.
+
 ## Directory Structure
 
 The `resources/` folder contains source assets and is excluded from distribution. The `build/` folder contains compiled assets.
