@@ -4,6 +4,8 @@ Sync this WordPress plugin with the latest upstream project conventions. Upgrade
 
 ## Confirmation Rules
 
+The upgrade report flags which areas require confirmation; these rules are the policy behind that flag.
+
 Ask for confirmation before:
 
 - Replacing or significantly restructuring files such as `Loader.php` or the main plugin class
@@ -69,9 +71,25 @@ php .agents/skills/wp-plugin-bp/scripts/plugin-replace.php \
    ```
 2. Determine the target plugin identity from the plugin being updated.
 3. Run the replacement script against the cloned reference before comparing anything.
-4. Detemine parts to upgrade. If user did not specifiy upgrade all.
-5. Apply upgrade. Per part use one subagent.
-6. Verify and clean up:
+4. Run the automated upgrade check to generate the comparison report:
+   ```bash
+   node tmp/plugin-ref/.agents/skills/wp-plugin-bp/scripts/upgrade-check.js \
+     --target . --ref tmp/plugin-ref
+   ```
+   Pass `--ref` the path where you actually cloned the reference; it accepts any
+   absolute or relative path, so the clone does not have to live in `tmp/plugin-ref`.
+   The script compares every upgradable part against the rewritten reference and prints a
+   Markdown report to stdout: dependency/version mismatch tables, script mismatches, and
+   per-file diffs, with each area marked `clean`, `review`, `not-applicable`, or `skipped`.
+   Old plugins missing most areas are handled gracefully (absent files are classified, not
+   errors). Use `--max-diff-lines` to cap diff size. Read the report's "How to act on this
+   report" section: it lists exactly which areas need review and gives a ready-to-use task
+   for each subagent.
+5. Determine parts to upgrade. Default to every area the report marked `review`; if the
+   user named a scope, restrict to those areas.
+6. Apply upgrade. Per part marked `review`, use one subagent, seeded with that area's
+   diffs/mismatches from the report and the reference docs the report lists for it.
+7. Verify and clean up:
  - run `composer install` and `npm install` if dependency files changed
  - run `npm run build`
  - run `composer run phpstan` and `composer run phpcs`
@@ -79,64 +97,19 @@ php .agents/skills/wp-plugin-bp/scripts/plugin-replace.php \
  - run `npm run test:php` after starting wp-env when PHPUnit behavior changed
  - remove `tmp/plugin-ref`
 
-## Upgradable parts
-### PHP and QA:
-   - `composer.json`
-   - `phpcs.xml`
-   - `phpstan.neon`
-   - reference docs to consult only: `references/doc-i18n.mdx`, `references/doc-bundling.mdx`
-### JS and bundling:
-   - `package.json`
-   - `webpack.config.js`
-   - reference docs to consult only: `references/doc-bundling.mdx`, `references/doc-wp-env.mdx`, `references/doc-create-blocks.mdx`
-### GitHub Actions:
-   - `.github/workflows`
-   - key workflows: setup, analysis, tests, deploy, release, translation compilation
-   - reference docs to consult only: `references/doc-github-actions.mdx`
-### `src/Loader.php`:
-   - shortcode registration
-   - WP-CLI registration
-   - Abilities API registration
-### Main plugin class:
-   - asset enqueueing via entry points
-   - block registration
-   - loader registration patterns
-### Bootstrap file (the root `@wordpress-plugin` file):
-   - companion-plugin handshake: a `<text_domain_snake>_loaded` action fired on `plugins_loaded` (priority 0), passing the plugin version
-   - the global `<NAMESPACE_UPPER>_VERSION` constant that mirrors the main class `PLUGIN_VERSION` (keep it as the single source of truth; do not add a second version literal)
-### i18n workflow:
-   - `i18n:extract`
-   - `i18n:compile`
-   - generated language file expectations
-### Abilities API:
-    - interfaces under `src/Abilities/`
-    - loader `add_ability()` usage
-    - reference docs to consult only: `references/doc-abilities.mdx`
-### Agent configuration:
-    - do not copy or diff `.agents/skills` as boilerplate source files in downstream plugins
-    - prefer `npx skills update -p` when skills are already installed
-    - ask before removing local-only skills or changing skill install scope
-### File-control files:
-    - `.distignore`
-    - `.gitignore`
-### Present findings and apply changes incrementally:
-    - categorize changes by whether confirmation is required
-    - avoid replacing whole files when a scoped patch is enough
-    - adapt text domain, namespace, paths, and plugin-specific behavior after copying
+## Per-area guidance
 
-## Reference Documentation Map
+`upgrade-check.js` is the source of truth for the upgradable parts. For every area it marks
+`review`, the report inlines the files and diffs, the reference docs to consult, whether
+confirmation is required, and a ready-to-use subagent task. Follow that task — there is no
+separate area checklist to keep in sync here. Areas marked `clean`, `not-applicable`, or
+`skipped` need no work.
 
-Load only the docs needed for the current comparison. These files explain upstream conventions; they are not files to copy or sync into the target plugin's `docs/` directory.
+When applying any area:
 
-| Reference | Covers |
-| --- | --- |
-| `references/doc-abilities.mdx` | Abilities API |
-| `references/doc-bundling.mdx` | wp-scripts bundling, entry points, enqueueing |
-| `references/doc-i18n.mdx` | Translation workflow |
-| `references/doc-create-blocks.mdx` | Block scaffolding and registration |
-| `references/doc-wp-env.mdx` | wp-env |
-| `references/doc-testing.mdx` | PHPUnit application testing |
-| `references/doc-github-actions.mdx` | CI/CD workflows |
-| `references/doc-acf.mdx` | ACF integration |
-| `references/doc-action-scheduler.mdx` | Action Scheduler |
-| `references/doc-sentry.mdx` | Sentry integration |
+- Prefer scoped patches over replacing whole files.
+- After copying upstream code, adapt namespace, text domain, paths, and plugin-specific behavior.
+- Never diff or copy `.agents/skills` as boilerplate source; refresh with `npx skills update -p` and ask before removing local-only skills.
+
+The reference docs the report names live under `references/` (e.g. `references/doc-bundling.mdx`).
+Load only the ones the report points to for the areas you are changing.
