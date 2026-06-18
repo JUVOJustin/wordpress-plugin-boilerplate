@@ -107,8 +107,38 @@ jobs:
           $COMPOSER_AUTH
           EOF
 
+      # Cache the wp-env Docker images between runs. wp-env has no native cache
+      # hook, so we cache at the Docker daemon level via save/load. The post-step
+      # of actions/cache only uploads on a miss, so the "Save" step below
+      # populates the directory whenever the cache was not hit.
+      - name: Cache wp-env Docker images
+        id: wp-env-docker-cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.wp-env-docker-cache
+          key: wp-env-docker-${{ runner.os }}-${{ hashFiles('.wp-env.json', 'package-lock.json') }}
+
+      - name: Load cached wp-env Docker images
+        if: steps.wp-env-docker-cache.outputs.cache-hit == 'true'
+        run: |
+          for img in ~/.wp-env-docker-cache/*.tar; do
+            [ -e "$img" ] || continue
+            docker load -i "$img"
+          done
+
       - name: Start wp-env
         run: npm run env:start
+
+      - name: Save wp-env Docker images for next run
+        if: steps.wp-env-docker-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/.wp-env-docker-cache
+          docker images --format '{{.Repository}}:{{.Tag}}' \
+            | grep -iE 'wordpress|mariadb|mysql|wp-env|cli' \
+            | while read -r image; do
+                safe=$(echo "$image" | tr '/:' '__')
+                docker save "$image" -o ~/.wp-env-docker-cache/"$safe".tar
+              done
 
       - name: Run application tests
         run: npm run test:php
