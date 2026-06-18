@@ -52,6 +52,7 @@ Do not continue with generic WordPress advice when a task applies. The task refe
 ## Skill Scripts
 
 - `scripts/plugin-replace.php`: deterministic identity replacement and setup cleanup helper. Use this script for initialization and upgrade reference rewrites instead of hand-editing placeholders.
+- `scripts/upgrade-check.js`: automated upgrade comparison. Run with `node` after `plugin-replace.php` has rewritten the cloned reference; it diffs every upgradable area, builds dependency/script mismatch tables, tolerates plugins missing most areas, and prints a report telling you which areas need review and how to fan out subagents. See [references/upgrade.md](references/upgrade.md).
 
 ## Environment
 
