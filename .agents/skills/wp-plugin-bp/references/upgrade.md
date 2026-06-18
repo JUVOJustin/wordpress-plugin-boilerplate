@@ -85,6 +85,19 @@ php .agents/skills/wp-plugin-bp/scripts/plugin-replace.php \
    errors). Use `--max-diff-lines` to cap diff size. Read the report's "How to act on this
    report" section: it lists exactly which areas need review and gives a ready-to-use task
    for each subagent.
+
+   **Monorepos:** if the plugin lives in a monorepo where some areas are owned at the repo
+   root rather than per-plugin (commonly CI workflows and ignore files, sometimes renamed
+   with a per-repo prefix), pass `--external <area-keys>` so the report does not flag those
+   upstream files as "missing → adopt". Example:
+   ```bash
+   node tmp/plugin-ref/.agents/skills/wp-plugin-bp/scripts/upgrade-check.js \
+     --target . --ref tmp/plugin-ref --external github-actions,file-control
+   ```
+   Those areas are reported as `external`: the report lists the upstream files to verify at
+   the monorepo root and surfaces any genuine plugin-local overrides to reconcile, instead of
+   proposing local copies. Valid keys: `php-qa`, `js-bundling`, `github-actions`, `loader`,
+   `main-class`, `bootstrap`, `i18n`, `abilities`, `file-control`.
 5. Determine parts to upgrade. Default to every area the report marked `review`; if the
    user named a scope, restrict to those areas.
 6. Apply upgrade. Per part marked `review`, use one subagent, seeded with that area's

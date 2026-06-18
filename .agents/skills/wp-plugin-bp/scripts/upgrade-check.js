@@ -22,6 +22,7 @@
  *
  * Usage:
  *   node upgrade-check.js [--target <dir>] [--ref <dir>] [--max-diff-lines <n>]
+ *                         [--external <area-keys>]
  *
  *   --target           Plugin being upgraded. Default: current directory.
  *   --ref              Path to the rewritten upstream reference clone. Accepts
@@ -29,6 +30,13 @@
  *                      to live in the default location.
  *                      Default: <target>/tmp/plugin-ref
  *   --max-diff-lines   Truncate each file diff to N lines. Default: 160.
+ *   --external         Comma-separated area keys that are managed OUTSIDE the
+ *                      plugin (e.g. a monorepo root owns CI workflows or ignore
+ *                      files). Those areas are reported as `external`: upstream
+ *                      files are listed to verify at that location instead of
+ *                      being flagged "missing → adopt". Valid keys: php-qa,
+ *                      js-bundling, github-actions, loader, main-class, bootstrap,
+ *                      i18n, abilities, file-control.
  *   --help             Print this help.
  *
  * Exit codes: 0 = report produced (regardless of findings), 2 = fatal setup
@@ -53,6 +61,18 @@ function main() {
 		process.exit(0);
 	}
 
+	// Validate args before touching the filesystem.
+	const externalKeys = new Set(opts.external || []);
+	// Skipped areas (e.g. agents) can't be externally-managed — exclude them.
+	const validKeys = new Set(AREAS.filter((a) => !a.skip).map((a) => a.key));
+	const unknown = [...externalKeys].filter((k) => !validKeys.has(k));
+	if (unknown.length) {
+		fatal(
+			`Unknown --external area key(s): ${unknown.join(', ')}\n` +
+				`Valid keys: ${[...validKeys].join(', ')}`
+		);
+	}
+
 	const target = path.resolve(opts.target || process.cwd());
 	const ref = path.resolve(opts.ref || path.join(target, 'tmp', 'plugin-ref'));
 
@@ -75,6 +95,7 @@ function main() {
 		ref,
 		maxDiffLines: opts.maxDiffLines,
 		gitAvailable: detectGit(),
+		externalKeys,
 	};
 
 	const identity = detectIdentity(target);
@@ -247,6 +268,15 @@ function evaluateArea(area, ctx) {
 		if (custom.manifests) result.manifests.push(...custom.manifests);
 		if (typeof custom.applicable === 'boolean') result.customApplicable = custom.applicable;
 		if (typeof custom.needsReview === 'boolean') result.customNeedsReview = custom.needsReview;
+	}
+
+	// Areas the operator declared as managed outside the plugin (e.g. a monorepo
+	// root owns CI workflows or ignore files) are not adopted locally. We keep the
+	// computed file comparisons so genuine local overrides still surface, but the
+	// status becomes `external` so missing upstream files don't read as "adopt".
+	if (ctx.externalKeys.has(area.key)) {
+		result.status = 'external';
+		return result;
 	}
 
 	result.status = rollupStatus(result);
@@ -489,6 +519,10 @@ function renderMarkdown(report) {
 			L.push('');
 			continue;
 		}
+		if (a.status === 'external') {
+			L.push(...renderExternalArea(a));
+			continue;
+		}
 		L.push(`## ${a.title} — ${statusBadge(a.status)}`);
 		L.push('');
 		if (a.confirmation) L.push('> ⚠️ Confirmation required before applying changes in this area.');
@@ -600,6 +634,45 @@ function renderFile(f) {
 	return L;
 }
 
+// An externally-managed area (declared via --external): list the upstream files
+// to verify at the monorepo root, plus any genuine local copies that drifted.
+function renderExternalArea(a) {
+	const L = [];
+	L.push(`## ${a.title} — ${statusBadge(a.status)}`);
+	L.push('');
+	L.push(
+		'> Marked external via `--external`: managed outside the plugin (e.g. a monorepo root), not per-plugin. ' +
+			'Verify against that location; do not adopt plugin-local copies.'
+	);
+	if (a.refs.length) L.push(`> Reference docs to consult: ${a.refs.map((r) => `\`${r}\``).join(', ')}`);
+	L.push('');
+
+	for (const n of a.notes) L.push(`- ${n}`);
+	if (a.notes.length) L.push('');
+
+	const upstream = a.files.filter((f) => f.status === 'missing-in-target');
+	const localDiffs = a.files.filter((f) => f.status === 'differs' || f.status === 'only-in-target');
+	const identical = a.files.filter((f) => f.status === 'identical');
+
+	if (upstream.length) {
+		L.push('Upstream provides these — confirm the external location has current equivalents (they may be renamed):');
+		L.push('');
+		for (const f of upstream) L.push(`- \`${f.rel}\``);
+		L.push('');
+	}
+	if (localDiffs.length) {
+		L.push('Plugin-local copies exist — reconcile only if they are genuine per-plugin overrides:');
+		L.push('');
+		for (const f of localDiffs) L.push(...renderFile(f));
+	}
+	for (const m of a.manifests) L.push(...renderManifest(m));
+	if (identical.length) {
+		L.push(`_Identical local copies: ${identical.map((f) => `\`${f.rel}\``).join(', ')}_`);
+		L.push('');
+	}
+	return L;
+}
+
 function renderNextSteps(report) {
 	const L = [];
 	L.push('---');
@@ -607,37 +680,65 @@ function renderNextSteps(report) {
 	L.push('## How to act on this report (instructions for the AI)');
 	L.push('');
 	const review = report.areas.filter((a) => a.status === 'review');
-	if (!review.length) {
+	const external = report.areas.filter((a) => a.status === 'external');
+
+	if (!review.length && !external.length) {
 		L.push(
 			'No areas need review — your plugin matches the upstream reference. Run the verification steps in `references/upgrade.md` and remove `tmp/plugin-ref`.'
 		);
 		L.push('');
 		return L;
 	}
-	L.push(
-		`Spawn ONE subagent per area marked **review** below, in parallel (single message, multiple Agent calls). ` +
-			`Each subagent owns exactly one area: it reads the diffs/mismatches in this report, reads the listed reference docs, ` +
-			`then proposes (and, once confirmed where required, applies) scoped patches — never wholesale file replacement. ` +
-			`After copying upstream code, adapt namespace, text domain, paths, and plugin-specific behavior.`
-	);
-	L.push('');
+
+	if (review.length) {
+		L.push(
+			`Spawn ONE subagent per area marked **review** below, in parallel (single message, multiple Agent calls). ` +
+				`Each subagent owns exactly one area: it reads the diffs/mismatches in this report, reads the listed reference docs, ` +
+				`then proposes (and, once confirmed where required, applies) scoped patches — never wholesale file replacement. ` +
+				`After copying upstream code, adapt namespace, text domain, paths, and plugin-specific behavior.`
+		);
+		L.push('');
+	} else {
+		L.push('No areas require local changes.');
+		L.push('');
+	}
+
 	L.push('Hard rules:');
 	L.push('- Do NOT diff or copy `.agents/skills`; refresh with `npx skills update -p` instead.');
 	L.push('- Confirm with the user before changing areas flagged "Confirmation required".');
 	L.push('- Areas marked **not-applicable** are absent in both plugins — skip them.');
-	L.push('');
-	L.push(`Dispatch ${review.length} subagent(s):`);
-	L.push('');
-	for (const a of review) {
-		L.push(`### Subagent: ${a.title}${a.confirmation ? ' (confirmation required)' : ''}`);
-		const docs = a.refs.length ? a.refs.join(', ') : 'none';
+	if (external.length) {
 		L.push(
-			`Compare and reconcile the "${a.title}" area between this plugin and \`${report.ref}\`. ` +
-				`${a.hint} Reference docs to read first: ${docs}. ` +
-				`Use the mismatches and diffs for this area from the upgrade report as your starting point.`
+			'- Areas marked **external** are managed outside the plugin (monorepo root). Do NOT add plugin-local copies; verify the external location instead.'
+		);
+	}
+	L.push('');
+
+	if (review.length) {
+		L.push(`Dispatch ${review.length} subagent(s):`);
+		L.push('');
+		for (const a of review) {
+			L.push(`### Subagent: ${a.title}${a.confirmation ? ' (confirmation required)' : ''}`);
+			const docs = a.refs.length ? a.refs.join(', ') : 'none';
+			L.push(
+				`Compare and reconcile the "${a.title}" area between this plugin and \`${report.ref}\`. ` +
+					`${a.hint} Reference docs to read first: ${docs}. ` +
+					`Use the mismatches and diffs for this area from the upgrade report as your starting point.`
+			);
+			L.push('');
+		}
+	}
+
+	if (external.length) {
+		L.push('### Externally-managed areas (monorepo)');
+		L.push(
+			`${external.length} area(s) were marked \`--external\`: ${external.map((a) => a.title).join(', ')}. ` +
+				`Do NOT add plugin-local copies of these. Instead verify the monorepo root (or wherever the area is owned) ships current equivalents — ` +
+				`often renamed with a per-repo prefix (e.g. \`<prefix>-deploy.yml\` for \`deploy.yml\`) — and reconcile only genuine plugin-local overrides flagged in each area's section above.`
 		);
 		L.push('');
 	}
+
 	return L;
 }
 
@@ -655,6 +756,8 @@ function statusBadge(status) {
 			return '⚪ not-applicable';
 		case 'skipped':
 			return '⏭️ skipped';
+		case 'external':
+			return '🔵 external';
 		default:
 			return status;
 	}
@@ -670,6 +773,14 @@ function areaOneLiner(a) {
 	if (a.status === 'skipped') return 'Not compared (agent config).';
 	if (a.status === 'not-applicable') return 'Absent in both plugins.';
 	if (a.status === 'clean') return 'Matches upstream.';
+	if (a.status === 'external') {
+		const upstream = a.files.filter((f) => f.status === 'missing-in-target').length;
+		const local = a.files.filter((f) => f.status === 'differs' || f.status === 'only-in-target').length;
+		const bits = ['managed externally; verify at monorepo root'];
+		if (upstream) bits.push(`${upstream} upstream file(s) to confirm`);
+		if (local) bits.push(`${local} local copy/copies to reconcile`);
+		return bits.join('; ');
+	}
 	const bits = [];
 	const diffs = a.files.filter((f) => f.status === 'differs').length;
 	const missing = a.files.filter((f) => f.status === 'missing-in-target').length;
@@ -806,6 +917,12 @@ function parseArgs(argv) {
 			case '--max-diff-lines':
 				opts.maxDiffLines = parseInt(next(), 10) || 160;
 				break;
+			case '--external':
+				opts.external = next()
+					.split(',')
+					.map((s) => s.trim())
+					.filter(Boolean);
+				break;
 			case '--help':
 			case '-h':
 				opts.help = true;
@@ -826,12 +943,16 @@ function printHelp() {
 			'with the target plugin identity.',
 			'',
 			'Usage:',
-			'  node upgrade-check.js [--target <dir>] [--ref <dir>] [--max-diff-lines <n>]',
+			'  node upgrade-check.js [--target <dir>] [--ref <dir>] [--max-diff-lines <n>] [--external <keys>]',
 			'',
 			'  --target           Plugin being upgraded (default: cwd)',
 			'  --ref              Path to the rewritten upstream reference clone;',
 			'                     any absolute or relative path (default: <target>/tmp/plugin-ref)',
 			'  --max-diff-lines   Truncate each file diff to N lines (default: 160)',
+			'  --external         Comma-separated area keys managed outside the plugin (monorepo root):',
+			'                     reported as `external` (verify there, do not adopt locally).',
+			'                     Keys: php-qa, js-bundling, github-actions, loader, main-class,',
+			'                     bootstrap, i18n, abilities, file-control',
 			'  --help             Show this help',
 			'',
 		].join('\n')

@@ -58,4 +58,28 @@ When adding new primitives, patterns, or documentation to this plugin:
 2. Update @AGENTS.md with high-level reference
 <!-- BOILERPLATE-DOCS-START -->
 3. Update @.agents/skills/wp-plugin-bp so downstream plugins can adopt changes
+4. Keep the upgrade checker in sync — `@.agents/skills/wp-plugin-bp/scripts/upgrade-check.js`.
+   This script is what downstream plugins run to diff themselves against this boilerplate, so
+   its `AREAS` array must keep describing **what an upgrade should compare**. Update it only for
+   *structural* changes, not routine edits:
+
+   **Update when you:**
+   - Introduce a new upgradable area (a new top-level convention, e.g. a new config or
+     `src/` subsystem) → add an `AREAS` entry: `key`, `title`, `confirmation` (true if applying it
+     needs sign-off), `refs` (relevant `references/doc-*.mdx`), a one-line `hint` describing what to
+     review, and the comparison inputs (`files`, `dirs`, `manifests`, or a `discover` fn).
+   - Add/rename/remove a tracked file in an existing area → edit that area's `files`/`dirs`
+     (e.g. a new root config, a renamed workflow).
+   - Add a new dependency manifest or a section that should be diffed → update `manifests`
+     and `MANIFEST_SECTIONS`.
+   - Need bespoke detection an existing field can't express → add a `custom` hook (see `checkI18n`).
+
+   **Then also:** update the area-key list in the script's `--help`, the top-of-file usage comment,
+   and the `--external` key list in `references/upgrade.md` whenever an area `key` is added/renamed.
+   The `hint`/`refs` on each area are the source of truth for per-area guidance — `upgrade.md`
+   intentionally has no separate area checklist to keep in sync.
+
+   **Do NOT update for:** content changes inside already-tracked files, dependency version bumps,
+   or anything an existing area already compares. The checker is data-driven; most changes need no
+   edit here.
 <!-- BOILERPLATE-DOCS-END -->
