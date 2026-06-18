@@ -58,6 +58,9 @@ Do not continue with generic WordPress advice when a task applies. The task refe
 
 If the host has no working environment (ddev,wp-studio etc) use wp-env.
 - Start env: `npm run env:start`
+- First-start bootstrap: `npm run env:start` runs `npm run env:bootstrap`, which installs Composer dependencies in the `cli` container before activating the plugin.
+- Recovery start without lifecycle scripts: `npm run env:start:no-scripts`
+- Composer inside wp-env: `npm run env:composer:install` or `npm run env:composer:update`
 - Run commands: `npm run env:cli composer run phpstan` or `npm run env:cli i18n:extract`
 
 All PHP and wp-cli commands/tools can run inside wp-env. npm commands need to run on the host.

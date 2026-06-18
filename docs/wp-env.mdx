@@ -31,9 +31,14 @@ Scripts that interact with wp-env are defined in `package.json`:
 | Script | Description |
 |--------|-------------|
 | `npm run env:start` | Start the Docker containers |
+| `npm run env:start:no-scripts` | Start the containers without lifecycle scripts |
 | `npm run env:stop` | Stop the Docker containers |
 | `npm run env:destroy` | Remove containers and data |
 | `npm run env:cli` | Run commands inside the container |
+| `npm run env:composer:install` | Install Composer dependencies inside the `cli` container |
+| `npm run env:composer:update` | Update Composer dependencies inside the `cli` container |
+| `npm run env:plugin:activate` | Activate Demo Plugin inside the `cli` container |
+| `npm run env:bootstrap` | Install Composer dependencies, then activate Demo Plugin |
 | `npm run test:php` | Run PHPUnit application tests in the test container |
 
 ### Running Commands Inside wp-env
@@ -45,7 +50,22 @@ npm run env:cli -- composer run i18n:compile
 npm run env:cli -- composer run phpstan
 ```
 
-On every `env:start`, the `afterStart` hook activates Demo Plugin in the `cli` container.
+On every `env:start`, the `afterStart` hook runs `npm run env:bootstrap`. This installs Composer dependencies inside the `cli` container before activating Demo Plugin, so a fresh checkout can start wp-env even when `vendor/autoload.php` does not exist yet.
+
+Run Composer maintenance commands inside wp-env with the dedicated scripts:
+
+```bash title="Terminal"
+npm run env:composer:install
+npm run env:composer:update
+```
+
+If a lifecycle command fails while you are debugging dependencies, start the containers without lifecycle scripts, run the Composer command, then run the bootstrap manually:
+
+```bash title="Terminal"
+npm run env:start:no-scripts
+npm run env:composer:update
+npm run env:bootstrap
+```
 
 ## Adding Custom Scripts
 
@@ -83,6 +103,7 @@ The plugin uses wp-env in the deploy workflow to compile translations. This requ
 
 - Docker must be installed and running
 - The first start downloads WordPress core and may take a few minutes
+- The first start also runs `composer install` inside the `cli` container before plugin activation
 - Data persists between starts unless you run `env:destroy`
-- The `afterStart` lifecycle script automatically activates the plugin
+- The `afterStart` lifecycle script automatically installs Composer dependencies and activates the plugin
 - The PHP version is pinned to 8.1 because `composer run i18n:compile` uses `wp i18n make-php`

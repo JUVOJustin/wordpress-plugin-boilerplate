@@ -98,7 +98,7 @@ Use WP-CLI's `plugin install` command inside the `tests-cli` container. Extend t
 ```json title=".wp-env.json"
 {
 	"lifecycleScripts": {
-		"afterStart": "<existing_commands> && wp-env run tests-cli wp plugin install advanced-custom-fields --activate"
+		"afterStart": "npm run env:bootstrap && wp-env run tests-cli wp plugin install advanced-custom-fields --activate"
 	}
 }
 ```
