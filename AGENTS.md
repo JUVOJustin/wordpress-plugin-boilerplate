@@ -46,9 +46,9 @@ This plugin is a modern WordPress plugin with strict conventions and automated w
 - **wp-env**: Start with `npm run env:start`. Use the `wp-plugin-bp` skill when tests are involved.
 - **Testing**: Run application tests with `npm run test:php`. Use the `wp-plugin-bp` skill for testing guidance.
 - **Plugin upgrades**: Use the `wp-plugin-bp` skill or ask naturally to sync with upstream project conventions.
-- **Official WordPress skills**: `.agents/skills/wp-*/` contains focused skills for block development, Interactivity API, PHPStan, project triage, and REST API work. Use the `wp-plugin-bp` skill `wp-skills` workflow to refresh or add official WordPress skills.
-- **Composer setup**: `.agents/` ships in the initial Composer package so setup can run `wp-plugin-bp/scripts/plugin-replace.php`; replacement cleanup removes `.agents/`, then setup asks whether to install agent skills for ongoing work.
-- **Missing skills**: If `wp-plugin-bp` is unavailable in an initialized plugin, install it with `npx skills add https://github.com/JUVOJustin/wordpress-plugin-boilerplate --skill=*`.
+- **Official WordPress skills**: Install focused WordPress skills through the `wp-plugin-bp` skill's `wp-skills` workflow. APM deploys them to each selected agent runtime.
+- **Composer setup**: `.apm/` and `apm.yml` ship in the initial Composer package so setup can run `wp-plugin-bp/scripts/plugin-replace.php`; replacement cleanup removes the package-authoring source, then setup can install the versioned APM dependency for ongoing work.
+- **Missing skill**: If `wp-plugin-bp` is unavailable in an initialized plugin, run `apm install JUVOJustin/wordpress-plugin-boilerplate`.
 
 ### Maintaining the plugin
 
@@ -57,5 +57,5 @@ When adding new primitives, patterns, or documentation to this plugin:
 1. Update `docs/` with detailed implementation guides
 2. Update @AGENTS.md with high-level reference
 <!-- BOILERPLATE-DOCS-START -->
-3. Update @.agents/skills/wp-plugin-bp so downstream plugins can adopt changes
+3. Update @.apm/skills/wp-plugin-bp so downstream plugins can adopt changes
 <!-- BOILERPLATE-DOCS-END -->

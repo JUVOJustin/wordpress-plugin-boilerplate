@@ -64,7 +64,7 @@ function main() {
 			`Reference directory not found: ${ref}\n` +
 				'Clone the upstream reference and run plugin-replace.php against it first:\n' +
 				'  git clone --depth 1 <upstream-url> tmp/plugin-ref\n' +
-				'  php tmp/plugin-ref/.agents/skills/wp-plugin-bp/scripts/plugin-replace.php \\\n' +
+				'  php tmp/plugin-ref/.apm/skills/wp-plugin-bp/scripts/plugin-replace.php \\\n' +
 				'    --path tmp/plugin-ref --plugin-name "..." --plugin-namespace "..." \\\n' +
 				'    --plugin-text-domain "..." --cleanup-setup'
 		);
@@ -169,9 +169,9 @@ const AREAS = [
 	},
 	{
 		key: 'agents',
-		title: 'Agent configuration (.agents / skills)',
+		title: 'APM package source (.apm / skills)',
 		skip: true,
-		hint: 'Do NOT diff or copy .agents/skills as boilerplate source. Use `npx skills update -p` to refresh installed skills, and ask before removing local-only skills.',
+		hint: 'Do NOT diff or copy deployed skill directories as boilerplate source. Use `apm update` to refresh installed packages, and ask before removing local-only packages.',
 	},
 ];
 
@@ -467,7 +467,7 @@ function renderMarkdown(report) {
 			}", text-domain="${report.identity.textDomain || '?'}"`
 		);
 	}
-	if (!report.gitAvailable) L.push('- ⚠️ `git` not found — diffs are summarized as line counts only.');
+	if (!report.gitAvailable) L.push('- WARNING: `git` not found — diffs are summarized as line counts only.');
 	L.push('');
 
 	// Summary table.
@@ -491,7 +491,7 @@ function renderMarkdown(report) {
 		}
 		L.push(`## ${a.title} — ${statusBadge(a.status)}`);
 		L.push('');
-		if (a.confirmation) L.push('> ⚠️ Confirmation required before applying changes in this area.');
+		if (a.confirmation) L.push('> WARNING: Confirmation required before applying changes in this area.');
 		if (a.refs.length) L.push(`> Reference docs to consult: ${a.refs.map((r) => `\`${r}\``).join(', ')}`);
 		L.push('');
 
@@ -531,7 +531,7 @@ function renderManifest(m) {
 	L.push(`### \`${m.rel}\` (${m.kind})`);
 	L.push('');
 	if (m.error) {
-		L.push(`- ⚠️ ${m.error}`);
+			L.push(`- WARNING: ${m.error}`);
 		L.push('');
 		return L;
 	}
@@ -582,7 +582,7 @@ function renderFile(f) {
 		return L;
 	}
 	if (f.status === 'error') {
-		L.push(`- \`${f.rel}\` — ⚠️ ${f.error}`);
+			L.push(`- \`${f.rel}\` — WARNING: ${f.error}`);
 		L.push('');
 		return L;
 	}
@@ -622,7 +622,7 @@ function renderNextSteps(report) {
 	);
 	L.push('');
 	L.push('Hard rules:');
-	L.push('- Do NOT diff or copy `.agents/skills`; refresh with `npx skills update -p` instead.');
+	L.push('- Do NOT diff or copy deployed skill directories; refresh packages with `apm update` instead.');
 	L.push('- Confirm with the user before changing areas flagged "Confirmation required".');
 	L.push('- Areas marked **not-applicable** are absent in both plugins — skip them.');
 	L.push('');
@@ -654,7 +654,7 @@ function statusBadge(status) {
 		case 'not-applicable':
 			return '⚪ not-applicable';
 		case 'skipped':
-			return '⏭️ skipped';
+			return 'skipped';
 		default:
 			return status;
 	}

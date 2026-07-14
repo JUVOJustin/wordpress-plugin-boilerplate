@@ -19,7 +19,7 @@ Proceed without confirmation for:
 - Updating dependency versions
 - Adding or renaming scripts with equivalent functionality
 - Syncing QA config files
-- Installing or updating `.agents/skills` with `npx skills add`
+- Installing or updating APM packages with `apm install` or `apm update`
 
 ## Identity Replacement Script
 
@@ -38,7 +38,7 @@ Read these sources from the target plugin:
 Run the script against the cloned reference directory before comparing anything:
 
 ```bash
-php tmp/plugin-ref/.agents/skills/wp-plugin-bp/scripts/plugin-replace.php \
+php tmp/plugin-ref/.apm/skills/wp-plugin-bp/scripts/plugin-replace.php \
   --path tmp/plugin-ref \
   --plugin-name "My Awesome Plugin" \
   --plugin-namespace "My_Awesome_Plugin" \
@@ -46,14 +46,14 @@ php tmp/plugin-ref/.agents/skills/wp-plugin-bp/scripts/plugin-replace.php \
   --cleanup-setup
 ```
 
-This pass replaces placeholders in plugin files, strips setup-only docs sections, empties `docs/`, removes setup-only files, and deletes `.agents/`. It does not rewrite skill files; initialized plugins can reinstall current skills from upstream with `npx skills add`. Later diffs should compare the target plugin against `tmp/plugin-ref/`, not against the untouched upstream clone.
+This pass replaces placeholders in plugin files, strips setup-only docs sections, empties `docs/`, removes setup-only files, and deletes the package-authoring `.apm/` tree and manifest. It does not rewrite skill files; initialized plugins manage the versioned package with APM. Later diffs should compare the target plugin against `tmp/plugin-ref/`, not against the untouched upstream clone.
 
 ### Rename an already-customized plugin
 
 Pass the current identity as `--source-plugin-*` options and the desired identity as the regular `--plugin-*` options:
 
 ```bash
-php .agents/skills/wp-plugin-bp/scripts/plugin-replace.php \
+php <installed-wp-plugin-bp-skill>/scripts/plugin-replace.php \
   --path /path/to/plugin \
   --source-plugin-name "My Awesome Plugin" \
   --source-plugin-namespace "My_Awesome_Plugin" \
@@ -73,7 +73,7 @@ php .agents/skills/wp-plugin-bp/scripts/plugin-replace.php \
 3. Run the replacement script against the cloned reference before comparing anything.
 4. Run the automated upgrade check to generate the comparison report:
    ```bash
-   node tmp/plugin-ref/.agents/skills/wp-plugin-bp/scripts/upgrade-check.js \
+   node tmp/plugin-ref/.apm/skills/wp-plugin-bp/scripts/upgrade-check.js \
      --target . --ref tmp/plugin-ref
    ```
    Pass `--ref` the path where you actually cloned the reference; it accepts any
@@ -109,7 +109,7 @@ When applying any area:
 
 - Prefer scoped patches over replacing whole files.
 - After copying upstream code, adapt namespace, text domain, paths, and plugin-specific behavior.
-- Never diff or copy `.agents/skills` as boilerplate source; refresh with `npx skills update -p` and ask before removing local-only skills.
+- Never diff or copy deployed skill directories as boilerplate source; refresh with `apm update` and ask before removing local-only packages.
 
 The reference docs the report names live under `references/` (e.g. `references/doc-bundling.mdx`).
 Load only the ones the report points to for the areas you are changing.
