@@ -31,9 +31,19 @@ AGENTS.md
 .idea/
 .vscode/
 .claude/
+.codex/
+.cursor/
+.gemini/
 .junie/
+.kiro/
+.opencode/
+.windsurf/
 .windsurfrules/
 .agents/
+.apm/
+apm.yml
+apm.lock.yaml
+apm_modules/
 .mcp.json
 
 # Test files

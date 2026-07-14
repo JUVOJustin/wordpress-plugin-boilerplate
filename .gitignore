@@ -3,6 +3,7 @@
 /vendor/
 /vendor-prefixed/
 /node_modules/
+/apm_modules/
 setup.sh
 
 .idea

@@ -15,4 +15,4 @@ Update or create WordPress plugin translations.
 
 - Use one focused subtask per `.po` file when parallel work is available.
 - Do not change the text domain unless the user explicitly requested a plugin rename.
-- Load `references/doc-i18n.mdx` for detailed extraction and compilation behavior.
+- Load the [i18n guide](../../../../docs/i18n.mdx) for detailed extraction and compilation behavior.

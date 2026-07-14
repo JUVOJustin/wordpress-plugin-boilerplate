@@ -3,7 +3,7 @@
  * WP_CLI Setup command integration.
  *
  * Collects user input and delegates replacement logic to the setup script
- * packaged with the wp-plugin-bp skill.
+ * packaged with the wp-plugin-bp APM skill.
  *
  * @package Demo_Plugin
  */
@@ -19,9 +19,9 @@ use function WP_CLI\Utils\format_items;
  */
 class Setup {
 
-	private const SETUP_SKILL_REPOSITORY = 'https://github.com/JUVOJustin/wordpress-plugin-boilerplate';
+	private const SETUP_APM_PACKAGE = 'JUVOJustin/wordpress-plugin-boilerplate';
 
-	private const SETUP_SKILL_SCRIPT = '.agents/skills/wp-plugin-bp/scripts/plugin-replace.php';
+	private const SETUP_SKILL_SCRIPT = '.apm/skills/wp-plugin-bp/scripts/plugin-replace.php';
 
 	/**
 	 * Plugin name provided by the user.
@@ -74,6 +74,7 @@ class Setup {
 
 		$plugin_path = (string) $this->path;
 		$script_path = $this->replacement_script_path( $plugin_path );
+		$package_ref = $this->apm_package_reference( $plugin_path );
 
 		// If setup file still exists, assume setup has to be made.
 		if ( ! file_exists( $plugin_path . '/setup.php' ) ) {
@@ -128,7 +129,7 @@ class Setup {
 		$progress->finish();
 
 		WP_CLI::success( 'Setup completed' );
-		$this->maybe_install_agent_skills( $plugin_path );
+		$this->maybe_install_apm_package( $plugin_path, $package_ref );
 	}
 
 	/**
@@ -148,18 +149,51 @@ class Setup {
 	}
 
 	/**
-	 * Optionally install agent skills into the initialized plugin.
-	 *
-	 * The packaged `.agents` directory is removed during replacement cleanup,
-	 * so accepting this prompt fetches a fresh skill install for ongoing work.
+	 * Build the versioned APM package reference before setup removes its manifest.
 	 *
 	 * @param string $plugin_path Absolute plugin root path.
 	 *
+	 * @return string
+	 */
+	private function apm_package_reference( string $plugin_path ): string {
+		$manifest_path = $plugin_path . '/apm.yml';
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- This is a local package manifest, not a remote URL.
+		$manifest = file_get_contents( $manifest_path );
+		$matches  = array();
+
+		if ( false === $manifest || 1 !== preg_match( '/^version:\s*["\']?([0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?)["\']?\s*$/m', $manifest, $matches ) ) {
+			WP_CLI::error( "Missing or invalid APM package version in: {$manifest_path}" );
+		}
+
+		$version = $matches[1] ?? '';
+		if ( '' === $version ) {
+			WP_CLI::error( "Missing APM package version in: {$manifest_path}" );
+		}
+
+		return self::SETUP_APM_PACKAGE . '#v' . $version;
+	}
+
+	/**
+	 * Optionally install the versioned APM package into the initialized plugin.
+	 *
+	 * Setup removes the package-authoring manifest and `.apm` source. APM then
+	 * creates a consumer manifest, lockfile, native skill deployment, and
+	 * compiled instruction files.
+	 *
+	 * @param string $plugin_path Absolute plugin root path.
+	 * @param string $package_ref Versioned APM package reference.
+	 *
 	 * @return void
 	 */
-	private function maybe_install_agent_skills( string $plugin_path ): void {
-		if ( ! $this->ask_confirmation( 'Install agent skills for this plugin? [y/N]' ) ) {
-			WP_CLI::log( 'Agent skills were not installed.' );
+	private function maybe_install_apm_package( string $plugin_path, string $package_ref ): void {
+		if ( ! $this->ask_confirmation( 'Install the APM package for AI-assisted development? [y/N]' ) ) {
+			WP_CLI::log( "APM package was not installed. Run 'apm install --target codex {$package_ref} && apm compile --force-instructions' later if needed." );
+
+			return;
+		}
+
+		if ( ! $this->command_is_available( 'apm' ) ) {
+			WP_CLI::warning( "APM is not installed. Install it from https://microsoft.github.io/apm/getting-started/installation/, then run 'apm install --target codex {$package_ref} && apm compile --force-instructions'." );
 
 			return;
 		}
@@ -170,17 +204,35 @@ class Setup {
 				'cd',
 				escapeshellarg( $plugin_path ),
 				'&&',
-				'npx',
-				'--yes',
-				'skills',
-				'add',
-				escapeshellarg( self::SETUP_SKILL_REPOSITORY ),
-				escapeshellarg( '--skill=*' ),
+				'apm',
+				'install',
+				'--target',
+				'codex',
+				escapeshellarg( $package_ref ),
+				'&&',
+				'apm',
+				'compile',
+				'--force-instructions',
 			)
 		);
 
-		$this->run_shell_command( $command, 'Error installing agent skills' );
-		WP_CLI::success( 'Agent skills installed' );
+		$this->run_shell_command( $command, 'Error installing APM package or compiling instructions' );
+		WP_CLI::success( 'APM package installed and instructions compiled' );
+	}
+
+	/**
+	 * Check whether an executable can run without mutating the plugin.
+	 *
+	 * @param string $command Executable name.
+	 *
+	 * @return bool
+	 */
+	private function command_is_available( string $command ): bool {
+		// phpcs:disable WordPress.PHP.DiscouragedPHPFunctions.system_calls_exec
+		exec( escapeshellcmd( $command ) . ' --version 2>&1', $output, $code );
+		// phpcs:enable
+
+		return 0 === $code;
 	}
 
 	/**

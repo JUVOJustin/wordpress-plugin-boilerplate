@@ -1,0 +1,21 @@
+name: wordpress-plugin-boilerplate
+version: "2.3.0"
+description: Cross-tool AI workflows for building and maintaining WordPress plugins based on Demo Plugin.
+author:
+  name: Justin Vogt
+  email: mail@justin-vogt.com
+  url: https://justin-vogt.com
+license: GPL-3.0-or-later
+homepage: https://github.com/JUVOJustin/wordpress-plugin-boilerplate
+repository: https://github.com/JUVOJustin/wordpress-plugin-boilerplate
+keywords:
+  - wordpress
+  - plugin-development
+  - agent-skills
+type: skill
+includes:
+  - .apm/instructions/
+  - .apm/skills/wp-plugin-bp/
+compilation:
+  agents_md:
+    mode: managed_section

@@ -84,7 +84,7 @@ function main() {
 			`Reference directory not found: ${ref}\n` +
 				'Clone the upstream reference and run plugin-replace.php against it first:\n' +
 				'  git clone --depth 1 <upstream-url> tmp/plugin-ref\n' +
-				'  php tmp/plugin-ref/.agents/skills/wp-plugin-bp/scripts/plugin-replace.php \\\n' +
+				'  php tmp/plugin-ref/.apm/skills/wp-plugin-bp/scripts/plugin-replace.php \\\n' +
 				'    --path tmp/plugin-ref --plugin-name "..." --plugin-namespace "..." \\\n' +
 				'    --plugin-text-domain "..." --cleanup-setup'
 		);
@@ -122,7 +122,7 @@ const AREAS = [
 		key: 'php-qa',
 		title: 'PHP & QA configuration',
 		confirmation: false,
-		refs: ['references/doc-i18n.mdx', 'references/doc-bundling.mdx'],
+		refs: ['references/translation.md', 'references/bundling.md'],
 		manifests: [{ rel: 'composer.json', kind: 'composer' }],
 		files: ['phpcs.xml', 'phpstan.neon', 'phpunit.xml.dist'],
 		hint: 'Sync dependency versions, QA config, and composer scripts. Adapt namespace/text-domain in any copied config.',
@@ -131,7 +131,7 @@ const AREAS = [
 		key: 'js-bundling',
 		title: 'JS & bundling',
 		confirmation: false,
-		refs: ['references/doc-bundling.mdx', 'references/doc-wp-env.mdx', 'references/doc-create-blocks.mdx'],
+		refs: ['references/bundling.md', 'references/blocks.md'],
 		manifests: [{ rel: 'package.json', kind: 'npm' }],
 		files: ['webpack.config.js', '.wp-env.json'],
 		hint: 'Sync npm deps, build/lint scripts, and webpack entry points. Watch for new wp-scripts flags (e.g. --experimental-modules).',
@@ -140,7 +140,7 @@ const AREAS = [
 		key: 'github-actions',
 		title: 'GitHub Actions workflows',
 		confirmation: true,
-		refs: ['references/doc-github-actions.mdx'],
+		refs: ['references/qa.md'],
 		dirs: ['.github/workflows'],
 		hint: 'Compare each workflow (setup, analysis, tests, deploy, release, translation). Confirm before replacing CI/CD.',
 	},
@@ -169,7 +169,7 @@ const AREAS = [
 		key: 'i18n',
 		title: 'i18n workflow',
 		confirmation: false,
-		refs: ['references/doc-i18n.mdx'],
+		refs: ['references/translation.md'],
 		custom: checkI18n,
 		hint: 'Verify i18n:extract / i18n:compile composer scripts and generated language-file expectations.',
 	},
@@ -177,7 +177,7 @@ const AREAS = [
 		key: 'abilities',
 		title: 'Abilities API (src/Abilities/)',
 		confirmation: true,
-		refs: ['references/doc-abilities.mdx'],
+		refs: ['references/abilities.md'],
 		dirs: ['src/Abilities'],
 		hint: 'Compare ability interfaces and add_ability() usage. A missing directory means the plugin predates the Abilities API; confirm before introducing it.',
 	},
@@ -190,9 +190,9 @@ const AREAS = [
 	},
 	{
 		key: 'agents',
-		title: 'Agent configuration (.agents / skills)',
+		title: 'APM package source (.apm / skills)',
 		skip: true,
-		hint: 'Do NOT diff or copy .agents/skills as boilerplate source. Use `npx skills update -p` to refresh installed skills, and ask before removing local-only skills.',
+		hint: 'Do NOT diff or copy deployed skill directories as boilerplate source. Use `apm update` to refresh installed packages, and ask before removing local-only packages.',
 	},
 ];
 
@@ -704,7 +704,7 @@ function renderNextSteps(report) {
 	}
 
 	L.push('Hard rules:');
-	L.push('- Do NOT diff or copy `.agents/skills`; refresh with `npx skills update -p` instead.');
+	L.push('- Do NOT diff or copy deployed skill directories; refresh packages with `apm update` instead.');
 	L.push('- Confirm with the user before changing areas flagged "Confirmation required".');
 	L.push('- Areas marked **not-applicable** are absent in both plugins — skip them.');
 	if (external.length) {
