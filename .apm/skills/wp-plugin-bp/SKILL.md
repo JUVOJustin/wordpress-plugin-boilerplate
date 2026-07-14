@@ -1,12 +1,12 @@
 ---
 name: wp-plugin-bp
-description: Use this skill whenever working on Demo Plugin or a downstream WordPress plugin based on this project. Use for plugin upgrades/sync tasks, adopting latest upstream project conventions, translations/i18n, PHPUnit application tests, QA checks, Action Scheduler, blocks, Abilities API, bundling, ACF, Sentry, README updates, wp-env, and AI workflow maintenance. If the user asks naturally about any of these, infer and run the matching task workflow.
+description: Use this skill whenever working on Demo Plugin or a downstream WordPress plugin package based on this project, including one inside a monorepo. Use for plugin upgrades/sync tasks, adopting latest upstream project conventions, translations/i18n, PHPUnit application tests, QA checks, Action Scheduler, blocks, Abilities API, bundling, ACF, Sentry, README updates, wp-env, and AI workflow maintenance. If the user asks naturally about any of these, infer and run the matching task workflow.
 compatibility: Some commands require PHP, Composer, Node.js, npm, Docker, wp-env, WP-CLI, or network access.
 ---
 
 # WP Plugin BP Skill
 
-Operate this WordPress plugin. Keep this file as the router and load command references only when the task calls for them.
+Operate this WordPress plugin. Resolve paths and run commands from its package root; in a monorepo, do not treat the repository root or sibling packages as part of the plugin. Keep this file as the router and load command references only when the task calls for them.
 
 ## Task Routing
 

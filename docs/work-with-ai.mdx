@@ -12,11 +12,11 @@ The AI integration consists of two layers that work together:
 
 ### 1. APM Instructions — The Rulebook
 
-Portable foundation rules live as focused files under `.apm/instructions/`. They cover architecture, assets, quality tooling, and workflow routing without containing setup-only boilerplate maintenance rules.
+Portable foundation rules live as focused files under `.apm/instructions/`. They contain only always-on WordPress plugin scope, architecture, asset, and quality guardrails. Task routing, decisions, and procedures belong to the `wp-plugin-bp` skill instead of being repeated in the instructions.
 
 The source `AGENTS.md` keeps producer-only boilerplate context outside `<!-- apm:start -->` and `<!-- apm:end -->`. That context is wrapped in `BOILERPLATE-DOCS` markers and is removed during plugin setup. The producer manifest uses APM's managed-section mode so compiled foundation rules only replace the content between the APM markers.
 
-The foundation instructions intentionally omit `applyTo`. Architecture, scaffolding, workflow-routing, and quality knowledge must be available while an agent plans a change, before a matching file exists or is opened. APM therefore treats these rules as unconditional and folds them into the root context. Consumer projects compile the installed instructions into `AGENTS.md` or the corresponding native rule files for their selected runtimes. Do not edit generated rule content directly.
+The foundation instructions intentionally omit `applyTo`. WordPress plugin scope, architecture, scaffold entry points, and quality guardrails must be available while an agent plans a change, before a matching file such as `block.json` exists or is opened. APM therefore treats these rules as unconditional and folds them into the root context. The first instruction defines the active WordPress plugin package root, so the rules still apply correctly when the package is inside a monorepo without affecting sibling applications, themes, libraries, or services. Consumer projects compile the installed instructions into `AGENTS.md` or the corresponding native rule files for their selected runtimes. Do not edit generated rule content directly.
 
 ### 2. `wp-plugin-bp` Skill And WordPress Skills
 
@@ -51,7 +51,7 @@ Agents should infer the right task from natural language. For example, "sync thi
 
 ### wp-plugin-bp
 
-The `wp-plugin-bp` skill is the unified router for plugin workflows. Its `SKILL.md` stays small, and task-specific procedures live in `.apm/skills/wp-plugin-bp/references/`. Detailed guides remain canonical regular files under `docs/`. Task references use normal relative Markdown links to those guides; APM rewrites links that leave the skill so installed references point to the package copy under `apm_modules/`.
+The `wp-plugin-bp` skill is the unified router for WordPress plugin workflows. It resolves work against the plugin package root even when installed at a monorepo root. Its `SKILL.md` stays small, and task-specific procedures live in `.apm/skills/wp-plugin-bp/references/`. Detailed guides remain canonical regular files under `docs/`. Task references use normal relative Markdown links to those guides; APM rewrites links that leave the skill so installed references point to the package copy under `apm_modules/`.
 
 The initial Composer package includes `apm.yml` and `.apm/` so setup can run `wp-plugin-bp/scripts/plugin-replace.php` for identity replacement. The manifest version tracks the Demo Plugin release independently from the example plugin's `1.0.0` runtime version.
 

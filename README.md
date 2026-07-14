@@ -38,7 +38,7 @@ Use this repo when you want to:
 |- tests/php/               PHPUnit application tests
 |- AGENTS.md                Producer-only context and APM-managed section
 |- apm.yml                  Versioned APM package manifest
-|- .apm/instructions/       Foundation rules compiled for each agent runtime
+|- .apm/instructions/       WordPress plugin scope and foundation guardrails
 |- .apm/skills/wp-plugin-bp/ Unified plugin AI skill with task references
 |- .github/workflows/       CI/CD workflows
 `- README.txt               WordPress.org plugin readme template
@@ -94,7 +94,7 @@ After replacement, setup can install the versioned APM package for the Codex tar
 
 - `AGENTS.md` keeps removable producer-only boilerplate context outside the APM markers; APM compiles portable rules into the managed section
 - `apm.yml` gives the AI package its own release version, independent of the example plugin's `1.0.0` version
-- `.apm/instructions/` contains the portable foundation rules that APM converts to each agent runtime's native format
+- `.apm/instructions/` contains always-on WordPress plugin scope and foundation guardrails that APM converts to each agent runtime's native format
 - `.apm/skills/wp-plugin-bp/` contains the unified skill, task references, and scripts; APM rewrites links from its task references to canonical files in `docs/`
 - APM installs optional official WordPress skills from `WordPress/agent-skills` when the `wp-skills` workflow is requested
 - natural requests such as "sync with upstream project conventions" should route through the `wp-plugin-bp` skill and infer the upgrade workflow
