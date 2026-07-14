@@ -222,6 +222,11 @@ function create_filtered_file_iterator(string $plugin_path): RecursiveIteratorIt
 	$filter = new RecursiveCallbackFilterIterator(
 		$dir,
 		function ($current) {
+			// Never write through documentation aliases or other filesystem links.
+			if ($current->isLink()) {
+				return false;
+			}
+
 			$pathname = str_replace('\\', '/', $current->getPathname());
 
 			if (false !== strpos($pathname, '/vendor/') || str_ends_with($pathname, '/vendor')) {

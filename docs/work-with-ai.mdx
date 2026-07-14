@@ -53,7 +53,7 @@ Agents should infer the right task from natural language. For example, "sync thi
 
 ### wp-plugin-bp
 
-The `wp-plugin-bp` skill is the unified router for plugin workflows. Its `SKILL.md` stays small, and task-specific procedures live in `.apm/skills/wp-plugin-bp/references/`.
+The `wp-plugin-bp` skill is the unified router for plugin workflows. Its `SKILL.md` stays small, and task-specific procedures and their canonical detailed guides live in `.apm/skills/wp-plugin-bp/references/`. The corresponding paths under `docs/` are symlink aliases for the documentation site, so each guide has one maintained source while the APM skill remains self-contained.
 
 The initial Composer package includes `apm.yml` and `.apm/` so setup can run `wp-plugin-bp/scripts/plugin-replace.php` for identity replacement. The manifest version tracks the Demo Plugin release independently from the example plugin's `1.0.0` runtime version.
 
@@ -100,7 +100,7 @@ Ask the `wp-plugin-bp` skill to run the `wp-skills` workflow to refresh these sk
 
 The APM package is the primary distribution format because its skill primitive reaches every stable target relevant to Demo Plugin. Prompts, agents, and hooks have narrower runtime support and are not required for the current router.
 
-An APM bundle is useful for offline or controlled distribution, but it is not a substitute for the APM CLI. Package maintainers can create a versioned archive with `apm pack --archive`; consumers still use `apm install` to verify and deploy it. A runtime without APM can use the Agent Skills standard as a manual fallback by copying `.apm/skills/wp-plugin-bp/` from the matching release into its supported skills directory.
+An APM bundle is useful for offline or controlled distribution, but it is not a substitute for the APM CLI. Package maintainers can create a versioned archive with `apm pack --archive`; consumers still use `apm install` to verify and deploy it. All bundled skill resources are regular files. Only the documentation-site aliases outside the packaged skill are symlinks, because APM intentionally excludes symlinks from archives. A runtime without APM can use the Agent Skills standard as a manual fallback by copying `.apm/skills/wp-plugin-bp/` from the matching release into its supported skills directory.
 
 ## Tips for Effective AI Collaboration
 

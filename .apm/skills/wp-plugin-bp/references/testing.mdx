@@ -30,9 +30,9 @@ The plugin ships and uses its own PHPUnit version because the WordPress test boo
    <?php
 
    class MyFeatureTest extends WP_UnitTestCase {
-          public function test_something(): void {
-              $this->assertTrue( true );
-          }
+       public function test_something(): void {
+           $this->assertTrue( true );
+       }
    }
    ```
 
@@ -60,12 +60,12 @@ The plugin ships and uses its own PHPUnit version because the WordPress test boo
 <?php
 
 class PostMetaBehaviorTest extends WP_UnitTestCase {
-   public function test_can_store_and_read_post_meta(): void {
-       $post_id = self::factory()->post->create();
-       update_post_meta( $post_id, '_demo_flag', 'yes' );
+	public function test_can_store_and_read_post_meta(): void {
+		$post_id = self::factory()->post->create();
+		update_post_meta( $post_id, '_demo_flag', 'yes' );
 
-       $this->assertSame( 'yes', get_post_meta( $post_id, '_demo_flag', true ) );
-   }
+		$this->assertSame( 'yes', get_post_meta( $post_id, '_demo_flag', true ) );
+	}
 }
 ```
 
@@ -75,15 +75,15 @@ class PostMetaBehaviorTest extends WP_UnitTestCase {
 <?php
 
 class FilterRegistrationTest extends WP_UnitTestCase {
-   public function test_demo_filter_modifies_value(): void {
-       add_filter(
-           'demo_plugin/example_value',
-           static fn( string $value ): string => $value . '-modified'
-       );
+	public function test_demo_filter_modifies_value(): void {
+		add_filter(
+			'demo_plugin/example_value',
+			static fn( string $value ): string => $value . '-modified'
+		);
 
-       $result = apply_filters( 'demo_plugin/example_value', 'before' );
-       $this->assertSame( 'before-modified', $result );
-   }
+		$result = apply_filters( 'demo_plugin/example_value', 'before' );
+		$this->assertSame( 'before-modified', $result );
+	}
 }
 ```
 
@@ -97,9 +97,9 @@ Use WP-CLI's `plugin install` command inside the `tests-cli` container. Extend t
 
 ```json title=".wp-env.json"
 {
-   "lifecycleScripts": {
-       "afterStart": "<existing_commands> && wp-env run tests-cli wp plugin install advanced-custom-fields --activate"
-   }
+	"lifecycleScripts": {
+		"afterStart": "<existing_commands> && wp-env run tests-cli wp plugin install advanced-custom-fields --activate"
+	}
 }
 ```
 

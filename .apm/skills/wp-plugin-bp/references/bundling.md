@@ -4,7 +4,8 @@ Work on wp-scripts bundling, entry points, assets, and enqueueing.
 
 ## Workflow
 
-1. Load `references/doc-bundling.mdx`.
+1. Load the [bundling guide](bundeling.mdx). Consult the
+   [wp-env guide](wp-env.mdx) when environment configuration is involved.
 2. Put admin assets in `resources/admin/`.
 3. Put frontend assets in `resources/frontend/`.
 4. Add or adjust entry points in `webpack.config.js`. Only augment the classic

@@ -4,7 +4,7 @@ Create or maintain Gutenberg blocks in this plugin.
 
 ## Workflow
 
-1. Load `references/doc-create-blocks.mdx`.
+1. Load the [block creation guide](create-blocks.mdx).
 2. Use the configured `npm run create-block` workflow for scaffolding.
 3. Keep block source under the established resources or blocks layout.
 4. Ensure block manifests are included in production builds.
