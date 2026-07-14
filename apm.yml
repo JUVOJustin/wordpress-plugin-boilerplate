@@ -14,4 +14,8 @@ keywords:
   - agent-skills
 type: skill
 includes:
+  - .apm/instructions/
   - .apm/skills/wp-plugin-bp/
+compilation:
+  agents_md:
+    mode: managed_section

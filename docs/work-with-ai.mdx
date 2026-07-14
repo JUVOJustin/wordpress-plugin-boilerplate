@@ -4,25 +4,21 @@ short_title: AI Workflow
 description: Skills and instructions for AI-assisted development.
 ---
 
-This plugin setup is optimized for AI-assisted development. It provides one unified `wp-plugin-bp` skill as an Agent Package Manager (APM) package. APM installs the same source into the native locations used by Codex, Copilot, Claude, Cursor, Gemini, OpenCode, Windsurf, Kiro, and Agent Skills-compatible clients.
+This plugin setup is optimized for AI-assisted development. Its Agent Package Manager (APM) package provides portable foundation instructions and one unified `wp-plugin-bp` skill. APM installs them into the native locations used by Codex, Copilot, Claude, Cursor, Gemini, OpenCode, Windsurf, Kiro, and Agent Skills-compatible clients.
 
 ## How It Works
 
 The AI integration consists of two layers that work together:
 
-### 1. AGENTS.md — The Rulebook
+### 1. APM Instructions — The Rulebook
 
-The `AGENTS.md` file in the root directory is the primary instruction set for AI agents. It contains:
-- High-level architecture guidance
-- Coding standards and conventions
-- Quick reference for key primitives
-- Pointers to detailed documentation
+Portable foundation rules live as focused files under `.apm/instructions/`. They cover architecture, assets, quality tooling, and workflow routing without containing setup-only boilerplate maintenance rules.
 
-**This file is your single source of truth** for how AI agents should interact with your codebase.
+The source `AGENTS.md` contains only `<!-- apm:start -->` and `<!-- apm:end -->`. APM compiles the instruction primitives into that managed section for runtimes that use `AGENTS.md` and into the corresponding native rule files for other runtimes. Do not edit generated rule content directly.
 
 ### 2. `wp-plugin-bp` Skill And WordPress Skills
 
-The package source lives in `.apm/skills/wp-plugin-bp/` and handles:
+The skill source lives in `.apm/skills/wp-plugin-bp/` and handles:
 - Multi-file operations
 - Decision trees and conditional logic
 - Integration with external tools
@@ -57,7 +53,7 @@ The `wp-plugin-bp` skill is the unified router for plugin workflows. Its `SKILL.
 
 The initial Composer package includes `apm.yml` and `.apm/` so setup can run `wp-plugin-bp/scripts/plugin-replace.php` for identity replacement. The manifest version tracks the Demo Plugin release independently from the example plugin's `1.0.0` runtime version.
 
-Setup captures that package version, removes the package-authoring files, and can install the matching Git tag as a dependency. APM then creates a consumer `apm.yml`, writes `apm.lock.yaml`, and deploys the skill. Commit the consumer manifest, lockfile, and deployed files so other contributors receive the same context on clone.
+Setup captures that package version, removes the package-authoring files, and can install the matching Git tag as a dependency. APM then creates a consumer `apm.yml`, writes `apm.lock.yaml`, deploys the skill, and compiles the foundation instructions. Commit the consumer manifest, lockfile, and deployed files so other contributors receive the same context on clone.
 
 ### Install or restore the package
 
@@ -100,15 +96,15 @@ Ask the `wp-plugin-bp` skill to run the `wp-skills` workflow to refresh these sk
 
 ## Packages and fallbacks
 
-The Git-based APM package is the primary distribution format because its skill primitive reaches every stable target relevant to Demo Plugin. Prompts, agents, and hooks have narrower runtime support and are not required for the current router.
+The Git-based APM package is the primary distribution format because its instruction and skill primitives reach every stable target relevant to Demo Plugin. Prompts, agents, and hooks have narrower runtime support and are not required for the current router.
 
 Do not publish the default `apm pack` output as a complete distribution of this package. APM bundles include packable primitives, but they do not automatically include the non-primitive `docs/` files reached through package-relative links. If an offline or non-APM artifact becomes necessary, generate a standalone skill archive during the release from the matching tag and copy the required guides into that temporary artifact. Do not commit generated guide copies to the source tree.
 
-A runtime without APM can use the Agent Skills standard as a manual fallback by copying `.apm/skills/wp-plugin-bp/` and the referenced `docs/` files from the same release into the corresponding locations in the target project.
+A runtime without APM can use the Agent Skills standard as a manual fallback by copying `.apm/skills/wp-plugin-bp/`, `.apm/instructions/`, and the referenced `docs/` files from the same release into the corresponding locations in the target project.
 
 ## Tips for Effective AI Collaboration
 
 - **Be specific**: Instead of "fix the bug", say "fix the PHP notice in src/Admin/Settings.php line 42"
 - **Reference conventions**: Mention "follow the Loader pattern" or "use the enqueue_entrypoint method"
 - **Use the `wp-plugin-bp` skill**: It is faster and more consistent than describing the same task repeatedly
-- **Update docs**: When you add new patterns, update `AGENTS.md` so future AI interactions benefit
+- **Update rules**: When the plugin foundation changes, update the relevant file in `.apm/instructions/`

@@ -16,7 +16,7 @@ If you want the user-facing documentation site entry point, start with [`docs/in
 - `@wordpress/env` for reproducible local WordPress development
 - PHPUnit application testing in the dedicated `tests-cli` container
 - GitHub Actions for analysis, testing, and release automation
-- AI-oriented project instructions in `AGENTS.md` and a cross-tool APM package in `.apm/skills/wp-plugin-bp/`
+- Cross-tool AI instructions and workflows in the APM package under `.apm/`
 
 ## Typical Use
 
@@ -36,7 +36,9 @@ Use this repo when you want to:
 |- resources/               Admin and frontend assets
 |- docs/                    Canonical user-facing documentation
 |- tests/php/               PHPUnit application tests
+|- AGENTS.md                Placeholder for APM-compiled instructions
 |- apm.yml                  Versioned APM package manifest
+|- .apm/instructions/       Foundation rules compiled for each agent runtime
 |- .apm/skills/wp-plugin-bp/ Unified plugin AI skill with task references
 |- .github/workflows/       CI/CD workflows
 `- README.txt               WordPress.org plugin readme template
@@ -51,7 +53,7 @@ composer create-project juvo/wordpress-plugin-boilerplate
 ```
 
 The setup script asks for the plugin name, namespace, and slug, runs the packaged `wp-plugin-bp` replacement script, and removes the package-authoring `.apm/` tree and `apm.yml` from the initialized plugin.
-After replacement, setup can install the versioned APM package. APM creates a consumer manifest and lockfile and deploys the skill to the detected agent runtimes.
+After replacement, setup can install the versioned APM package. APM creates a consumer manifest and lockfile, deploys the skill, and compiles the foundation instructions for the detected agent runtimes.
 
 ### Common Commands
 
@@ -86,16 +88,17 @@ After replacement, setup can install the versioned APM package. APM creates a co
 | Write application tests | [`docs/testing.mdx`](docs/testing.mdx) |
 | Work on bundling or block assets | [`docs/bundeling.mdx`](docs/bundeling.mdx), [`docs/create-blocks.mdx`](docs/create-blocks.mdx) |
 | Configure translations | [`docs/i18n.mdx`](docs/i18n.mdx) |
-| Review AI-specific repo rules | [`AGENTS.md`](AGENTS.md), [`docs/work-with-ai.mdx`](docs/work-with-ai.mdx), [`.apm/skills/wp-plugin-bp/SKILL.md`](.apm/skills/wp-plugin-bp/SKILL.md) |
+| Review AI-specific repo rules | [`.apm/instructions/`](.apm/instructions/), [`docs/work-with-ai.mdx`](docs/work-with-ai.mdx), [`.apm/skills/wp-plugin-bp/SKILL.md`](.apm/skills/wp-plugin-bp/SKILL.md) |
 
 ## AI And Maintenance Notes
 
-- `AGENTS.md` contains the high-level repository rules and doc map
+- `AGENTS.md` contains only the managed-section markers in source; APM compiles the packaged instructions into that section
 - `apm.yml` gives the AI package its own release version, independent of the example plugin's `1.0.0` version
+- `.apm/instructions/` contains the portable foundation rules that APM converts to each agent runtime's native format
 - `.apm/skills/wp-plugin-bp/` contains the unified skill, task references, and scripts; APM rewrites links from its task references to canonical files in `docs/`
 - APM installs optional official WordPress skills from `WordPress/agent-skills` when the `wp-skills` workflow is requested
 - natural requests such as "sync with upstream project conventions" should route through the `wp-plugin-bp` skill and infer the upgrade workflow
-- when repo structure or workflows change, update `README.md`, the relevant file in `docs/`, and `.apm/skills/wp-plugin-bp/`
+- when foundation rules or workflows change, update the relevant APM instruction, documentation, or skill reference
 
 ## Upstream Reference
 
