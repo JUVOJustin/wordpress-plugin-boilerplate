@@ -4,7 +4,7 @@ Add, update, or test Action Scheduler integration.
 
 ## Workflow
 
-1. Load the [Action Scheduler guide](action-scheduler.mdx).
+1. Load the [Action Scheduler guide](../../../../docs/integrations/action-scheduler.mdx).
 2. Install the dependency with Composer when needed.
 3. Load Action Scheduler through the main plugin bootstrap as documented.
 4. Register scheduled hooks through the plugin loader or established feature service patterns.

@@ -48,6 +48,7 @@ This plugin is a modern WordPress plugin with strict conventions and automated w
 - **Plugin upgrades**: Use the `wp-plugin-bp` skill or ask naturally to sync with upstream project conventions.
 - **Official WordPress skills**: Install focused WordPress skills through the `wp-plugin-bp` skill's `wp-skills` workflow. APM deploys them to each selected agent runtime.
 - **Composer setup**: `.apm/` and `apm.yml` ship in the initial Composer package so setup can run `wp-plugin-bp/scripts/plugin-replace.php`; replacement cleanup removes the package-authoring source, then setup can install the versioned APM dependency for ongoing work.
+- **APM references**: Keep detailed guides canonical in `docs/`; task references in `.apm/skills/wp-plugin-bp/` must use relative Markdown links so APM rewrites them into the installed package under `apm_modules/`. Do not maintain copied guide snapshots.
 - **Missing skill**: If `wp-plugin-bp` is unavailable in an initialized plugin, run `apm install JUVOJustin/wordpress-plugin-boilerplate`.
 
 ### Maintaining the plugin

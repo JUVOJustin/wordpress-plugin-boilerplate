@@ -34,7 +34,7 @@ Use this repo when you want to:
 |- demo-plugin.php          Main bootstrap file only
 |- src/                     Plugin logic grouped by feature/domain
 |- resources/               Admin and frontend assets
-|- docs/                    Documentation site entry points; some alias canonical APM guides
+|- docs/                    Canonical user-facing documentation
 |- tests/php/               PHPUnit application tests
 |- apm.yml                  Versioned APM package manifest
 |- .apm/skills/wp-plugin-bp/ Unified plugin AI skill with task references
@@ -75,7 +75,7 @@ After replacement, setup can install the versioned APM package. APM creates a co
 - Register hooks, filters, shortcodes, CLI commands, and abilities through the loader
 - Put assets in `resources/admin/` and `resources/frontend/`
 - Add PHPUnit application tests in `tests/php/`
-- Treat `docs/` as user-facing documentation; edit canonical linked guides in `.apm/skills/wp-plugin-bp/references/`
+- Treat `docs/` as the canonical user-facing documentation source
 
 ## Where To Look Next
 
@@ -92,10 +92,10 @@ After replacement, setup can install the versioned APM package. APM creates a co
 
 - `AGENTS.md` contains the high-level repository rules and doc map
 - `apm.yml` gives the AI package its own release version, independent of the example plugin's `1.0.0` version
-- `.apm/skills/wp-plugin-bp/` contains the unified skill, canonical detailed guides, task references, and scripts
+- `.apm/skills/wp-plugin-bp/` contains the unified skill, task references, and scripts; APM rewrites links from its task references to canonical files in `docs/`
 - APM installs optional official WordPress skills from `WordPress/agent-skills` when the `wp-skills` workflow is requested
 - natural requests such as "sync with upstream project conventions" should route through the `wp-plugin-bp` skill and infer the upgrade workflow
-- when repo structure or workflows change, update `README.md`, the relevant canonical guide or `docs/` page, and `.apm/skills/wp-plugin-bp/`
+- when repo structure or workflows change, update `README.md`, the relevant file in `docs/`, and `.apm/skills/wp-plugin-bp/`
 
 ## Upstream Reference
 

@@ -111,5 +111,5 @@ When applying any area:
 - After copying upstream code, adapt namespace, text domain, paths, and plugin-specific behavior.
 - Never diff or copy deployed skill directories as boilerplate source; refresh with `apm update` and ask before removing local-only packages.
 
-The report names canonical guides under `references/`. Load only the ones it points to
-for the areas you are changing.
+The report names task references under `references/`. Those references link to canonical
+package docs that APM rewrites into `apm_modules/`; load only the references it names.

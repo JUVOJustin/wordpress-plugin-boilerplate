@@ -15,5 +15,3 @@ keywords:
 type: skill
 includes:
   - .apm/skills/wp-plugin-bp/
-dependencies:
-  apm: []

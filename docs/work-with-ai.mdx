@@ -53,7 +53,7 @@ Agents should infer the right task from natural language. For example, "sync thi
 
 ### wp-plugin-bp
 
-The `wp-plugin-bp` skill is the unified router for plugin workflows. Its `SKILL.md` stays small, and task-specific procedures and their canonical detailed guides live in `.apm/skills/wp-plugin-bp/references/`. The corresponding paths under `docs/` are symlink aliases for the documentation site, so each guide has one maintained source while the APM skill remains self-contained.
+The `wp-plugin-bp` skill is the unified router for plugin workflows. Its `SKILL.md` stays small, and task-specific procedures live in `.apm/skills/wp-plugin-bp/references/`. Detailed guides remain canonical regular files under `docs/`. Task references use normal relative Markdown links to those guides; APM rewrites links that leave the skill so installed references point to the package copy under `apm_modules/`.
 
 The initial Composer package includes `apm.yml` and `.apm/` so setup can run `wp-plugin-bp/scripts/plugin-replace.php` for identity replacement. The manifest version tracks the Demo Plugin release independently from the example plugin's `1.0.0` runtime version.
 
@@ -96,11 +96,13 @@ The WordPress project provides official skills for WordPress development. The `w
 
 Ask the `wp-plugin-bp` skill to run the `wp-skills` workflow to refresh these skills or install another official WordPress skill.
 
-## Packages and bundles
+## Packages and fallbacks
 
-The APM package is the primary distribution format because its skill primitive reaches every stable target relevant to Demo Plugin. Prompts, agents, and hooks have narrower runtime support and are not required for the current router.
+The Git-based APM package is the primary distribution format because its skill primitive reaches every stable target relevant to Demo Plugin. Prompts, agents, and hooks have narrower runtime support and are not required for the current router.
 
-An APM bundle is useful for offline or controlled distribution, but it is not a substitute for the APM CLI. Package maintainers can create a versioned archive with `apm pack --archive`; consumers still use `apm install` to verify and deploy it. All bundled skill resources are regular files. Only the documentation-site aliases outside the packaged skill are symlinks, because APM intentionally excludes symlinks from archives. A runtime without APM can use the Agent Skills standard as a manual fallback by copying `.apm/skills/wp-plugin-bp/` from the matching release into its supported skills directory.
+Do not publish the default `apm pack` output as a complete distribution of this package. APM bundles include packable primitives, but they do not automatically include the non-primitive `docs/` files reached through package-relative links. If an offline or non-APM artifact becomes necessary, generate a standalone skill archive during the release from the matching tag and copy the required guides into that temporary artifact. Do not commit generated guide copies to the source tree.
+
+A runtime without APM can use the Agent Skills standard as a manual fallback by copying `.apm/skills/wp-plugin-bp/` and the referenced `docs/` files from the same release into the corresponding locations in the target project.
 
 ## Tips for Effective AI Collaboration
 

@@ -4,7 +4,7 @@ Add or maintain Sentry integration.
 
 ## Workflow
 
-1. Load the [Sentry guide](sentry.mdx).
+1. Load the [Sentry guide](../../../../docs/integrations/sentry.mdx).
 2. Bootstrap Sentry early enough to capture plugin runtime errors.
 3. Keep DSN and environment values configurable.
 4. Avoid hardcoding secrets.

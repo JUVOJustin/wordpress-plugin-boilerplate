@@ -14,5 +14,5 @@ Write, extend, or debug PHPUnit application tests for this plugin.
 
 ## References
 
-- Load the [testing guide](testing.mdx) for detailed PHPUnit conventions.
-- Load the [Action Scheduler guide](action-scheduler.mdx) when tests involve Action Scheduler.
+- Load the [testing guide](../../../../docs/testing.mdx) for detailed PHPUnit conventions.
+- Load the [Action Scheduler guide](../../../../docs/integrations/action-scheduler.mdx) when tests involve Action Scheduler.

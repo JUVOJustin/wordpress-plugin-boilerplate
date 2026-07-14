@@ -1,6 +1,6 @@
 # QA Command
 
-Use the [GitHub Actions guide](github-actions.mdx) when QA changes affect CI workflows.
+Use the [GitHub Actions guide](../../../../docs/github-actions.mdx) when QA changes affect CI workflows.
 
 Run configured quality assurance tools and fix errors.
 
