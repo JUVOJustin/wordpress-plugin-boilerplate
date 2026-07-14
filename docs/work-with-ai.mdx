@@ -88,6 +88,8 @@ apm update
 apm audit
 ```
 
+APM 0.25.0 has a known false-positive where `apm audit` reports dependency skill files with rewritten package-relative links as drift ([microsoft/apm#2154](https://github.com/microsoft/apm/issues/2154)). The deployed links still resolve into `apm_modules/`; do not copy the canonical guides into the skill to silence this report.
+
 ## WordPress Agent Skills
 
 The WordPress project provides official skills for WordPress development. The `wp-skills` workflow installs requested skill directories as virtual APM packages from `WordPress/agent-skills`:
