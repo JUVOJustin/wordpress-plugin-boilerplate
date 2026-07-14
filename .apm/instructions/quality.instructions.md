@@ -1,6 +1,5 @@
 ---
 description: Quality and test commands provided by the plugin foundation.
-applyTo: "**"
 ---
 
 - Run PHPStan with `composer run phpstan` and WordPress Coding Standards with `composer run phpcs`; use `composer run phpcbf` only for safe automatic fixes.

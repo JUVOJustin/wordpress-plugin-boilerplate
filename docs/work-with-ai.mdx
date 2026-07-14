@@ -14,7 +14,9 @@ The AI integration consists of two layers that work together:
 
 Portable foundation rules live as focused files under `.apm/instructions/`. They cover architecture, assets, quality tooling, and workflow routing without containing setup-only boilerplate maintenance rules.
 
-The source `AGENTS.md` contains only `<!-- apm:start -->` and `<!-- apm:end -->`. The producer manifest uses APM's managed-section mode while authoring. Consumer projects compile the installed instruction primitives into `AGENTS.md` or the corresponding native rule files for their selected runtimes. Do not edit generated rule content directly.
+The source `AGENTS.md` keeps producer-only boilerplate context outside `<!-- apm:start -->` and `<!-- apm:end -->`. That context is wrapped in `BOILERPLATE-DOCS` markers and is removed during plugin setup. The producer manifest uses APM's managed-section mode so compiled foundation rules only replace the content between the APM markers.
+
+The foundation instructions intentionally omit `applyTo`. Architecture, scaffolding, workflow-routing, and quality knowledge must be available while an agent plans a change, before a matching file exists or is opened. APM therefore treats these rules as unconditional and folds them into the root context. Consumer projects compile the installed instructions into `AGENTS.md` or the corresponding native rule files for their selected runtimes. Do not edit generated rule content directly.
 
 ### 2. `wp-plugin-bp` Skill And WordPress Skills
 

@@ -36,7 +36,7 @@ Use this repo when you want to:
 |- resources/               Admin and frontend assets
 |- docs/                    Canonical user-facing documentation
 |- tests/php/               PHPUnit application tests
-|- AGENTS.md                Placeholder for APM-compiled instructions
+|- AGENTS.md                Producer-only context and APM-managed section
 |- apm.yml                  Versioned APM package manifest
 |- .apm/instructions/       Foundation rules compiled for each agent runtime
 |- .apm/skills/wp-plugin-bp/ Unified plugin AI skill with task references
@@ -92,7 +92,7 @@ After replacement, setup can install the versioned APM package for the Codex tar
 
 ## AI And Maintenance Notes
 
-- `AGENTS.md` contains only the managed-section markers in source; APM compiles the packaged instructions into that section
+- `AGENTS.md` keeps removable producer-only boilerplate context outside the APM markers; APM compiles portable rules into the managed section
 - `apm.yml` gives the AI package its own release version, independent of the example plugin's `1.0.0` version
 - `.apm/instructions/` contains the portable foundation rules that APM converts to each agent runtime's native format
 - `.apm/skills/wp-plugin-bp/` contains the unified skill, task references, and scripts; APM rewrites links from its task references to canonical files in `docs/`
