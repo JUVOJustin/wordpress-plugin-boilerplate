@@ -26,6 +26,13 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Verify APM package source layout
+        run: |
+          if [ -e .agents ]; then
+            echo 'The package source must live under .apm/; remove the .agents/ directory.' >&2
+            exit 1
+          fi
+
       - name: Generate cache keys
         id: cache-keys
         run: |
