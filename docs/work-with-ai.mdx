@@ -28,7 +28,7 @@ The package source lives in `.apm/skills/wp-plugin-bp/` and handles:
 - Integration with external tools
 - Automatic task routing for natural-language requests
 
-The repository never contains an authored `.agents/` directory; `.apm/` is the only package source. APM deploys the skill to runtime-specific directories in consumer projects, which can include a generated `.agents/skills/` path. Do not edit or copy those deployed files back into this repository.
+APM deploys the skill to runtime-specific directories in consumer projects. Do not edit deployed copies directly.
 
 Agents should infer the right task from natural language. For example, "sync this plugin with upstream project conventions" routes to `upgrade`.
 

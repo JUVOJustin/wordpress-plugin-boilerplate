@@ -30,7 +30,7 @@ The code examples are based on ACF's documentation for [local JSON](https://www.
  */
 private function load_dependencies(): void {
     $this->loader = new Loader();
-
+    
     // ACF JSON Support
     add_filter(
         'acf/settings/save_json',
@@ -79,7 +79,7 @@ class Config {
         add_filter( 'acf/settings/save_json/key=group_example1', array( $this, 'save_path' ) );
         add_filter( 'acf/settings/save_json/key=group_example2', array( $this, 'save_path' ) );
         add_filter( 'acf/settings/save_json/key=group_example3', array( $this, 'save_path' ) );
-
+        
         // Add load path
         add_filter( 'acf/settings/load_json', array( $this, 'load_path' ) );
     }
@@ -105,7 +105,7 @@ class Config {
     public function load_path( array $paths ): array {
         // Optional: Remove default path
         // unset( $paths[0] );
-
+        
         $paths[] = DEMO_PLUGIN_PATH . 'acf-json';
         return $paths;
     }
@@ -117,7 +117,7 @@ Then initialize it in your main plugin class:
 ```php title="src/Demo_Plugin.php"
 private function load_dependencies(): void {
     $this->loader = new Loader();
-
+    
     // Initialize ACF configuration
     new \Demo_Plugin\Integrations\ACF\Config();
 }

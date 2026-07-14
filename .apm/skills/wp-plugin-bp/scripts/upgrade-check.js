@@ -467,7 +467,7 @@ function renderMarkdown(report) {
 			}", text-domain="${report.identity.textDomain || '?'}"`
 		);
 	}
-	if (!report.gitAvailable) L.push('- WARNING: `git` not found — diffs are summarized as line counts only.');
+	if (!report.gitAvailable) L.push('- ⚠️ `git` not found — diffs are summarized as line counts only.');
 	L.push('');
 
 	// Summary table.
@@ -491,7 +491,7 @@ function renderMarkdown(report) {
 		}
 		L.push(`## ${a.title} — ${statusBadge(a.status)}`);
 		L.push('');
-		if (a.confirmation) L.push('> WARNING: Confirmation required before applying changes in this area.');
+		if (a.confirmation) L.push('> ⚠️ Confirmation required before applying changes in this area.');
 		if (a.refs.length) L.push(`> Reference docs to consult: ${a.refs.map((r) => `\`${r}\``).join(', ')}`);
 		L.push('');
 
@@ -531,7 +531,7 @@ function renderManifest(m) {
 	L.push(`### \`${m.rel}\` (${m.kind})`);
 	L.push('');
 	if (m.error) {
-			L.push(`- WARNING: ${m.error}`);
+		L.push(`- ⚠️ ${m.error}`);
 		L.push('');
 		return L;
 	}
@@ -582,7 +582,7 @@ function renderFile(f) {
 		return L;
 	}
 	if (f.status === 'error') {
-			L.push(`- \`${f.rel}\` — WARNING: ${f.error}`);
+		L.push(`- \`${f.rel}\` — ⚠️ ${f.error}`);
 		L.push('');
 		return L;
 	}
@@ -654,7 +654,7 @@ function statusBadge(status) {
 		case 'not-applicable':
 			return '⚪ not-applicable';
 		case 'skipped':
-			return 'skipped';
+			return '⏭️ skipped';
 		default:
 			return status;
 	}
