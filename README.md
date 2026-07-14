@@ -53,7 +53,7 @@ composer create-project juvo/wordpress-plugin-boilerplate
 ```
 
 The setup script asks for the plugin name, namespace, and slug, runs the packaged `wp-plugin-bp` replacement script, and removes the package-authoring `.apm/` tree and `apm.yml` from the initialized plugin.
-After replacement, setup can install the versioned APM package. APM creates a consumer manifest and lockfile, deploys the skill, and compiles the foundation instructions for the detected agent runtimes.
+After replacement, setup can install the versioned APM package for the Codex target. APM creates a consumer manifest and lockfile, deploys the shared skill, and compiles the foundation instructions into `AGENTS.md`. Additional runtimes can be added later with APM.
 
 ### Common Commands
 

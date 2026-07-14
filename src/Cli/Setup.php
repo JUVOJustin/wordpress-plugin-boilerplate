@@ -177,7 +177,8 @@ class Setup {
 	 * Optionally install the versioned APM package into the initialized plugin.
 	 *
 	 * Setup removes the package-authoring manifest and `.apm` source. APM then
-	 * creates a consumer manifest, lockfile, and native skill deployment.
+	 * creates a consumer manifest, lockfile, native skill deployment, and
+	 * compiled instruction files.
 	 *
 	 * @param string $plugin_path Absolute plugin root path.
 	 * @param string $package_ref Versioned APM package reference.
@@ -186,13 +187,13 @@ class Setup {
 	 */
 	private function maybe_install_apm_package( string $plugin_path, string $package_ref ): void {
 		if ( ! $this->ask_confirmation( 'Install the APM package for AI-assisted development? [y/N]' ) ) {
-			WP_CLI::log( "APM package was not installed. Run 'apm install {$package_ref}' later if needed." );
+			WP_CLI::log( "APM package was not installed. Run 'apm install --target codex {$package_ref} && apm compile --force-instructions' later if needed." );
 
 			return;
 		}
 
 		if ( ! $this->command_is_available( 'apm' ) ) {
-			WP_CLI::warning( "APM is not installed. Install it from https://microsoft.github.io/apm/getting-started/installation/, then run 'apm install {$package_ref}'." );
+			WP_CLI::warning( "APM is not installed. Install it from https://microsoft.github.io/apm/getting-started/installation/, then run 'apm install --target codex {$package_ref} && apm compile --force-instructions'." );
 
 			return;
 		}
@@ -205,12 +206,18 @@ class Setup {
 				'&&',
 				'apm',
 				'install',
+				'--target',
+				'codex',
 				escapeshellarg( $package_ref ),
+				'&&',
+				'apm',
+				'compile',
+				'--force-instructions',
 			)
 		);
 
-		$this->run_shell_command( $command, 'Error installing APM package' );
-		WP_CLI::success( 'APM package installed' );
+		$this->run_shell_command( $command, 'Error installing APM package or compiling instructions' );
+		WP_CLI::success( 'APM package installed and instructions compiled' );
 	}
 
 	/**

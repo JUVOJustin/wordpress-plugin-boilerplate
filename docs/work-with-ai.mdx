@@ -14,7 +14,7 @@ The AI integration consists of two layers that work together:
 
 Portable foundation rules live as focused files under `.apm/instructions/`. They cover architecture, assets, quality tooling, and workflow routing without containing setup-only boilerplate maintenance rules.
 
-The source `AGENTS.md` contains only `<!-- apm:start -->` and `<!-- apm:end -->`. APM compiles the instruction primitives into that managed section for runtimes that use `AGENTS.md` and into the corresponding native rule files for other runtimes. Do not edit generated rule content directly.
+The source `AGENTS.md` contains only `<!-- apm:start -->` and `<!-- apm:end -->`. The producer manifest uses APM's managed-section mode while authoring. Consumer projects compile the installed instruction primitives into `AGENTS.md` or the corresponding native rule files for their selected runtimes. Do not edit generated rule content directly.
 
 ### 2. `wp-plugin-bp` Skill And WordPress Skills
 
@@ -53,7 +53,7 @@ The `wp-plugin-bp` skill is the unified router for plugin workflows. Its `SKILL.
 
 The initial Composer package includes `apm.yml` and `.apm/` so setup can run `wp-plugin-bp/scripts/plugin-replace.php` for identity replacement. The manifest version tracks the Demo Plugin release independently from the example plugin's `1.0.0` runtime version.
 
-Setup captures that package version, removes the package-authoring files, and can install the matching Git tag as a dependency. APM then creates a consumer `apm.yml`, writes `apm.lock.yaml`, deploys the skill, and compiles the foundation instructions. Commit the consumer manifest, lockfile, and deployed files so other contributors receive the same context on clone.
+Setup captures that package version, removes the package-authoring files, and can install the matching Git tag for the Codex target. APM then creates a consumer `apm.yml`, writes `apm.lock.yaml`, deploys the shared skill, and compiles the foundation instructions into `AGENTS.md`. Additional runtimes can be added later with APM. Commit the consumer manifest, lockfile, and deployed files so other contributors receive the same context on clone.
 
 ### Install or restore the package
 
@@ -72,6 +72,12 @@ apm install JUVOJustin/wordpress-plugin-boilerplate#v2.3.0
 ```
 
 APM auto-detects installed agent runtimes. If the project has no detection signal yet, select one explicitly, for example `apm install --target codex JUVOJustin/wordpress-plugin-boilerplate`.
+
+Compile the installed instructions explicitly so `AGENTS.md` is populated even when Copilot is the only auto-detected runtime:
+
+```bash title="Terminal"
+apm compile --force-instructions
+```
 
 Refresh declared dependencies and verify the deployed files with:
 
