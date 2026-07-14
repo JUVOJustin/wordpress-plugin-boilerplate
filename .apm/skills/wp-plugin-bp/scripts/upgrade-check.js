@@ -101,7 +101,7 @@ const AREAS = [
 		key: 'php-qa',
 		title: 'PHP & QA configuration',
 		confirmation: false,
-		refs: ['references/qa.md', 'references/translation.md', 'references/bundling.md'],
+		refs: ['references/translation.md', 'references/bundling.md'],
 		manifests: [{ rel: 'composer.json', kind: 'composer' }],
 		files: ['phpcs.xml', 'phpstan.neon', 'phpunit.xml.dist'],
 		hint: 'Sync dependency versions, QA config, and composer scripts. Adapt namespace/text-domain in any copied config.',
