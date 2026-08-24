@@ -10,6 +10,6 @@
 		"wp-content/plugins/": "./tests/setup/plugins/"
 	},
 	"lifecycleScripts": {
-		"afterStart": "wp-env run cli --config=.wp-env.test.json --env-cwd=wp-content/plugins/demo-plugin bash -lc 'if [ ! -f vendor/autoload.php ] || [ ! -f vendor-prefixed/autoload.php ]; then mkdir -p vendor-prefixed && composer install --prefer-dist --no-interaction --no-progress; fi' && wp-env run cli --config=.wp-env.test.json wp plugin activate demo-plugin"
+		"afterStart": "wp-env run cli --config=.wp-env.test.json wp plugin activate demo-plugin"
 	}
 }

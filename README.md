@@ -44,14 +44,16 @@ Use this repo when you want to:
 
 ## Local Development
 
-After a fresh repository clone, install the Node dependencies and start wp-env:
+After a fresh repository clone, install the project dependencies, build the assets, and start wp-env:
 
 ```bash
+composer install
 npm ci
+npm run build
 npm run env:start
 ```
 
-wp-env installs the locked PHP dependencies inside its CLI container before activating Demo Plugin when its generated Composer autoloaders are missing. Host PHP and Composer are therefore not required for this development workflow; Node.js, npm, and Docker are still required. Compiled assets are committed in `build/`, so startup does not rebuild them.
+Composer dependencies and compiled assets are explicit development prerequisites. If either generated Composer autoloader is missing, Demo Plugin emits a warning while WordPress debugging is enabled and stops loading. The wp-env lifecycle only activates the plugin; it does not install dependencies or build assets.
 
 ### Create a Plugin From the Boilerplate
 

@@ -43,6 +43,12 @@ define( 'DEMO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
  * Use Composer PSR-4 Autoloading
  */
 if ( ! is_readable( DEMO_PLUGIN_PATH . 'vendor/autoload.php' ) || ! is_readable( DEMO_PLUGIN_PATH . 'vendor-prefixed/autoload.php' ) ) {
+	wp_trigger_error(
+		'',
+		'Demo Plugin cannot load because its Composer dependencies are missing. Run composer install before activating it.',
+		E_USER_WARNING
+	);
+
 	return;
 }
 
