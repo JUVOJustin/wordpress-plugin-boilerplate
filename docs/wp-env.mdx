@@ -6,6 +6,15 @@ description: Containerized WordPress development environment with @wordpress/env
 
 The plugin uses [@wordpress/env](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) to provide a consistent, containerized WordPress development environment. This is useful for local development and CI/CD pipelines where a full WordPress installation is required.
 
+After a fresh repository clone, install the Node dependencies and start the environment:
+
+```bash title="Terminal"
+npm ci
+npm run env:start
+```
+
+If either generated Composer autoloader is missing, the `afterStart` lifecycle installs the locked PHP dependencies inside the `cli` container before activating Demo Plugin. This keeps PHP and Composer as environment dependencies rather than host requirements and retries incomplete installs.
+
 :::note
 WP-CLI is treated as an environment dependency. Commands such as `composer run i18n:extract` and `composer run i18n:compile` assume that `wp` and the required WP-CLI packages are already available in the active environment. If you run the commands outside `wp-env`, install WP-CLI yourself. See the [official WP-CLI installation guide](https://make.wordpress.org/cli/handbook/guides/installing/).
 :::
@@ -49,7 +58,7 @@ npm run env:cli -- composer run i18n:compile
 npm run env:cli -- composer run phpstan
 ```
 
-On every `env:start`, the `afterStart` hook activates Demo Plugin in the `cli` container.
+On every `env:start`, the `afterStart` hook checks for the generated Composer autoloaders, installs the locked PHP dependencies when either is missing, and then activates Demo Plugin in the `cli` container. Existing dependencies are left untouched, which also preserves production `--no-dev` installs in the deployment workflow.
 
 Application tests use a separate wp-env configuration rather than the deprecated implicit `tests-cli` environment. `npm run test:php` starts that environment automatically and runs PHPUnit in its `cli` container.
 
@@ -88,8 +97,9 @@ The plugin uses wp-env in the deploy workflow to compile translations. This requ
 ## Things to Keep in Mind
 
 - Docker must be installed and running
+- Node.js and npm are needed to install and run `@wordpress/env`; host PHP and Composer are not required
 - wp-env automatically selects available ports, so the URLs can differ between starts; use `npm run env:cli -- wp option get home` when a script needs the current URL
-- The first start downloads WordPress core and may take a few minutes
+- The first start downloads WordPress core and installs the locked PHP dependencies, so it may take a few minutes
 - Data persists between starts unless you run `env:destroy`
-- The `afterStart` lifecycle script automatically activates the plugin
+- The `afterStart` lifecycle script installs missing Composer dependencies before activating the plugin
 - The PHP version is pinned to 8.1 because `composer run i18n:compile` uses `wp i18n make-php`

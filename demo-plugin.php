@@ -42,7 +42,26 @@ define( 'DEMO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 /**
  * Use Composer PSR-4 Autoloading
  */
-require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+$demo_plugin_autoloader          = DEMO_PLUGIN_PATH . 'vendor/autoload.php';
+$demo_plugin_prefixed_autoloader = DEMO_PLUGIN_PATH . 'vendor-prefixed/autoload.php';
+
+if ( ! is_readable( $demo_plugin_autoloader ) || ! is_readable( $demo_plugin_prefixed_autoloader ) ) {
+	// Keep WordPress usable while a mapped development checkout is being bootstrapped.
+	add_action(
+		'admin_notices',
+		static function (): void {
+			printf(
+				'<div class="notice notice-error"><p>%s</p></div>',
+				esc_html__( 'Demo Plugin cannot start because its Composer dependencies are missing. Run composer install, or restart wp-env so it can install them automatically.', 'demo-plugin' )
+			);
+		}
+	);
+
+	return;
+}
+
+require $demo_plugin_autoloader;
+unset( $demo_plugin_autoloader, $demo_plugin_prefixed_autoloader );
 
 /**
  * Public version constant for companion plugins to detect this plugin and
