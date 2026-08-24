@@ -94,7 +94,7 @@ php .agents/skills/wp-plugin-bp/scripts/plugin-replace.php \
  - run `npm run build`
  - run `composer run phpstan` and `composer run phpcs`
  - run `npm run lint:js` and `npm run lint:style` when JS or styles changed
- - run `npm run test:php` after starting wp-env when PHPUnit behavior changed
+ - run `npm run test:php` when PHPUnit behavior changed; it starts the isolated test environment automatically
  - remove `tmp/plugin-ref`
 
 ## Per-area guidance

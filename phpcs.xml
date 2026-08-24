@@ -7,6 +7,9 @@
     <arg name="parallel" value="8"/>
     <arg name="colors"/>
 
+    <!-- Match the minimum WordPress version declared in the plugin header. -->
+    <config name="minimum_wp_version" value="6.9"/>
+
     <!-- Specify the standard to use -->
     <rule ref="WordPress">
         <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>

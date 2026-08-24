@@ -14,6 +14,8 @@ WP-CLI is treated as an environment dependency. Commands such as `composer run i
 
 See `.wp-env.json` for the configuration. The setup uses `mappings` instead of the common `plugins: ["."]` approach and runs the containers with PHP 8.1 or newer so WP-CLI i18n commands support the `make-php` compilation step.
 
+Application tests use the isolated `.wp-env.test.json` configuration. Both environments automatically select available ports to avoid collisions with other local projects.
+
 ### Why `mappings` instead of `plugins: ["."]`
 
 The standard approach maps the current directory as a plugin, but the resulting folder name depends on the parent directory name. This causes issues when:
@@ -34,7 +36,9 @@ Scripts that interact with wp-env are defined in `package.json`:
 | `npm run env:stop` | Stop the Docker containers |
 | `npm run env:destroy` | Remove containers and data |
 | `npm run env:cli` | Run commands inside the container |
-| `npm run test:php` | Run PHPUnit application tests in the test container |
+| `npm run env:test:start` | Start the isolated application-test environment |
+| `npm run env:test:stop` | Stop the isolated application-test environment |
+| `npm run test:php` | Start the test environment and run PHPUnit application tests |
 
 ### Running Commands Inside wp-env
 
@@ -46,6 +50,8 @@ npm run env:cli -- composer run phpstan
 ```
 
 On every `env:start`, the `afterStart` hook activates Demo Plugin in the `cli` container.
+
+Application tests use a separate wp-env configuration rather than the deprecated implicit `tests-cli` environment. `npm run test:php` starts that environment automatically and runs PHPUnit in its `cli` container.
 
 ## Adding Custom Scripts
 
@@ -82,6 +88,7 @@ The plugin uses wp-env in the deploy workflow to compile translations. This requ
 ## Things to Keep in Mind
 
 - Docker must be installed and running
+- wp-env automatically selects available ports, so the URLs can differ between starts; use `npm run env:cli -- wp option get home` when a script needs the current URL
 - The first start downloads WordPress core and may take a few minutes
 - Data persists between starts unless you run `env:destroy`
 - The `afterStart` lifecycle script automatically activates the plugin

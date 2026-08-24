@@ -1,5 +1,6 @@
 parameters:
     level: 6
+    # Inline ignores cover diagnostics that vary with the configured PHP runtime.
     reportUnmatchedIgnoredErrors: false
     paths:
         - demo-plugin.php
@@ -9,6 +10,5 @@ parameters:
         - %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-commands-stubs.php
         - %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-i18n-stubs.php
         - %rootDir%/../../php-stubs/wp-cli-stubs/wp-cli-tools-stubs.php
-    ignoreErrors:
     bootstrapFiles:
         - constants.php

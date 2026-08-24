@@ -23,7 +23,7 @@ This plugin is a modern WordPress plugin with strict conventions and automated w
 ### Quality Assurance
 
 - **PHP**: PHPStan (`phpstan.neon`), PHPCS (`phpcs.xml`)
-- **JS**: ESLint (`.eslintrc`)
+- **JS**: ESLint (`eslint.config.cjs`)
 - **CI/CD**: GitHub Actions in `.github/workflows/`
 
 ### Key Primitives
@@ -43,8 +43,8 @@ This plugin is a modern WordPress plugin with strict conventions and automated w
 - **Blocks**: Run `npm run create-block`. Registration is automatic; `tests/php/BlockRegistrationTest.php` generically guards that every built block is loaded (via `/wp/v2/block-types`) and its assets exist. Use the `wp-plugin-bp` skill for block guidance.
 - **Abilities API**: Implement interfaces in `src/Abilities/`, register via Loader. `tests/php/AbilityRegistrationTest.php` generically guards that every `Ability_Interface` implementation (and its category) is registered. Use the `wp-plugin-bp` skill for ability guidance.
 - **i18n**: Extract with `composer run i18n:extract`, compile with `composer run i18n:compile`. Use the `wp-plugin-bp` skill for translation work.
-- **wp-env**: Start with `npm run env:start`. Use the `wp-plugin-bp` skill when tests are involved.
-- **Testing**: Run application tests with `npm run test:php`. Use the `wp-plugin-bp` skill for testing guidance.
+- **wp-env**: Start the development environment with `npm run env:start`. Application tests use the isolated `.wp-env.test.json` environment. Use the `wp-plugin-bp` skill when tests are involved.
+- **Testing**: Run application tests with `npm run test:php`; it starts the isolated test environment automatically. Use the `wp-plugin-bp` skill for testing guidance.
 - **Plugin upgrades**: Use the `wp-plugin-bp` skill or ask naturally to sync with upstream project conventions.
 - **Official WordPress skills**: `.agents/skills/wp-*/` contains focused skills for block development, Interactivity API, PHPStan, project triage, and REST API work. Use the `wp-plugin-bp` skill `wp-skills` workflow to refresh or add official WordPress skills.
 - **Composer setup**: `.agents/` ships in the initial Composer package so setup can run `wp-plugin-bp/scripts/plugin-replace.php`; replacement cleanup removes `.agents/`, then setup asks whether to install agent skills for ongoing work.

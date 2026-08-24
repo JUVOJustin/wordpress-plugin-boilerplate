@@ -57,7 +57,8 @@ Do not continue with generic WordPress advice when a task applies. The task refe
 ## Environment
 
 If the host has no working environment (ddev,wp-studio etc) use wp-env.
-- Start env: `npm run env:start`
+- Start the development environment: `npm run env:start`
+- Run application tests in their isolated environment: `npm run test:php` (starts `.wp-env.test.json` automatically)
 - Run commands: `npm run env:cli composer run phpstan` or `npm run env:cli i18n:extract`
 
 All PHP and wp-cli commands/tools can run inside wp-env. npm commands need to run on the host.

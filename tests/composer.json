@@ -1,8 +1,9 @@
 {
 	"name": "demo-plugin/test-dependencies",
 	"description": "Test-only dependencies for demo-plugin. Add premium or private plugins here.",
+	"license": "GPL-3.0-or-later",
 	"require": {
-		"composer/installers": "^2.0"
+		"composer/installers": "^2.3"
 	},
 	"extra": {
 		"installer-paths": {
