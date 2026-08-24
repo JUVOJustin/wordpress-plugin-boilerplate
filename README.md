@@ -51,7 +51,7 @@ npm ci
 npm run env:start
 ```
 
-wp-env installs the locked PHP dependencies inside its CLI container before activating Demo Plugin when its generated Composer autoloaders are missing. Host PHP and Composer are therefore not required for this development workflow; Node.js, npm, and Docker are still required.
+wp-env installs the locked PHP dependencies inside its CLI container before activating Demo Plugin when its generated Composer autoloaders are missing. Host PHP and Composer are therefore not required for this development workflow; Node.js, npm, and Docker are still required. Compiled assets are committed in `build/`, so startup does not rebuild them.
 
 ### Create a Plugin From the Boilerplate
 

@@ -60,6 +60,8 @@ npm run env:cli -- composer run phpstan
 
 On every `env:start`, the `afterStart` hook checks for the generated Composer autoloaders, installs the locked PHP dependencies when either is missing, and then activates Demo Plugin in the `cli` container. Existing dependencies are left untouched, which also preserves production `--no-dev` installs in the deployment workflow.
 
+The lifecycle does not run `npm run build`. Compiled runtime assets are committed in `build/`, so a fresh clone can start immediately without rebuilding or modifying tracked files. Run `npm run start` while editing assets or `npm run build` when a production rebuild is needed.
+
 Application tests use a separate wp-env configuration rather than the deprecated implicit `tests-cli` environment. `npm run test:php` starts that environment automatically and runs PHPUnit in its `cli` container.
 
 ## Adding Custom Scripts
