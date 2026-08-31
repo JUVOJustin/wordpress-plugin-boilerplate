@@ -11,11 +11,3 @@ if ( ! response.ok ) {
 		`WordPress REST API returned ${ response.status } at ${ restApiUrl }.`
 	);
 }
-
-const index = await response.json();
-
-if ( ! index.namespaces?.includes( 'wp/v2' ) ) {
-	throw new Error(
-		`WordPress REST API index is invalid at ${ restApiUrl }.`
-	);
-}
