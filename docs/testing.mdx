@@ -166,7 +166,7 @@ Run `npm run env:test:cli -- composer update --working-dir=tests` to update test
 
 ## Host-side HTTP tests
 
-After starting the test environment, run `npm run test:rest` to request its REST API through the URL reported by WordPress. Future browser tests can import `getWpEnvUrl()` from `tests/helpers/wp-env.mjs` for the same URL.
+After starting the test environment, run `npm run test:rest` to request the REST API URL reported by WordPress. Future browser tests can use `getWpEnvUrls().home` from `tests/helpers/wp-env.mjs`.
 
 ## Configuration notes
 

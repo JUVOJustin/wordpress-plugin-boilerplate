@@ -1,9 +1,9 @@
 /**
  * Verify that host-side tests can reach wp-env on its runtime-selected port.
  */
-import { getWpEnvUrl } from './helpers/wp-env.mjs';
+import { getWpEnvUrls } from './helpers/wp-env.mjs';
 
-const restApiUrl = new URL( '/wp-json/', getWpEnvUrl() );
+const { rest: restApiUrl } = getWpEnvUrls();
 const response = await fetch( restApiUrl );
 
 if ( ! response.ok ) {

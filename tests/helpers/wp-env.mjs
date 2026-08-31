@@ -1,5 +1,5 @@
 /**
- * Resolve the host URL of a running wp-env configuration.
+ * Resolve host URLs for a running wp-env configuration.
  */
 import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
@@ -16,13 +16,13 @@ const wpEnvExecutable = resolve(
 );
 
 /**
- * Ask WordPress for the home URL configured by wp-env.
+ * Ask WordPress for its browser and REST API URLs.
  *
  * @param {string} configPath wp-env configuration path.
- * @return {URL} URL reachable from the host.
+ * @return {{home: URL, rest: URL}} URLs reachable from the host.
  */
-export function getWpEnvUrl( configPath = '.wp-env.test.json' ) {
-	const homeUrl = JSON.parse(
+export function getWpEnvUrls( configPath = '.wp-env.test.json' ) {
+	const urls = JSON.parse(
 		execFileSync(
 			process.execPath,
 			[
@@ -32,7 +32,7 @@ export function getWpEnvUrl( configPath = '.wp-env.test.json' ) {
 				`--config=${ configPath }`,
 				'wp',
 				'eval',
-				'echo wp_json_encode( home_url( "/" ) );',
+				'echo wp_json_encode( array( "home" => home_url( "/" ), "rest" => get_rest_url() ) );',
 			],
 			{
 				cwd: projectRoot,
@@ -41,5 +41,8 @@ export function getWpEnvUrl( configPath = '.wp-env.test.json' ) {
 		)
 	);
 
-	return new URL( homeUrl );
+	return {
+		home: new URL( urls.home ),
+		rest: new URL( urls.rest ),
+	};
 }
