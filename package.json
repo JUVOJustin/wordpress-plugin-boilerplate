@@ -21,7 +21,7 @@
     "env:test:start": "wp-env start --update --config=.wp-env.test.json",
     "env:test:stop": "wp-env stop --config=.wp-env.test.json",
     "env:test:cli": "wp-env run cli --config=.wp-env.test.json --env-cwd=wp-content/plugins/demo-plugin",
-    "test:php": "npm run env:test:start && npm run env:test:cli -- bash -lc 'composer install --working-dir=tests --no-interaction && vendor/bin/phpunit'",
-    "test:rest": "node tests/rest-api-smoke.mjs"
+    "env:test:check": "node tests/wp-env-check.mjs",
+    "test:php": "npm run env:test:start && npm run env:test:cli -- bash -lc 'composer install --working-dir=tests --no-interaction && vendor/bin/phpunit'"
   }
 }

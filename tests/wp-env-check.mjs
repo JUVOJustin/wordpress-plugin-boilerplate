@@ -1,5 +1,5 @@
 /**
- * Verify that host-side tests can reach wp-env on its runtime-selected port.
+ * Verify that host-side tools can reach the running wp-env test environment.
  */
 import { getWpEnvUrls } from './helpers/wp-env.mjs';
 
