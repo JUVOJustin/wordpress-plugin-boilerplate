@@ -35,10 +35,10 @@ Read these sources from the target plugin:
 
 ### Apply replacements on the cloned reference
 
-Run the script against the cloned reference directory before comparing anything:
+Run the installed skill script against the cloned reference directory before comparing anything:
 
 ```bash
-php tmp/plugin-ref/.agents/skills/wp-plugin-bp/scripts/plugin-replace.php \
+php .agents/skills/wp-plugin-bp/scripts/plugin-replace.php \
   --path tmp/plugin-ref \
   --plugin-name "My Awesome Plugin" \
   --plugin-namespace "My_Awesome_Plugin" \
@@ -73,7 +73,7 @@ php .agents/skills/wp-plugin-bp/scripts/plugin-replace.php \
 3. Run the replacement script against the cloned reference before comparing anything.
 4. Run the automated upgrade check to generate the comparison report:
    ```bash
-   node tmp/plugin-ref/.agents/skills/wp-plugin-bp/scripts/upgrade-check.js \
+   node .agents/skills/wp-plugin-bp/scripts/upgrade-check.js \
      --target . --ref tmp/plugin-ref
    ```
    Pass `--ref` the path where you actually cloned the reference; it accepts any
