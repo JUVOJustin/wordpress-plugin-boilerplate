@@ -107,8 +107,5 @@ jobs:
           $COMPOSER_AUTH
           EOF
 
-      - name: Start wp-env
-        run: npm run env:start
-
       - name: Run application tests
         run: npm run test:php

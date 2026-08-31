@@ -10,7 +10,7 @@ Write, extend, or debug PHPUnit application tests for this plugin.
 4. Extend `WP_UnitTestCase`.
 5. Use `self::factory()` for WordPress data.
 6. Register hooks inside the test method unless a shared fixture genuinely needs `setUp`.
-7. Run tests with `npm run test:php`; the command starts the isolated test environment automatically.
+7. Run tests with `npm run test:php`.
 
 ## References
 
