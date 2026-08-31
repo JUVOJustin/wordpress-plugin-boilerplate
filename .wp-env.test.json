@@ -3,12 +3,13 @@
 	"autoPort": true,
 	"core": null,
 	"phpVersion": "8.1",
+	"port": 8889,
 	"testsEnvironment": false,
 	"mappings": {
 		"wp-content/plugins/demo-plugin": ".",
 		"wp-content/plugins/": "./tests/setup/plugins/"
 	},
 	"lifecycleScripts": {
-		"afterStart": "wp-env run cli wp plugin activate demo-plugin"
+		"afterStart": "wp-env run cli --config=.wp-env.test.json wp plugin activate demo-plugin"
 	}
 }

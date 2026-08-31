@@ -4,7 +4,7 @@ Write, extend, or debug PHPUnit application tests for this plugin.
 
 ## Required Pattern
 
-1. Use the configured wp-env test environment. Do not create a second test bootstrap.
+1. Use the isolated `.wp-env.test.json` environment. Do not create another test environment or bootstrap.
 2. Put test files in `tests/php/`.
 3. Use no namespace in PHPUnit test files.
 4. Extend `WP_UnitTestCase`.

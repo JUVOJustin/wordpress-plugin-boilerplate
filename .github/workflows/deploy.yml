@@ -74,7 +74,7 @@ jobs:
         run: npm run env:start
 
       - name: Compile translations in wp-env from po files
-        run: npm run env:cli composer run i18n:compile
+        run: npm run env:cli -- composer run i18n:compile
 
       - name: Build dist-archive on host
         run: |

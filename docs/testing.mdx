@@ -6,7 +6,7 @@ description: Developer guide for writing PHPUnit application tests in Demo Plugi
 
 import { Steps } from '@astrojs/starlight/components';
 
-Demo Plugin ships with a PHPUnit setup that runs exclusively inside the `wp-env` test container. Running tests outside of `wp-env` is not encouraged — the bootstrap will exit immediately if `WP_TESTS_DIR` is not set, which only happens inside the container.
+Demo Plugin runs PHPUnit in the isolated `.wp-env.test.json` environment. `npm run test:php` starts it automatically.
 
 The container provides a real WordPress database and the full WordPress function library required by the WordPress test bootstrap. The bootstrap lives in `tests/bootstrap.php`, configuration in `phpunit.xml.dist`, and test classes go in `tests/php`.
 
@@ -18,13 +18,7 @@ The plugin ships and uses its own PHPUnit version because the WordPress test boo
 
 <Steps>
 
-1. Start the test environment.
-
-   ```bash title="Terminal"
-   npm run env:start
-   ```
-
-2. Add a test class in `tests/php`. An `ExampleTest.php` is already provided as a starting point.
+1. Add a test class in `tests/php`. An `ExampleTest.php` is already provided as a starting point.
 
    ```php title="tests/php/MyFeatureTest.php"
    <?php
@@ -36,17 +30,13 @@ The plugin ships and uses its own PHPUnit version because the WordPress test boo
    }
    ```
 
-3. Run tests.
+2. Run tests.
 
    ```bash title="Terminal"
    npm run test:php
    ```
 
 </Steps>
-
-:::note[Why `tests-cli` and not `cli`?]
-`wp-env` exposes two containers. `cli` is the development container sharing the main database. `tests-cli` is the dedicated test container with its own isolated database and `WP_TESTS_DIR` pre-configured to the bundled WordPress test framework. `test:php` uses `tests-cli` directly — no Composer wrapper — so the PHPUnit version in the container is always matched to the bundled WP test files.
-:::
 
 ## Common test patterns
 
@@ -93,27 +83,17 @@ Some tests require other plugins to be present and active in the test environmen
 
 ### Free plugins from WordPress.org
 
-Use WP-CLI's `plugin install` command inside the `tests-cli` container. Extend the existing `lifecycleScripts.afterStart` command in `.wp-env.json` so it runs automatically on `env:start`:
-
-```json title=".wp-env.json"
-{
-	"lifecycleScripts": {
-		"afterStart": "<existing_commands> && wp-env run tests-cli wp plugin install advanced-custom-fields --activate"
-	}
-}
-```
-
-The plugin slug is the same as on wordpress.org/plugins. You can also pin a specific version:
+Use WP-CLI inside the isolated test environment. The plugin slug matches its wordpress.org/plugins slug:
 
 ```bash
-wp-env run tests-cli wp plugin install advanced-custom-fields --version=6.3.0 --activate
+npm run env:test:cli -- wp plugin install advanced-custom-fields --version=6.3.0 --activate
 ```
 
 ### Premium or private plugins
 
 Private and premium plugins are managed through a dedicated `tests/composer.json`. Composer installs them into `tests/setup/plugins/`, which is mapped into the wp-env WordPress installation before the environment starts.
 
-Run `npm run env:cli composer update --working-dir=tests` if you want to update your test dependencies.
+Run `npm run env:test:cli -- composer update --working-dir=tests` to update test dependencies.
 
 <Steps>
 
@@ -159,13 +139,13 @@ Run `npm run env:cli composer update --working-dir=tests` if you want to update 
    `tests/auth.json` is listed in `.gitignore` and must never be committed.
    :::
 
-3. Start the environment.
+3. Run the tests.
 
    ```bash title="Terminal"
-   npm run env:start
+   npm run test:php
    ```
 
-4. For CI, add a `COMPOSER_AUTH` secret in GitHub Actions with the same JSON content as `auth.json`. The `test-application` workflow writes it to `tests/auth.json` before `env:start` runs.
+4. For CI, add a `COMPOSER_AUTH` secret in GitHub Actions with the same JSON content as `auth.json`. The `test-application` workflow writes it to `tests/auth.json` before the tests run.
 
    ```json title="GitHub Actions secret: COMPOSER_AUTH"
    {
@@ -183,6 +163,10 @@ Run `npm run env:cli composer update --working-dir=tests` if you want to update 
    :::
 
 </Steps>
+
+## Host-side tests
+
+Future REST or browser tests can use `getWpEnvUrls()` from `tests/helpers/wp-env.mjs` to resolve the URLs reported by WordPress.
 
 ## Configuration notes
 

@@ -35,9 +35,11 @@ Read these sources from the target plugin:
 
 ### Apply replacements on the cloned reference
 
-Run the script against the cloned reference directory before comparing anything:
+Preserve the freshly cloned checker because setup cleanup removes `.agents`, then run the replacement script from the clone:
 
 ```bash
+cp tmp/plugin-ref/.agents/skills/wp-plugin-bp/scripts/upgrade-check.js tmp/plugin-upgrade-check.js
+
 php tmp/plugin-ref/.agents/skills/wp-plugin-bp/scripts/plugin-replace.php \
   --path tmp/plugin-ref \
   --plugin-name "My Awesome Plugin" \
@@ -70,10 +72,10 @@ php .agents/skills/wp-plugin-bp/scripts/plugin-replace.php \
    git clone --depth 1 <upstream-url> tmp/plugin-ref
    ```
 2. Determine the target plugin identity from the plugin being updated.
-3. Run the replacement script against the cloned reference before comparing anything.
+3. Preserve the cloned checker and run the replacement script as shown above.
 4. Run the automated upgrade check to generate the comparison report:
    ```bash
-   node tmp/plugin-ref/.agents/skills/wp-plugin-bp/scripts/upgrade-check.js \
+   node tmp/plugin-upgrade-check.js \
      --target . --ref tmp/plugin-ref
    ```
    Pass `--ref` the path where you actually cloned the reference; it accepts any
@@ -107,8 +109,8 @@ php .agents/skills/wp-plugin-bp/scripts/plugin-replace.php \
  - run `npm run build`
  - run `composer run phpstan` and `composer run phpcs`
  - run `npm run lint:js` and `npm run lint:style` when JS or styles changed
- - run `npm run test:php` after starting wp-env when PHPUnit behavior changed
- - remove `tmp/plugin-ref`
+ - run `npm run test:php` when PHPUnit behavior changed
+ - remove `tmp/plugin-ref` and `tmp/plugin-upgrade-check.js`
 
 ## Per-area guidance
 

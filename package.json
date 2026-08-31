@@ -1,15 +1,15 @@
 {
   "name": "demo-plugin",
   "devDependencies": {
-    "@wordpress/env": "^11.7.0",
-    "@wordpress/scripts": "^32.1.0"
+    "@wordpress/env": "^11.13.0",
+    "@wordpress/scripts": "^34.1.0"
   },
   "scripts": {
     "start": "wp-scripts start --blocks-manifest --experimental-modules",
     "build": "wp-scripts build --blocks-manifest --experimental-modules",
     "lint:style": "wp-scripts lint-style 'resources/**/*.{css,scss,sass}'",
-    "lint:js": "wp-scripts lint-js ./resources",
-    "lint:fix:js": "wp-scripts lint-js ./resources --fix",
+    "lint:js": "wp-scripts lint-js ./resources ./tests",
+    "lint:fix:js": "wp-scripts lint-js ./resources ./tests --fix",
     "lint:fix:style": "wp-scripts lint-style 'resources/**/*.{css,scss,sass}' --fix",
     "format": "wp-scripts format ./resources",
     "packages-update": "wp-scripts packages-update",
@@ -18,6 +18,9 @@
     "env:stop": "wp-env stop",
     "env:destroy": "wp-env destroy",
     "env:cli": "wp-env run cli --env-cwd=wp-content/plugins/demo-plugin",
-    "test:php": "wp-env run tests-cli --env-cwd=wp-content/plugins/demo-plugin bash -lc 'composer install --working-dir=tests --no-interaction && vendor/bin/phpunit'"
+    "env:test:start": "wp-env start --update --config=.wp-env.test.json",
+    "env:test:stop": "wp-env stop --config=.wp-env.test.json",
+    "env:test:cli": "wp-env run cli --config=.wp-env.test.json --env-cwd=wp-content/plugins/demo-plugin",
+    "test:php": "npm run env:test:start && npm run env:test:cli -- bash -lc 'composer install --working-dir=tests --no-interaction && vendor/bin/phpunit'"
   }
 }

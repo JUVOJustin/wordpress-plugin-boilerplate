@@ -131,10 +131,10 @@ const AREAS = [
 		key: 'js-bundling',
 		title: 'JS & bundling',
 		confirmation: false,
-		refs: ['references/doc-bundling.mdx', 'references/doc-wp-env.mdx', 'references/doc-create-blocks.mdx'],
+		refs: ['references/doc-bundling.mdx', 'references/doc-wp-env.mdx', 'references/doc-testing.mdx', 'references/doc-create-blocks.mdx'],
 		manifests: [{ rel: 'package.json', kind: 'npm' }],
-		files: ['webpack.config.js', '.wp-env.json'],
-		hint: 'Sync npm deps, build/lint scripts, and webpack entry points. Watch for new wp-scripts flags (e.g. --experimental-modules).',
+		files: ['webpack.config.js', '.wp-env.json', '.wp-env.test.json', 'tests/helpers/wp-env.mjs'],
+		hint: 'Sync npm deps, build/lint scripts, webpack entry points, and wp-env test helpers. Watch for new wp-scripts flags (e.g. --experimental-modules).',
 	},
 	{
 		key: 'github-actions',

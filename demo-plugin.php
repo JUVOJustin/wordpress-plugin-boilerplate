@@ -39,10 +39,17 @@ if ( ! defined( 'WPINC' ) ) {
 define( 'DEMO_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DEMO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
-/**
- * Use Composer PSR-4 Autoloading
- */
-require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+if ( ! is_readable( DEMO_PLUGIN_PATH . 'vendor/autoload.php' ) || ! is_readable( DEMO_PLUGIN_PATH . 'vendor-prefixed/autoload.php' ) ) {
+	wp_trigger_error(
+		'',
+		'Demo Plugin cannot load. Run composer install.',
+		E_USER_WARNING
+	);
+
+	return;
+}
+
+require DEMO_PLUGIN_PATH . 'vendor/autoload.php';
 
 /**
  * Public version constant for companion plugins to detect this plugin and

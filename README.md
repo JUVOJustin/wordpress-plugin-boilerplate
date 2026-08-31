@@ -14,7 +14,7 @@ If you want the user-facing documentation site entry point, start with [`docs/in
 - Centralized WordPress hook registration through the loader
 - `@wordpress/scripts` for bundling, linting, and formatting
 - `@wordpress/env` for reproducible local WordPress development
-- PHPUnit application testing in the dedicated `tests-cli` container
+- PHPUnit application testing in an isolated wp-env environment
 - GitHub Actions for analysis, testing, and release automation
 - AI-oriented project instructions in `AGENTS.md`, `.agents/skills/wp-plugin-bp/`, and official WordPress skills in `.agents/skills/wp-*/`
 
@@ -43,6 +43,15 @@ Use this repo when you want to:
 ```
 
 ## Local Development
+
+After cloning the repository:
+
+```bash
+composer install
+npm ci
+npm run build
+npm run env:start
+```
 
 ### Create a Plugin From the Boilerplate
 
