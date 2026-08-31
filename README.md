@@ -71,6 +71,7 @@ After replacement, setup asks whether to install agent skills for ongoing AI-ass
 | `npm run build` | Build production assets |
 | `npm run start` | Watch and rebuild assets during development |
 | `npm run test:php` | Run PHPUnit application tests in `wp-env` |
+| `npm run test:rest` | Test the REST API through the runtime-selected port |
 | `npm run lint:js` | Lint JavaScript |
 | `npm run lint:style` | Lint styles |
 | `composer run phpstan` | Run PHP static analysis |

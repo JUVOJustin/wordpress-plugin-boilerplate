@@ -44,7 +44,7 @@ This plugin is a modern WordPress plugin with strict conventions and automated w
 - **Abilities API**: Implement interfaces in `src/Abilities/`, register via Loader. `tests/php/AbilityRegistrationTest.php` generically guards that every `Ability_Interface` implementation (and its category) is registered. Use the `wp-plugin-bp` skill for ability guidance.
 - **i18n**: Extract with `composer run i18n:extract`, compile with `composer run i18n:compile`. Use the `wp-plugin-bp` skill for translation work.
 - **wp-env**: Run `composer install` and `npm run build` before `npm run env:start`; the lifecycle only activates Demo Plugin. Use the `wp-plugin-bp` skill when tests are involved.
-- **Testing**: Run application tests with `npm run test:php`; it starts the isolated test environment automatically. Use the `wp-plugin-bp` skill for testing guidance.
+- **Testing**: Run PHPUnit with `npm run test:php` and the host-side REST smoke test with `npm run test:rest`. Use the `wp-plugin-bp` skill for testing guidance.
 - **Plugin upgrades**: Use the `wp-plugin-bp` skill or ask naturally to sync with upstream project conventions.
 - **Official WordPress skills**: `.agents/skills/wp-*/` contains focused skills for block development, Interactivity API, PHPStan, project triage, and REST API work. Use the `wp-plugin-bp` skill `wp-skills` workflow to refresh or add official WordPress skills.
 - **Composer setup**: `.agents/` ships in the initial Composer package so setup can run `wp-plugin-bp/scripts/plugin-replace.php`; replacement cleanup removes `.agents/`, then setup asks whether to install agent skills for ongoing work.

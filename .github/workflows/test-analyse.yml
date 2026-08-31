@@ -109,3 +109,6 @@ jobs:
 
       - name: Run application tests
         run: npm run test:php
+
+      - name: Test REST API
+        run: npm run test:rest
