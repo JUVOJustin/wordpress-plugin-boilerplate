@@ -144,7 +144,7 @@ function apply_replacements(string $plugin_path, string $plugin_name, string $pl
 		array_merge(
 			array(
 				'.*\.php',
-				'.*eslint.*\.js',
+				'.*eslint.*\.c?js',
 				'.*\.github\/.*\.(yml|md)',
 			),
 			$md_patterns
