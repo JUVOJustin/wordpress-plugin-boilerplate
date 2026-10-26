@@ -22,6 +22,9 @@ README.md
 CLAUDE.md
 AGENTS.md
 
+# Composer credentials
+auth.json
+
 # Version control and CI/CD
 .git/
 .github/
